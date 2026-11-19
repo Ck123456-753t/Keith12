@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#061225">
+  <meta name="description" content="Verify your PrimeTask Workspace email address.">
+  <title>Verify Email | PrimeTask Workspace</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg:#040b18;
+      --panel:#09182f;
+      --blue:#2379ee;
+      --orange:#ff873d;
+      --text:#f3f7ff;
+      --muted:#9aacc5;
+      --border:rgba(151,181,222,.2);
+      --green:#38d9a9;
+      --danger:#ff6b79;
+    }
+    * { box-sizing:border-box; }
+    body {
+      margin:0; min-height:100vh; padding:24px;
+      display:grid; place-items:center;
+      color:var(--text);
+      background:radial-gradient(ellipse at 50% 0%,#12366a55,transparent 55%),var(--bg);
+      font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    }
+    .panel {
+      width:100%; max-width:460px; padding:clamp(24px,6vw,40px);
+      border:1px solid var(--border); border-radius:22px;
+      background:rgba(9,24,47,.94);
+      box-shadow:0 24px 80px #0006;
+    }
+    .brand { display:flex; align-items:center; gap:12px; margin-bottom:30px; }
+    .brand img { width:46px; height:46px; object-fit:contain; border-radius:12px; }
+    .brand strong { display:block; font-size:16px; }
+    .brand small { color:var(--muted); font-size:11px; }
+    .eyebrow { color:var(--orange); font-size:11px; font-weight:850; letter-spacing:1.6px; }
+    h1 { margin:10px 0; font-size:30px; letter-spacing:-1px; }
+    .intro { color:var(--muted); font-size:14px; line-height:1.75; margin:0 0 25px; }
+    label { display:block; margin:17px 0 8px; font-size:12px; font-weight:750; color:#dce6f6; }
+    input {
+      width:100%; height:50px; padding:0 14px;
+      border:1px solid var(--border); border-radius:12px;
+      background:#08172b; color:white; outline:none; font:inherit;
+    }
+    input:focus { border-color:#56a2ff; box-shadow:0 0 0 3px #2379ee24; }
+    #code { text-align:center; font-size:25px; font-weight:850; letter-spacing:10px; }
+    button {
+      width:100%; min-height:49px; margin-top:17px;
+      border:0; border-radius:12px; color:white;
+      background:linear-gradient(115deg,#1769dc,#328cf5 65%,#ff873d);
+      font:inherit; font-weight:850; cursor:pointer;
+    }
+    button:disabled { opacity:.6; cursor:wait; }
+    button.secondary {
+      margin-top:10px; border:1px solid var(--border);
+      background:#0b1c35; color:#c9dcfa;
+    }
+    .message {
+      display:none; margin-top:18px; padding:13px;
+      border-radius:11px; font-size:13px; line-height:1.65;
+    }
+    .message.show { display:block; }
+    .message.error { color:#ffc5cb; background:#451d2a; border:1px solid #803344; }
+    .message.success { color:#a7f5d9; background:#10392f; border:1px solid #1b765e; }
+    .links { margin-top:24px; text-align:center; font-size:12px; line-height:2; color:var(--muted); }
+    a { color:#9bc4ff; font-weight:800; text-decoration:none; }
+    .foot { margin-top:26px; text-align:center; color:#617792; font-size:10px; }
+  </style>
+</head>
+<body>
+  <main class="panel">
+    <a class="brand" href="../index.html">
+      <img src="/assets/primetask.jpg" alt="PrimeTask Workspace logo">
+      <span><strong>PrimeTask Workspace</strong><small>Creating Opportunities and Delivering Excellence.</small></span>
+    </a>
+
+    <div class="eyebrow">ACCOUNT SECURITY</div>
+    <h1>Verify your email.</h1>
+    <p class="intro">
+      Enter the six-digit verification code sent to your email address.
+      The code expires after 10 minutes. You must verify your email before logging in.
+    </p>
+
+    <form id="verificationForm">
+      <label for="email">Email address</label>
+      <input id="email" name="email" type="email" autocomplete="email"
+        placeholder="you@example.com" maxlength="254" required>
+
+      <label for="code">Six-digit verification code</label>
+      <input id="code" name="code" type="text" inputmode="numeric"
+        autocomplete="one-time-code" pattern="[0-9]{6}" minlength="6" maxlength="6"
+        placeholder="000000" required>
+
+      <button id="verifyButton" type="submit">Verify email address</button>
+    </form>
+
+    <button class="secondary" id="resendButton" type="button">Resend verification code</button>
+
+    <div class="message" id="formMessage" role="status" aria-live="polite"></div>
+
+    <div class="links">
+      Already verified? <a href="login.html">Log in</a><br>
+      Need an account? <a href="register.html">Register</a>
+    </div>
+    <div class="foot">© <span id="year"></span> PrimeTask Workspace</div>
+  </main>
+
+  <script src="../assets/js/config.js?v=email-otp-20261111"></script>
+  <script>
+  (() => {
+    "use strict";
+
+    const emailInput = document.getElementById("email");
+    const codeInput = document.getElementById("code");
+    const form = document.getElementById("verificationForm");
+    const message = document.getElementById("formMessage");
+    const verifyButton = document.getElementById("verifyButton");
+    const resendButton = document.getElementById("resendButton");
+
+    document.getElementById("year").textContent = new Date().getFullYear();
+
+    const params = new URLSearchParams(window.location.search);
+    const suppliedEmail = params.get("email");
+    if (suppliedEmail) emailInput.value = suppliedEmail;
+
+    function showMessage(text, type = "error") {
+      message.textContent = text;
+      message.className = "message show " + type;
+    }
+
+    if (params.get("delivery") === "failed") {
+      showMessage(
+        "Your account was created, but the first email could not be delivered. You can request another verification code here.",
+        "error"
+      );
+    }
+
+    codeInput.addEventListener("input", () => {
+      codeInput.value = codeInput.value.replace(/\D/g, "").slice(0, 6);
+    });
+
+    form.addEventListener("submit", async event => {
+      event.preventDefault();
+      message.className = "message";
+
+      if (!emailInput.checkValidity() || !codeInput.checkValidity()) {
+        showMessage("Enter a valid email address and a six-digit code.");
+        return;
+      }
+
+      const endpoint = window.PTW_AUTH_API_VERIFY_EMAIL;
+      if (!endpoint) {
+        showMessage("Verification service is unavailable. Refresh and try again.");
+        return;
+      }
+
+      verifyButton.disabled = true;
+      verifyButton.textContent = "Verifying…";
+
+      try {
+        const response = await fetch(endpoint, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          credentials: "include",
+          body: JSON.stringify({
+            email: emailInput.value.trim(),
+            code: codeInput.value
+          })
+        });
+
+        const result = await response.json().catch(() => ({}));
+        if (!response.ok) {
+          throw new Error(result.message || result.error || "Email verification failed.");
+        }
+
+        codeInput.value = "";
+        showMessage(
+          "Your email has been verified successfully. Redirecting you to login...",
+          "success"
+        );
+
+        window.setTimeout(() => {
+          window.location.replace("/auth/login.html");
+        }, 1800);
+      } catch (error) {
+        showMessage(error.message || "Unable to verify your email. Try again.");
+      } finally {
+        verifyButton.disabled = false;
+        verifyButton.textContent = "Verify email address";
+      }
+    });
+
+    resendButton.addEventListener("click", async () => {
+      message.className = "message";
+
+      if (!emailInput.checkValidity()) {
+        showMessage("Enter the email address used when you registered.");
+        emailInput.focus();
+        return;
+      }
+
+      const endpoint = window.PTW_AUTH_API_RESEND_VERIFICATION;
+      if (!endpoint) {
+        showMessage("The resend service is unavailable. Refresh and try again.");
+        return;
+      }
+
+      resendButton.disabled = true;
+      resendButton.textContent = "Requesting code…";
+
+      try {
+        const response = await fetch(endpoint, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          credentials: "include",
+          body: JSON.stringify({ email: emailInput.value.trim() })
+        });
+
+        const result = await response.json().catch(() => ({}));
+        if (!response.ok) {
+          throw new Error(result.message || result.error || "Unable to request another code.");
+        }
+
+        showMessage(
+          result.message || "If the account is eligible, a verification email will be sent.",
+          "success"
+        );
+      } catch (error) {
+        showMessage(error.message || "Unable to request another code.");
+      } finally {
+        resendButton.disabled = false;
+        resendButton.textContent = "Resend verification code";
+      }
+    });
+  })();
+  </script>
+</body>
+</html>

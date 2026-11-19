@@ -1,0 +1,241 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0759d9">
+  <meta name="description" content="Learn accurate audio transcription with practical lessons, examples, and self-check exercises.">
+  <title>Audio Transcription | PrimeTask Transcription Academy</title>
+  <style>
+    :root{--blue:#0875f9;--navy:#041a3c;--ink:#102d61;--muted:#52698b;--line:#c9e0ff;--pale:#f2f8ff;--green:#14845d}
+    *{box-sizing:border-box}html{scroll-behavior:smooth;scroll-padding-top:85px}body{margin:0;background:#f7fbff;color:var(--ink);font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif}
+    a{color:inherit;text-decoration:none}button,input,textarea{font:inherit}button{cursor:pointer}.wrap{width:min(1120px,calc(100% - 40px));margin:auto}
+    .topbar{height:72px;background:#fff;border-bottom:1px solid #e3efff;display:flex;align-items:center;position:sticky;top:0;z-index:10}
+    .nav{display:flex;align-items:center;justify-content:space-between;gap:18px}.brand{display:flex;align-items:center;gap:10px;color:#092b61;font-weight:850}
+    .logo{width:41px;height:41px;border-radius:13px;display:grid;place-items:center;color:white;background:linear-gradient(145deg,#41a5ff,#0758dc);font-size:22px}
+    .brand small{display:block;font-size:10px;color:#54709b;margin-top:3px}
+    .navlinks{display:flex;align-items:center;gap:22px;font-size:12px;font-weight:750;color:#39547e}.navlinks a:hover{color:var(--blue)}
+    .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:40px;padding:0 17px;border-radius:999px;font-weight:800;font-size:12px;border:1px solid transparent;transition:.2s}.btn:hover{transform:translateY(-2px)}
+    .primary{background:linear-gradient(105deg,#168bff,#0060ed);color:#fff;box-shadow:0 8px 20px #0875f92b}.outline{border-color:#91c5ff;background:white;color:var(--blue)}.menu{display:none;border:1px solid var(--line);border-radius:11px;background:white;color:var(--ink);width:40px;height:40px;font-size:20px}
+    .hero{position:relative;overflow:hidden;color:white;background:#031a3c;padding:45px 0 42px}.hero-bg{position:absolute;inset:0}.hero-bg video{width:100%;height:100%;object-fit:cover;opacity:.32}.hero-bg:after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,#031632f5,#062d70d9 65%,#0759d966)}
+    .hero-inner{position:relative;z-index:1;display:grid;grid-template-columns:1.1fr .9fr;align-items:center;gap:35px}
+    .crumb{font-size:11px;color:#c8e3ff;margin-bottom:18px}.crumb a{color:#8dcaff}.eyebrow{display:inline-block;border:1px solid #70baff65;border-radius:999px;padding:7px 12px;background:#0875f933;color:#d9edff;font-size:10px;font-weight:850;letter-spacing:1px;text-transform:uppercase}
+    h1{font-size:clamp(35px,4.6vw,53px);line-height:1.02;letter-spacing:-1.8px;margin:17px 0 14px}.gradient{color:#78c5ff}.hero p{max-width:570px;color:#d4e6ff;line-height:1.75;font-size:14px;margin:0}
+    .hero-actions{display:flex;gap:11px;flex-wrap:wrap;margin-top:22px}.hero-stats{display:flex;flex-wrap:wrap;gap:19px;margin-top:24px;color:#d5e9ff;font-size:11px;font-weight:750}.hero-stats span{display:flex;gap:7px;align-items:center}.hero-stats b{color:#72c5ff;font-size:16px}
+    .hero-card{padding:23px;border:1px solid #8bc8ff66;border-radius:20px;background:linear-gradient(145deg,#0c56b26b,#00193dba);box-shadow:0 22px 55px #00102b66;backdrop-filter:blur(6px)}
+    .hero-card h3{margin:0 0 14px;font-size:16px}.hero-card p{font-size:12px;color:#c5ddff;margin:0 0 17px}.lesson-point{display:flex;align-items:center;gap:10px;padding:11px 0;border-top:1px solid #ffffff20;font-size:12px;color:#e6f2ff}.check{width:23px;height:23px;display:grid;place-items:center;border-radius:50%;background:#168bff33;color:#8dcaff;font-weight:900}
+    .layout{display:grid;grid-template-columns:minmax(0,1fr) 285px;gap:24px;padding:34px 0 60px;align-items:start}.main-col{min-width:0}.panel{background:white;border:1px solid #d5e7ff;border-radius:15px;padding:24px;box-shadow:0 8px 24px #174c8708;margin-bottom:20px}
+    .section-label{color:#0870ee;text-transform:uppercase;font-size:10px;font-weight:900;letter-spacing:1.4px}.panel h2{font-size:23px;letter-spacing:-.6px;margin:8px 0 12px;color:#0b3274}.panel h3{font-size:16px;margin:21px 0 8px;color:#12366d}.panel p,.panel li{font-size:13px;line-height:1.8;color:#52698b}.panel p{margin:8px 0 13px}.panel ul{padding-left:20px;margin:8px 0}.panel li{padding:3px 0}
+    .lesson-nav{display:flex;flex-wrap:wrap;gap:8px;margin:18px 0 0}.lesson-nav a{border:1px solid #c8e1ff;background:#f5faff;border-radius:999px;padding:8px 12px;font-size:11px;font-weight:800;color:#2162ad}
+    .audio-box{padding:20px;border-radius:13px;background:linear-gradient(135deg,#062b67,#0875f9);color:white;margin:18px 0}.audio-box h3{color:white;margin:0 0 7px}.audio-box p{color:#d9eaff;font-size:12px;margin:0 0 14px}.audio-controls{display:flex;align-items:center;gap:12px;flex-wrap:wrap}.audio-controls button{border:0;background:white;color:#0759d9;font-weight:850;border-radius:999px;padding:10px 16px;font-size:12px}.audio-controls small{font-size:11px;color:#d9eaff}
+    .sample{background:#f3f8ff;border:1px solid #d6e7ff;border-radius:12px;padding:16px;margin:14px 0}.sample strong{font-size:12px;color:#164782;display:block;margin-bottom:7px}.sample p{margin:0;color:#3e5c82}
+    .practice{background:#f8fbff;border:1px solid #d6e7ff;border-radius:13px;padding:17px;margin-top:14px}.practice label{display:block;font-size:12px;font-weight:800;color:#173d75;margin:0 0 8px}.practice textarea{width:100%;min-height:105px;resize:vertical;padding:12px;border:1px solid #bcd8fb;border-radius:10px;background:white;color:#17365f;font-size:13px;line-height:1.6;outline:none}.practice textarea:focus{border-color:#0875f9;box-shadow:0 0 0 3px #0875f91c}.practice-actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:10px}.practice button{border:0;border-radius:999px;padding:10px 15px;font-size:11px;font-weight:850}.check-btn{background:#0875f9;color:white}.clear-btn{background:#e9f3ff;color:#15559c}.feedback{font-size:12px;font-weight:750;margin-top:11px;line-height:1.6}.feedback.good{color:var(--green)}.feedback.neutral{color:#9a5a08}
+    .tip{display:flex;gap:12px;align-items:flex-start;padding:14px;border-radius:12px;background:#eff7ff;border:1px solid #d3e8ff;margin-top:14px}.tip b{color:#0b3274;font-size:12px}.tip p{margin:4px 0 0;font-size:12px}
+    .sidebar{position:sticky;top:92px}.side-card{background:white;border:1px solid #d5e7ff;border-radius:15px;padding:20px;margin-bottom:16px;box-shadow:0 8px 24px #174c8708}.side-card h3{margin:0 0 15px;color:#10356e;font-size:15px}.progress-line{height:7px;background:#e7f1ff;border-radius:99px;overflow:hidden;margin:10px 0 7px}.progress-fill{height:100%;width:0;background:linear-gradient(90deg,#168bff,#005ce7);transition:width .3s}.progress-caption{display:flex;justify-content:space-between;font-size:10px;color:#627b9e;font-weight:750}
+    .toc{display:grid;gap:5px}.toc a{padding:10px;border-radius:9px;color:#52698b;font-size:12px;font-weight:750;display:flex;gap:9px;align-items:center}.toc a span{display:grid;place-items:center;width:24px;height:24px;border-radius:7px;background:#edf6ff;color:#0875f9;font-size:10px}.toc a:hover,.toc a.current{background:#edf6ff;color:#0759d9}
+    .side-note{font-size:11px;line-height:1.7;color:#637b9a}.complete-btn{width:100%;border:0;border-radius:10px;padding:12px;background:#0875f9;color:white;font-size:12px;font-weight:850}.complete-btn.done{background:#e6f7ef;color:#13734f;border:1px solid #a6e2c8}
+    .next-course{display:block;margin-top:10px;text-align:center;border:1px solid #b9d8ff;color:#0868e8;border-radius:10px;padding:11px;font-size:11px;font-weight:850}
+    footer{background:#031a3b;color:#b5c9e8;padding:20px 0;font-size:11px}.footer{display:flex;align-items:center;justify-content:space-between;gap:15px}.footer b{color:white}.footer a:hover{color:#fff}
+    @media(max-width:900px){.navlinks{gap:12px}.layout{grid-template-columns:minmax(0,1fr) 250px;gap:15px}.panel{padding:20px}.hero-inner{gap:20px}}
+    @media(max-width:720px){.wrap{width:calc(100% - 30px)}.topbar{height:65px}.navlinks{display:none;position:absolute;top:58px;left:15px;right:15px;padding:12px 16px;background:white;border:1px solid var(--line);border-radius:13px;box-shadow:0 18px 45px #06409120;flex-direction:column;align-items:stretch;gap:0}.navlinks.open{display:flex}.navlinks a{padding:11px 3px}.menu{display:block}.nav .outline{display:none}.nav .primary{padding:0 12px;min-height:38px}.hero{padding:34px 0}.hero-inner{grid-template-columns:1fr}.hero-card{padding:18px}.layout{grid-template-columns:1fr;padding-top:20px}.sidebar{position:static;display:grid;grid-template-columns:1fr 1fr;gap:12px}.side-card{margin:0}.toc-card{grid-column:1/-1;order:-1}.panel{padding:19px}.footer{flex-wrap:wrap;justify-content:center;text-align:center}.footer span{width:100%}}
+    @media(max-width:430px){.sidebar{grid-template-columns:1fr}.toc-card{grid-column:auto}.hero-actions .btn{width:100%}.hero-stats{gap:12px}.panel h2{font-size:21px}}
+    @media(prefers-reduced-motion:reduce){*,*:before,*:after{scroll-behavior:auto!important;animation-duration:.01ms!important;transition-duration:.01ms!important}}
+  </style>
+</head>
+<body>
+<header class="topbar">
+  <div class="wrap nav">
+    <a class="brand" href="index.html"><span class="logo" aria-hidden="true">♫</span><span>PrimeTask<small>Transcription Academy</small></span></a>
+    <nav class="navlinks" id="navLinks" aria-label="Main navigation"><a href="index.html">Home</a><a href="courses.html">Courses</a><a href="#lessonContent">Lesson</a><a href="#practice">Practice</a></nav>
+    <div style="display:flex;gap:8px;align-items:center"><a class="btn outline" href="courses.html">All Courses</a><a class="btn primary" href="#lessonContent">Start Lesson ↓</a><button class="menu" id="menuToggle" aria-label="Toggle navigation" aria-expanded="false">☰</button></div>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="hero-bg" aria-hidden="true"><video autoplay muted loop playsinline preload="metadata" poster="https://images.pexels.com/photos/7516363/pexels-photo-7516363.jpeg?auto=compress&cs=tinysrgb&w=1500"><source src="https://videos.pexels.com/video-files/3209298/3209298-hd_1920_1080_25fps.mp4" type="video/mp4"></video></div>
+  <div class="wrap hero-inner">
+    <div>
+      <div class="crumb"><a href="index.html">Academy Home</a> / <a href="courses.html">Courses</a> / Audio Transcription</div>
+      <span class="eyebrow">Course 01 · Foundation</span>
+      <h1>Audio <span class="gradient">Transcription</span></h1>
+      <p>Learn how to turn spoken audio into readable, accurate text. Start with careful listening, practise punctuation and speaker labels, and build a repeatable quality-check routine.</p>
+      <div class="hero-actions"><a class="btn primary" href="#lessonContent">Begin Learning ↓</a><a class="btn outline" href="courses.html">← All Courses</a></div>
+      <div class="hero-stats"><span><b>◷</b> Self-paced</span><span><b>✓</b> Practice included</span><span><b>▤</b> Beginner friendly</span></div>
+    </div>
+    <aside class="hero-card">
+      <h3>In this course</h3><p>Work through the essentials, then test your understanding with a short practice activity.</p>
+      <div class="lesson-point"><span class="check">✓</span> Listen for meaning, not just sounds</div>
+      <div class="lesson-point"><span class="check">✓</span> Use punctuation and speaker labels</div>
+      <div class="lesson-point"><span class="check">✓</span> Review and correct your transcript</div>
+    </aside>
+  </div>
+</section>
+
+<main class="wrap layout">
+  <div class="main-col" id="lessonContent">
+    <article class="panel" id="lesson1">
+      <div class="section-label">Lesson 01 · The basics</div>
+      <h2>What is audio transcription?</h2>
+      <p>Audio transcription is the process of converting spoken words in a recording into written text. Recordings may contain interviews, meetings, lessons, phone calls, or other conversations.</p>
+      <p>A good transcript preserves the speaker's intended words while making the text easy to read. Accuracy comes first. Speed improves with practice, not with guessing what someone probably said.</p>
+      <div class="sample"><strong>Example</strong><p><b>Audio:</b> “We’ll meet on Thursday at half past ten.”</p><p><b>Transcript:</b> We’ll meet on Thursday at 10:30.</p></div>
+      <div class="tip"><span>💡</span><div><b>Remember</b><p>Follow the project instructions. Some clients want every spoken word preserved; others specify a clean-read style. Never silently change the meaning.</p></div></div>
+    </article>
+
+    <article class="panel" id="lesson2">
+      <div class="section-label">Lesson 02 · Listening technique</div>
+      <h2>Listen in focused passes</h2>
+      <p>Trying to hear, type, punctuate, and proofread everything at once is a lovely way to miss words. Separate the work into manageable passes.</p>
+      <h3>1. First pass: understand the context</h3>
+      <p>Listen to the full clip without stopping. Identify the topic, number of speakers, tone, and any difficult sections.</p>
+      <h3>2. Second pass: draft the words</h3>
+      <p>Type what you hear. Pause or replay short sections when needed. Do not invent a word just because the sentence would sound tidier with it.</p>
+      <h3>3. Final pass: verify details</h3>
+      <p>Check names, numbers, dates, contractions, speaker changes, and punctuation. Revisit unclear phrases before submitting.</p>
+    </article>
+
+    <article class="panel" id="lesson3">
+      <div class="section-label">Lesson 03 · Transcript standards</div>
+      <h2>Punctuation, speakers, and unclear audio</h2>
+      <p>Punctuation helps readers follow the speaker’s meaning, but it should not rewrite what the speaker said.</p>
+      <ul>
+        <li><b>Sentence boundaries:</b> use punctuation to show complete thoughts and natural pauses.</li>
+        <li><b>Speaker labels:</b> when multiple people speak, use consistent labels such as “Speaker 1:” and “Speaker 2:” unless the instructions specify names.</li>
+        <li><b>Unclear words:</b> replay the section and use the project’s required unclear-audio label if the words cannot be identified.</li>
+        <li><b>Numbers and names:</b> follow the required style guide and verify spellings whenever reliable references are available.</li>
+        <li><b>Confidentiality:</b> treat recordings and transcripts as private work materials.</li>
+      </ul>
+      <div class="sample"><strong>Speaker-label example</strong><p><b>Speaker 1:</b> Have you sent the updated report?</p><p><b>Speaker 2:</b> Not yet. I’ll send it this afternoon.</p></div>
+    </article>
+
+    <article class="panel" id="practice">
+      <div class="section-label">Practice · Check your accuracy</div>
+      <h2>Try a short transcription exercise</h2>
+      <p>Read the practice line below as if you heard it in a recording, then type it into the box. This is a text-based exercise; a real audio clip can be added when you have a licensed or project-approved recording.</p>
+      <div class="sample"><strong>Practice line</strong><p id="practiceSource">Good morning, this is Daniel. I’ll deliver the final report by Friday at 2:15 p.m.</p></div>
+      <div class="practice">
+        <label for="transcriptAnswer">Your transcript</label>
+        <textarea id="transcriptAnswer" placeholder="Type the sentence here..."></textarea>
+        <div class="practice-actions"><button class="check-btn" id="checkAnswer">Check Answer</button><button class="clear-btn" id="clearAnswer">Clear</button></div>
+        <div class="feedback" id="feedback" role="status" aria-live="polite"></div>
+      </div>
+      <div class="tip"><span>🎯</span><div><b>Self-check tip</b><p>Compare names, punctuation, and the time carefully. The checker ignores case and extra spaces, but punctuation and wording should still match.</p></div></div>
+    </article>
+
+    <article class="panel" id="checklist">
+      <div class="section-label">Before you submit</div>
+      <h2>Your quality-control checklist</h2>
+      <ul>
+        <li>Every audible word has been checked against the recording.</li>
+        <li>Names, dates, amounts, and times have been verified.</li>
+        <li>Speaker labels and formatting are consistent.</li>
+        <li>Unclear sections follow the project’s instructions.</li>
+        <li>The transcript follows the requested style guide and confidentiality rules.</li>
+      </ul>
+      <p>When you finish, mark this lesson complete to update the progress indicator on this page. Progress is stored only in this browser on this device.</p>
+      <button class="complete-btn" id="completeLesson">✓ Mark Lesson Complete</button>
+    </article>
+    <div style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:22px"><a class="btn outline" href="courses.html">← Back to Courses</a><a class="btn primary" href="typing-formatting.html">Next Course: Typing &amp; Formatting →</a></div>
+  </div>
+
+  <aside class="sidebar">
+    <div class="side-card">
+      <h3>Your Progress</h3><div class="progress-caption"><span>Course completion</span><span id="progressText">0%</span></div><div class="progress-line"><div class="progress-fill" id="progressFill"></div></div><p class="side-note" id="progressNote">Complete the lesson checklist to record progress in this browser.</p>
+    </div>
+    <div class="side-card toc-card">
+      <h3>Course Contents</h3>
+      <nav class="toc" aria-label="Course contents">
+        <a href="#lesson1"><span>01</span> What is transcription?</a>
+        <a href="#lesson2"><span>02</span> Listening technique</a>
+        <a href="#lesson3"><span>03</span> Transcript standards</a>
+        <a href="#practice"><span>04</span> Practice exercise</a>
+        <a href="#checklist"><span>05</span> Quality checklist</a>
+      </nav>
+    </div>
+    <div class="side-card">
+      <h3>Keep learning</h3><p class="side-note">Good transcription combines patient listening, consistent formatting, and careful review. Build the habit before chasing speed.</p><a class="next-course" href="typing-formatting.html">Typing &amp; Formatting →</a><a class="next-course" href="freelancing-earning.html">Freelancing &amp; Earning →</a>
+    </div>
+  </aside>
+</main>
+
+<footer><div class="wrap footer"><a href="index.html"><b>PrimeTask</b> Transcription Academy</a><span>© <span id="year"></span> PrimeTask Transcription Academy</span><a href="courses.html">All Courses ↑</a></div></footer>
+<script>
+(() => {
+  const menu = document.getElementById("menuToggle");
+  const links = document.getElementById("navLinks");
+  menu.addEventListener("click", () => {
+    const open = links.classList.toggle("open");
+    menu.setAttribute("aria-expanded", String(open));
+    menu.textContent = open ? "×" : "☰";
+  });
+  links.querySelectorAll("a").forEach(a => a.addEventListener("click", () => {
+    links.classList.remove("open"); menu.setAttribute("aria-expanded", "false"); menu.textContent = "☰";
+  }));
+  document.getElementById("year").textContent = new Date().getFullYear();
+
+  const source = document.getElementById("practiceSource").textContent.trim();
+  const answer = document.getElementById("transcriptAnswer");
+  const feedback = document.getElementById("feedback");
+  document.getElementById("checkAnswer").addEventListener("click", () => {
+    const typed = answer.value.trim().replace(/\s+/g, " ");
+    if (!typed) {
+      feedback.className = "feedback neutral";
+      feedback.textContent = "Enter your transcript first, then check it.";
+      return;
+    }
+    const normalize = s => s.trim().replace(/\s+/g, " ").toLocaleLowerCase();
+    if (normalize(typed) === normalize(source)) {
+      feedback.className = "feedback good";
+      feedback.textContent = "Correct. You matched the sample accurately. Keep checking punctuation and details in real recordings.";
+    } else {
+      let matches = 0;
+      const expected = source.split(/\s+/);
+      const actual = typed.split(/\s+/);
+      expected.forEach((word, i) => { if (actual[i] && actual[i].replace(/[.,!?;:]/g, "").toLowerCase() === word.replace(/[.,!?;:]/g, "").toLowerCase()) matches++; });
+      feedback.className = "feedback neutral";
+      feedback.textContent = `Not an exact match yet (${Math.round(matches / expected.length * 100)}% of word positions match). Recheck the name, wording, time, and punctuation, then try again.`;
+    }
+  });
+  document.getElementById("clearAnswer").addEventListener("click", () => {
+    answer.value = ""; feedback.textContent = ""; feedback.className = "feedback";
+    answer.focus();
+  });
+
+  const progressKey = "pta_academy_audio_transcription_complete_v1";
+  const complete = document.getElementById("completeLesson");
+  const fill = document.getElementById("progressFill");
+  const text = document.getElementById("progressText");
+  const note = document.getElementById("progressNote");
+  function renderProgress() {
+    let done = false;
+    try { done = localStorage.getItem(progressKey) === "yes"; } catch (_) {}
+    fill.style.width = done ? "100%" : "0%";
+    text.textContent = done ? "100%" : "0%";
+    note.textContent = done ? "Lesson marked complete on this device." : "Complete the lesson checklist to record progress in this browser.";
+    complete.classList.toggle("done", done);
+    complete.textContent = done ? "✓ Lesson Completed" : "✓ Mark Lesson Complete";
+  }
+  complete.addEventListener("click", () => {
+    try {
+      const wasDone = localStorage.getItem(progressKey) === "yes";
+      localStorage.setItem(progressKey, wasDone ? "no" : "yes");
+    } catch (_) {
+      note.textContent = "Browser storage is unavailable, so progress cannot be saved on this device.";
+    }
+    renderProgress();
+  });
+  renderProgress();
+
+  document.querySelectorAll("video").forEach(video => video.addEventListener("error", () => { video.style.display = "none"; }));
+  const tocLinks = [...document.querySelectorAll(".toc a")];
+  const sections = tocLinks.map(link => document.querySelector(link.getAttribute("href"))).filter(Boolean);
+  if ("IntersectionObserver" in window) {
+    const observer = new IntersectionObserver(entries => entries.forEach(entry => {
+      if (entry.isIntersecting) tocLinks.forEach(link => link.classList.toggle("current", link.hash === "#" + entry.target.id));
+    }), { rootMargin: "-20% 0px -65% 0px" });
+    sections.forEach(section => observer.observe(section));
+  }
+})();
+</script>
+</body>
+</html>

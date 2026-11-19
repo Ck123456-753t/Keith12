@@ -202,6 +202,17 @@ input:focus{outline:2px solid #3b82f6;outline-offset:1px}
 
 <div id="profileGrid" class="field-grid"></div>
 
+<section class="profile-preference" aria-labelledby="emailPreferenceHeading">
+  <h2 id="emailPreferenceHeading">Email updates</h2>
+  <p>Choose whether PrimeTask may send you occasional service updates. Account and security messages are not affected.</p>
+  <label class="preference-toggle" for="marketingEmailOptIn">
+    <input id="marketingEmailOptIn" type="checkbox">
+    <span>Send me PrimeTask Workspace service updates by email</span>
+  </label>
+  <button id="saveEmailPreference" class="action" type="button">Save email preference</button>
+  <p id="emailPreferenceMessage" role="status" aria-live="polite"></p>
+</section>
+
 <div class="actions">
 <button id="editButton" class="action primary" type="button" hidden>
 Edit profile
@@ -250,6 +261,9 @@ const form = document.getElementById("profileForm");
 const editButton = document.getElementById("editButton");
 const saveButton = document.getElementById("saveButton");
 const cancelButton = document.getElementById("cancelButton");
+const marketingEmailOptIn = document.getElementById("marketingEmailOptIn");
+const saveEmailPreference = document.getElementById("saveEmailPreference");
+const emailPreferenceMessage = document.getElementById("emailPreferenceMessage");
 
 let currentUser = null;
 let saving = false;
@@ -329,6 +343,7 @@ function displayService(value) {
 
 function renderProfile(user) {
   grid.replaceChildren();
+  marketingEmailOptIn.checked = Boolean(user.marketingEmailOptIn);
 
   addField("First name", user.firstName);
   addField("Last name", user.lastName);
@@ -345,6 +360,23 @@ function renderProfile(user) {
   addField("Date joined", formatDate(user.createdAt));
   addField("Display currency", "USD");
 }
+
+saveEmailPreference.addEventListener("click", async () => {
+  saveEmailPreference.disabled = true;
+  emailPreferenceMessage.textContent = "Saving preference…";
+  try {
+    const result = await request(apiRoot() + "/profile/marketing-email", {
+      method: "PATCH",
+      body: JSON.stringify({ marketingEmailOptIn: marketingEmailOptIn.checked })
+    });
+    if (currentUser) currentUser.marketingEmailOptIn = result.marketingEmailOptIn;
+    emailPreferenceMessage.textContent = result.message || "Email preference saved.";
+  } catch (error) {
+    emailPreferenceMessage.textContent = error.message || "Could not save the email preference.";
+  } finally {
+    saveEmailPreference.disabled = false;
+  }
+});
 
 function startEditing() {
   if (!currentUser || saving) return;

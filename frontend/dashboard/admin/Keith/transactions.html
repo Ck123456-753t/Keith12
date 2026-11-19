@@ -1,6 +1,8 @@
 <!doctype html>
 <html lang="en">
 <head>
+  
+  
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#090a0d">
@@ -485,11 +487,22 @@
     }
   
 .brand-mark img{width:100%;height:100%;display:block;object-fit:cover;border-radius:inherit}
+
+/* PrimeTask shared logo: preserve the original image proportions. */
+.logo img, .brand-mark img, .brandmark img,
+.brand-orb img, .hero-mark img, .mark img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  border-radius: inherit;
+}
+
 </style>
 
   <script src="/assets/js/config.js"></script>
   <link rel="stylesheet" href="/dashboard/admin/Keith/assets/admin-navigation.css">
-  <link rel="icon" type="image/jpeg" href="../../../assets/primetask.jpg">
+<link rel="icon" type="image/svg+xml" href="/assets/primetask-logo.svg">
 </head>
 
 <body>
@@ -497,8 +510,8 @@
 
   <div class="app">
     <aside class="sidebar" id="sidebar" aria-label="Administrator navigation">
-      <a class="brand" href="/dashboard/admin/Keith/keith.html">
-        <span class="brand-mark"><img src="../../../assets/primetask.jpg" alt="PrimeTask"></span>
+      <a class="brand" href="/dashboard/admin/Keith/keith">
+        <span class="brand-mark"></span>
         <span>
           <strong>PrimeTask</strong>
           <small>Financial control</small>
@@ -507,25 +520,25 @@
 
       <div class="nav-label">Workspace</div>
       <nav class="nav">
-        <a href="/dashboard/admin/Keith/keith.html"><span class="nav-icon">◈</span>Overview</a>
-        <a href="/dashboard/admin/Keith/users.html"><span class="nav-icon">♙</span>Members</a>
-        <a href="/dashboard/admin/Keith/memberships.html"><span class="nav-icon">✦</span>Memberships</a>
+        <a href="/dashboard/admin/Keith/keith"><span class="nav-icon">◈</span>Overview</a>
+        <a href="/dashboard/admin/Keith/users"><span class="nav-icon">♙</span>Members</a>
+        <a href="/dashboard/admin/Keith/memberships"><span class="nav-icon">✦</span>Memberships</a>
       </nav>
 
       <div class="nav-label">Financial operations</div>
       <nav class="nav">
-        <a href="/dashboard/admin/Keith/transactions.html" class="active" aria-current="page"><span class="nav-icon">⇄</span>Transactions</a>
-        <a href="/dashboard/admin/Keith/deposits.html"><span class="nav-icon">↙</span>Deposits</a>
-        <a href="/dashboard/admin/Keith/withdrawals.html"><span class="nav-icon">↗</span>Withdrawals</a>
-        <a href="/dashboard/admin/Keith/platform-revenue.html"><span class="nav-icon">◉</span>Platform revenue</a>
-        <a href="/dashboard/admin/Keith/commissions.html"><span class="nav-icon">◈</span>Commissions</a>
-        <a href="/dashboard/admin/Keith/referrals.html"><span class="nav-icon">♧</span>Referrals</a>
+        <a href="/dashboard/admin/Keith/transactions" class="active" aria-current="page"><span class="nav-icon">⇄</span>Transactions</a>
+        <a href="/dashboard/admin/Keith/deposits"><span class="nav-icon">↙</span>Deposits</a>
+        <a href="/dashboard/admin/Keith/withdrawals"><span class="nav-icon">↗</span>Withdrawals</a>
+        <a href="/dashboard/admin/Keith/platform-revenue"><span class="nav-icon">◉</span>Platform revenue</a>
+        <a href="/dashboard/admin/Keith/commissions"><span class="nav-icon">◈</span>Commissions</a>
+        <a href="/dashboard/admin/Keith/referral-management"><span class="nav-icon">♧</span>Referrals</a>
       </nav>
 
       <div class="nav-label">Administration</div>
       <nav class="nav">
-        <a href="/dashboard/admin/Keith/audit-logs.html"><span class="nav-icon">≡</span>Audit logs</a>
-        <a href="/dashboard/admin/Keith/settings.html"><span class="nav-icon">⚙</span>Settings</a>
+        <a href="/dashboard/admin/Keith/audit-logs"><span class="nav-icon">≡</span>Audit logs</a>
+        <a href="/dashboard/admin/Keith/settings"><span class="nav-icon">⚙</span>Settings</a>
       </nav>
 
       <div class="side-note">

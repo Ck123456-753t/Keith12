@@ -246,15 +246,141 @@
     }
   }
 
+  async function loadDashboardJobsPreview() {
+    const list = $("#dashboardJobsList");
+    if (!list) return;
+
+    addMessage(list, "Loading available jobs…");
+
+    try {
+      const result = await api("/transcription/jobs?limit=4");
+      const jobs = Array.isArray(result.jobs) ? result.jobs.slice(0, 4) : [];
+
+      list.replaceChildren();
+
+      if (!jobs.length) {
+        addMessage(list, "There are no open transcription jobs at the moment.");
+        return;
+      }
+
+      jobs.forEach(job => {
+        const card = element("article", undefined, "card");
+        card.append(
+          element("h3", "Audio"),
+          element("p", job.requiredTranscript || "Required transcript not specified."),
+          element("p", `Duration: ${Number(job.durationMinutes) || 0} minutes`),
+          element("p", `Reward: ${money(job.reward)}`),
+          element("p", `Deadline: ${date(job.dueAt)}`)
+        );
+        list.append(card);
+      });
+    } catch (error) {
+      addMessage(list, `Could not load available jobs: ${error.message}`, true);
+    }
+  }
+
   async function loadAvailableJobs() {
-    const section = makeSection(
-      "Available assignments",
-      "Jobs are loaded from the authenticated transcription API. Claiming requires eligible service access."
-    );
-    const content = element("div");
-    section.append(content);
-    insertSection(section);
+    const content = element("div", undefined, "available-jobs-content");
+    content.style.marginTop = "18px";
+    content.setAttribute("aria-label", "Available transcription assignments");
+
+    const pageMain = $("main");
+    if (pageMain) {
+      const intro = pageMain.querySelector("h1");
+      const introSection = intro?.closest("section");
+      if (introSection) {
+        introSection.insertAdjacentElement("afterend", content);
+      } else {
+        pageMain.prepend(content);
+      }
+    } else {
+      document.body.append(content);
+    }
+
     addMessage(content, "Loading available jobs…");
+
+    function renderDetails(job, panel) {
+      const heading = element("h3", "Audio");
+      const details = element("div", undefined, "job-detail-grid");
+
+      [
+        ["Required transcript", job.requiredTranscript || "Not specified"],
+        ["Audio length", Number.isFinite(Number(job.durationMinutes))
+          ? `${Number(job.durationMinutes)} minutes`
+          : "Not specified"],
+        ["Reward", money(job.reward)],
+        ["Published deadline", date(job.dueAt)],
+        ["Assignment window", "1 hour after claiming"]
+      ].forEach(([label, value]) => {
+        const item = element("div", undefined, "job-detail-item");
+        item.append(
+          element("span", label, "job-detail-label"),
+          element("strong", value)
+        );
+        details.append(item);
+      });
+
+            const audioSection = element("div", undefined, "job-audio-panel");
+      audioSection.append(
+        element("h4", "Source audio"),
+        element(
+          "p",
+          "Audio playback is available when the jobs API supplies an audio URL."
+        )
+      );
+
+      const audioUrl = typeof job.audioAssetUrl === "string"
+        ? job.audioAssetUrl.trim()
+        : "";
+
+      if (audioUrl) {
+        try {
+          const parsed = new URL(audioUrl, window.location.href);
+          if (["https:", "http:"].includes(parsed.protocol)) {
+            const audio = element("audio");
+            audio.controls = true;
+            audio.preload = "none";
+            audio.src = parsed.href;
+            audio.className = "job-source-audio";
+            audio.setAttribute("aria-label", "Source audio player");
+            audioSection.append(audio);
+          } else {
+            audioSection.append(element("p", "Source audio URL is unsupported."));
+          }
+        } catch {
+          audioSection.append(element("p", "Source audio URL is invalid."));
+        }
+      } else {
+        audioSection.append(
+          element("p", "Source audio is not provided by the current jobs API.")
+        );
+      }
+
+      const panelHeading = element("div", undefined, "job-details-heading");
+      panelHeading.append(
+        element("div", undefined, "job-details-title-wrap")
+      );
+      panelHeading.firstChild.append(
+        element("span", "JOB DETAILS", "eyebrow"),
+        heading
+      );
+
+      const close = element("button", "Close details", "btn blue");
+      close.type = "button";
+      close.addEventListener("click", () => {
+        panel.hidden = true;
+        panel.replaceChildren();
+      });
+
+      panelHeading.append(close);
+      panel.replaceChildren(
+        panelHeading,
+        details,
+        audioSection
+      );
+      panel.hidden = false;
+      panel.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    }
 
     async function refresh() {
       addMessage(content, "Loading available jobs…");
@@ -269,47 +395,68 @@
           return;
         }
 
-        table(content,
-          ["Job", "Duration", "Reward (USD)", "Deadline", "Action"],
-          jobs.map(job => {
-            const details = element("div");
-            details.append(
-              element("strong", job.title || "Untitled job"),
-              element("p", job.description || "No description provided.")
-            );
+        const detailsPanel = element("section", undefined, "job-details-panel");
+        detailsPanel.hidden = true;
+        detailsPanel.setAttribute("aria-live", "polite");
 
-            const action = element("button", "Claim job", "btn gold");
-            action.type = "button";
+        const records = jobs.map(job => {
+          const title = element("strong", "Audio");
+          const titleCell = element("div");
+          titleCell.append(title);
 
-            action.addEventListener("click", async () => {
-              action.disabled = true;
-              action.textContent = "Claiming…";
+          const view = element("button", "View job", "btn blue");
+          view.type = "button";
+          view.addEventListener("click", () => renderDetails(job, detailsPanel));
 
-              try {
-                await api(
-                  `/transcription/jobs/${encodeURIComponent(job.id)}/claim`,
-                  { method: "POST" }
-                );
-                action.textContent = "Claimed";
-                await refresh();
-              } catch (error) {
-                action.disabled = false;
-                action.textContent = "Claim job";
-                window.alert(error.message);
-              }
-            });
+          const claim = element("button", "Claim assignment", "btn orange");
+          claim.type = "button";
 
-            return [
-              details,
-              `${job.durationMinutes} minutes`,
-              money(job.reward),
-              date(job.dueAt),
-              action
-            ];
-          })
+          claim.addEventListener("click", async () => {
+            claim.disabled = true;
+            claim.textContent = "Claiming…";
+
+            try {
+              await api(
+                `/transcription/jobs/${encodeURIComponent(job.id)}/claim`,
+                { method: "POST" }
+              );
+              claim.textContent = "Claimed";
+              await refresh();
+            } catch (error) {
+              claim.disabled = false;
+              claim.textContent = "Claim assignment";
+              window.alert(error.message);
+            }
+          });
+
+          return [
+            titleCell,
+            job.requiredTranscript || "Not specified",
+            Number.isFinite(Number(job.durationMinutes))
+              ? `${Number(job.durationMinutes)} min`
+              : "Not specified",
+            money(job.reward),
+            view,
+            claim
+          ];
+        });
+
+        table(
+          content,
+          [
+            "Category",
+            "Required transcript",
+            "Audio length",
+            "Amount (USD)",
+            "View job",
+            "Claim assignment"
+          ],
+          records
         );
+
+        content.append(detailsPanel);
       } catch (error) {
-        addMessage(content, error.message, true);
+        addMessage(content, `Could not load available jobs: ${error.message}`, true);
       }
     }
 
@@ -357,25 +504,16 @@
             jobs.map(job => {
               const details = element("div");
               details.append(
-                element("strong", job.title || "Untitled assignment"),
-                element("p", job.description || "No description provided.")
+                element("strong", "Audio"),
+                element("p", "Required transcript: " + (job.requiredTranscript || "Not specified"))
               );
-
-              if (job.instructions) {
-                const instructions = element("details");
-                instructions.append(
-                  element("summary", "Transcription instructions"),
-                  element("p", job.instructions)
-                );
-                details.append(instructions);
-              }
 
               if (["awarded", "submitted"].includes(job.status)) {
                 const audio = element("audio");
                 audio.controls = true;
                 audio.preload = "none";
                 audio.crossOrigin = "use-credentials";
-                audio.setAttribute("aria-label", `Audio for ${job.title || "assignment"}`);
+                audio.setAttribute("aria-label", "Audio");
                 audio.style.display = "block";
                 audio.style.width = "min(100%, 420px)";
                 audio.style.marginTop = "10px";
@@ -391,90 +529,19 @@
 
               if (job.status === "awarded") {
                 work = element("div");
-                const form = element("form");
-                const textLabel = element("label", "Transcript text");
-                const transcript = element("textarea");
-                transcript.rows = 5;
-                transcript.maxLength = 200000;
-                transcript.placeholder = "Write the transcript here, or attach a DOCX document.";
-                transcript.style.width = "100%";
-                transcript.style.boxSizing = "border-box";
-
-                const fileLabel = element("label", "Or upload a Word document (.docx, max 10 MB)");
-                const file = element("input");
-                file.type = "file";
-                file.accept = ".docx,application/vnd.openxmlformats-officedocument.wordprocessingml.document";
-                file.style.display = "block";
-
-                const submit = element("button", "Submit transcript", "btn gold");
-                submit.type = "submit";
-                const message = element("p", "");
-                message.setAttribute("role", "status");
-
-                textLabel.append(transcript);
-                fileLabel.append(file);
-                form.append(textLabel, fileLabel, submit, message);
-                work.append(form);
-
-                form.addEventListener("submit", async event => {
-                  event.preventDefault();
-
-                  const textValue = transcript.value.trim();
-                  const documentFile = file.files && file.files[0];
-
-                  if (Boolean(textValue) === Boolean(documentFile)) {
-                    message.textContent =
-                      "Provide transcript text or one DOCX file, not both or neither.";
-                    return;
-                  }
-
-                  if (textValue.length > 200000) {
-                    message.textContent = "Transcript text cannot exceed 200,000 characters.";
-                    return;
-                  }
-
-                  if (documentFile && !/\.docx$/i.test(documentFile.name)) {
-                    message.textContent = "Choose a .docx Word document.";
-                    return;
-                  }
-
-                  if (documentFile && documentFile.size > 10 * 1024 * 1024) {
-                    message.textContent = "The DOCX document must be 10 MB or smaller.";
-                    return;
-                  }
-
-                  submit.disabled = true;
-                  message.textContent = "Submitting securely…";
-
-                  try {
-                    let options;
-
-                    if (documentFile) {
-                      const data = new FormData();
-                      data.append("document", documentFile);
-                      options = { method: "POST", body: data };
-                    } else {
-                      options = {
-                        method: "POST",
-                        body: JSON.stringify({ transcriptText: textValue })
-                      };
-                    }
-
-                    const result = await api(
-                      `/transcription/jobs/${encodeURIComponent(job.id)}/submissions`,
-                      options
-                    );
-
-                    const successMessage =
-                      result.message || "Submission received.";
-                    await refresh();
-                    addMessage(submissionsContent, successMessage);
-                  } catch (error) {
-                    message.textContent = error.message;
-                  } finally {
-                    submit.disabled = false;
-                  }
-                });
+                const portalLink = element(
+                  "a",
+                  "Open submission workspace"
+                );
+                portalLink.href =
+                  "submission?job=" +
+                  encodeURIComponent(job.id);
+                portalLink.className = "btn";
+                portalLink.setAttribute(
+                  "aria-label",
+                  "Open Audio submission workspace"
+                );
+                work.append(portalLink);
               } else if (job.status === "submitted") {
                 work = element("span", "Submitted for review");
               } else if (job.status === "completed") {
@@ -495,9 +562,9 @@
 
         submissionsContent.replaceChildren();
         table(submissionsContent,
-          ["Job ID", "Status", "Reward (USD)", "Review note", "Submitted"],
+          ["Audio", "Status", "Reward (USD)", "Review note", "Submitted"],
           submissions.map(item => [
-            item.jobId,
+            "Audio",
             item.status,
             money(item.reward),
             item.reviewNote || "No review note",
@@ -622,12 +689,12 @@
 
         transactionsContent.replaceChildren();
         table(transactionsContent,
-          ["Type", "Amount (USD)", "Status", "Reference", "Date"],
+          ["Type", "Amount (USD)", "Status", "Date"],
           (transactionResult.transactions || []).map(item => [
-            item.type,
+            String(item.reference || "").toUpperCase().startsWith("TRANSCRIPTION-EARNING-")
+              ? "TRANSCRIPTION EARNING" : item.type,
             money(item.amount),
             item.status,
-            item.reference || "—",
             date(item.createdAt)
           ])
         );
@@ -723,12 +790,12 @@
 
       transactionContent.replaceChildren();
       table(transactionContent,
-        ["Type", "Amount (USD)", "Status", "Reference", "Date"],
+        ["Type", "Amount (USD)", "Status", "Date"],
         ledger.map(item => [
-          item.type,
+          String(item.reference || "").toUpperCase().startsWith("TRANSCRIPTION-EARNING-")
+            ? "TRANSCRIPTION EARNING" : item.type,
           money(item.amount),
           item.status,
-          item.reference || "—",
           date(item.createdAt)
         ])
       );
@@ -738,15 +805,71 @@
     }
   }
 
-  const page = location.pathname.split("/").pop();
+  const page = location.pathname.replace(/\/+$/, "").split("/").pop();
+  async function enforcePurchaseMinutesAccess() {
+    const purchaseLinks = Array.from(
+      document.querySelectorAll('a[href$="/purchase-minutes"]')
+    );
+    const purchasePage = page === "purchase-minutes";
+    const purchaseMain = purchasePage
+      ? document.querySelector("main")
+      : null;
 
-  if ($("#retryDashboard")) {
-    $("#retryDashboard").addEventListener("click", loadDashboard);
-    loadDashboard();
+    // Hide links immediately while membership status is checked.
+    purchaseLinks.forEach(link => {
+      link.style.display = "none";
+    });
+
+    if (purchaseMain) {
+      purchaseMain.style.display = "none";
+    }
+
+    try {
+      const result = await api("/membership");
+      const allowed =
+        result &&
+        result.success === true &&
+        Array.isArray(result.allowedServices) &&
+        result.allowedServices.includes("transcription");
+
+      if (!allowed) {
+        if (purchasePage) {
+          location.replace("/dashboard/services/transcription");
+        }
+        return;
+      }
+
+      purchaseLinks.forEach(link => {
+        link.style.display = "";
+      });
+
+      if (purchaseMain) {
+        purchaseMain.style.display = "";
+      }
+    } catch (error) {
+      // Fail closed if membership cannot be verified.
+      if (purchasePage) {
+        location.replace("/dashboard/services/transcription");
+      }
+    }
   }
 
-  if (page === "available-jobs.html") loadAvailableJobs();
-  if (page === "my-jobs.html") loadMyJobs();
-  if (page === "wallet.html") loadWalletPage();
-  if (page === "payouts.html") loadPayoutsPage();
+
+  enforcePurchaseMinutesAccess();
+
+  const retryDashboard = $("#retryDashboard");
+
+  if (retryDashboard) {
+    retryDashboard.addEventListener("click", loadDashboard);
+  }
+
+  if (page === "transcription" || page === "index.html" || page === "") {
+    loadDashboard();
+    loadDashboardJobsPreview();
+  }
+
+  if (page === "available-jobs") loadAvailableJobs();
+  if (page === "my-jobs") loadMyJobs();
+  if (page === "wallet") loadWalletPage();
+  if (page === "payouts") loadPayoutsPage();
 })();

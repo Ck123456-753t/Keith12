@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <base href="/dashboard/services/note-taking/user/">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#09111e">
+  <title>Tutorials | PrimeTask Notes</title>
+  <link rel="stylesheet" href="assets/notes-menu.css">
+  <style>
+    *{box-sizing:border-box}
+    body{margin:0;background:#f4f7fb;color:#17243a;font-family:Arial,sans-serif}
+    header{background:#0b1728;color:white;padding:18px max(18px,calc((100% - 1100px)/2));display:flex;justify-content:space-between;align-items:center;gap:15px}
+    header a{color:white;text-decoration:none;font-weight:700}
+    main{max-width:1100px;margin:35px auto;padding:0 18px}
+    h1{font-size:30px;margin-bottom:8px}
+    .intro{color:#68778d;margin-bottom:25px}
+    #message{padding:12px 15px;border-radius:9px;background:#e7edf5;margin:15px 0}
+    .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:18px}
+    .card{background:white;border:1px solid #e1e8f0;border-radius:14px;overflow:hidden;box-shadow:0 5px 18px #10213a0a}
+    video{width:100%;aspect-ratio:16/9;background:#081321;display:block}
+    .details{padding:16px}
+    .category{color:#1769c2;font-size:12px;font-weight:800;text-transform:uppercase}
+    h2{font-size:18px;margin:8px 0}
+    .description{font-size:14px;line-height:1.6;color:#637187;white-space:pre-wrap}
+    .empty{background:white;padding:25px;border-radius:12px;color:#65748a}
+    @media(max-width:600px){header{padding:15px}main{margin:25px auto}h1{font-size:25px}}
+  </style>
+</head>
+<body>
+<header>
+  <a href="dashboard-green">PrimeTask Notes</a>
+  <a href="dashboard-green">← Dashboard</a>
+</header>
+<main>
+  <h1>Learning Centre</h1>
+  <p class="intro">Watch practical tutorials and improve your Notes skills.</p>
+  <div id="message" role="status">Loading tutorials...</div>
+  <section class="grid" id="tutorials"></section>
+</main>
+<script>
+(() => {
+  const configPaths = ["/assets/js/config.js", "/frontend/assets/js/config.js"];
+
+  function loadConfig(i) {
+    if (i >= configPaths.length) return start();
+    const script = document.createElement("script");
+    script.src = configPaths[i];
+    script.onload = start;
+    script.onerror = () => {
+      script.remove();
+      loadConfig(i + 1);
+    };
+    document.head.appendChild(script);
+  }
+
+  async function start() {
+  const message = document.getElementById("message");
+  const grid = document.getElementById("tutorials");
+  const api = window.PTW_API_BASE || "/api";
+
+  function esc(value) {
+    return String(value || "").replace(/[&<>"']/g, c =>
+      ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"})[c]
+    );
+  }
+
+  try {
+    const response = await fetch(api + "/notes/tutorials", { credentials: "include" });
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.message || "Unable to load tutorials.");
+
+    if (!data.tutorials?.length) {
+      message.textContent = "No tutorials have been published yet.";
+      return;
+    }
+
+    message.textContent = `${data.tutorials.length} tutorial(s) available`;
+    grid.innerHTML = data.tutorials.map(t => `
+      <article class="card">
+        <video controls playsinline preload="metadata"
+          controlsList="nodownload" disablePictureInPicture
+          oncontextmenu="return false">
+          <source src="${esc(t.secureUrl)}" type="video/${esc(t.format)}">
+          Your browser does not support video playback.
+        </video>
+        <div class="details">
+          <div class="category">${esc(t.category)}</div>
+          <h2>${esc(t.title)}</h2>
+          <p class="description">${esc(t.description)}</p>
+        </div>
+      </article>
+    `).join("");
+  } catch (error) {
+    message.textContent = error.message;
+  }
+  }
+
+  loadConfig(0);
+})();
+</script>
+</body>
+</html>

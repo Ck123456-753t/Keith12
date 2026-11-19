@@ -29,7 +29,7 @@ async function verifyAndCreditAcademicBidPurchase({ purchaseId, checkoutRequestI
       }
       if (!current.hasUnresolvedPayment || !["pending", "verification_required"].includes(current.paymentStatus)) throw new Error("PURCHASE_NOT_ELIGIBLE");
       await MpesaReceiptClaim.create([{ receipt, purpose: "academic_bid_purchase", referenceId: String(current._id), amountKes, claimedBy: current.userId, evidenceSource: "daraja_provider_confirmation", evidenceReference: checkoutRequestId }], { session });
-      const wallet = await Wallet.findOneAndUpdate({ userId: current.userId }, { $setOnInsert: { userId: current.userId }, $inc: { balanceBids: current.bids, totalPurchasedBids: current.bids } }, { session, new: true, upsert: true, setDefaultsOnInsert: true, runValidators: true });
+      const wallet = await Wallet.findOneAndUpdate({ userId: current.userId }, { $setOnInsert: { userId: current.userId }, $inc: { balanceBids: current.bids, totalPurchasedBids: current.bids } }, { session, returnDocument: 'after', upsert: true, setDefaultsOnInsert: true, runValidators: true });
       await Transaction.create([{ userId: current.userId, walletId: wallet._id, type: "BID_PURCHASE", bids: current.bids, previousBalance: wallet.balanceBids - current.bids, newBalance: wallet.balanceBids, reference: `AW-BID-PURCHASE-${current._id}`, description: `Academic Writing bid package: ${current.packageName}`, metadata: { amountKes, receipt, checkoutRequestId } }], { session });
       current.paymentStatus = "verified"; current.hasUnresolvedPayment = false; current.mpesaReceipt = receipt; current.verifiedAmountKes = amountKes; current.verifiedAt = new Date(); await current.save({ session });
     });

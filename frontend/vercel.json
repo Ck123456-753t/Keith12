@@ -1,8 +1,16 @@
 {
   "rewrites": [
     {
+      "source": "/api/:path*",
+      "destination": "https://primetask-gvfr.onrender.com/api/:path*"
+    },
+    {
+      "source": "/auth/register/:username",
+      "destination": "/auth/register"
+    },
+    {
       "source": "/register/:username",
-      "destination": "/auth/register.html"
+      "destination": "/auth/register"
     }
   ],
   "headers": [
@@ -27,5 +35,6 @@
         }
       ]
     }
-  ]
+  ],
+  "cleanUrls": true
 }

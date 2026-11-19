@@ -1,13 +1,15 @@
 <!doctype html>
 <html lang="en">
 <head>
+  
+  
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#082b66">
 <title>PrimeTask | Data Entry Field Guide</title>
 <style>
 :root{--navy:#06265c;--blue:#0b55c8;--sky:#eaf4ff;--ink:#132746;--muted:#5b6d86;--line:#d7e4f2;--paper:#fff;--wash:#f4f8fd;--orange:#ff8a18;--green:#087f5b;--shadow:0 12px 34px #082b6610}
-*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:#f1f6fc;color:var(--ink);font:15px/1.55 Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+  body{margin:0;background:#f1f6fc;color:var(--ink);font:11.25px/1.55 Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
 a{color:inherit;text-decoration:none}button,input,select,textarea{font:inherit}button{cursor:pointer}
 .topbar{height:68px;background:var(--navy);color:#fff;display:flex;align-items:center;justify-content:space-between;padding:0 clamp(16px,4vw,54px);position:sticky;top:0;z-index:10;box-shadow:0 5px 20px #031b4426}
 .brand{display:flex;align-items:center;gap:11px;font-weight:850;letter-spacing:-.3px}.brandmark{width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,#fff 0 48%,#7dc6ff 49%);display:grid;place-items:center;color:var(--navy);font-weight:1000;font-size:17px}.brand small{display:block;font-size:9px;letter-spacing:2px;color:#a9d5ff;line-height:1}
@@ -38,8 +40,20 @@ footer{margin-top:40px;background:#06265c;color:#c6ddfb;padding:24px;border-radi
 @media(max-width:1050px){.layout{grid-template-columns:200px minmax(0,1fr)}.hero{grid-template-columns:1fr}.hero-visual{min-height:200px}.steps{grid-template-columns:repeat(3,1fr)}.step:nth-child(3){border-right:0}.metrics{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:760px){.topbar{height:auto;min-height:62px;padding:12px 16px}.topnav a:not(.pill){display:none}.layout{display:block}.sidebar{position:static;height:auto;display:flex;gap:5px;overflow:auto;padding:9px 12px;border-right:0;border-bottom:1px solid var(--line)}.side-label,.side-note{display:none}.side-link{white-space:nowrap;padding:8px 10px;margin:0}.side-link .ico{display:none}main{padding:14px}.hero-copy{padding:25px 22px}.hero h1{font-size:36px}.hero-visual{min-height:165px}.grid2,.mobile-guide{grid-template-columns:1fr}.photo-card{grid-template-columns:1fr}.photo-card img{height:170px;min-height:170px}.tool-row{grid-template-columns:1fr}.steps{grid-template-columns:1fr 1fr}.step:nth-child(2n){border-right:0}.step{min-height:150px}.exercise-grid{grid-template-columns:1fr}.section-head{align-items:start;flex-direction:column}.mobile-photo{min-height:200px}.metrics{gap:8px}.metric{padding:12px}.metric strong{font-size:20px}}
 @media print{.topbar,.sidebar,.hero-actions,.sheet-actions,.small-btn,footer{display:none!important}.layout{display:block}main{padding:0}.hero{print-color-adjust:exact}.panel,.metric,.exercise{break-inside:avoid;box-shadow:none}body{background:#fff}}
+
+/* PrimeTask shared logo: preserve the original image proportions. */
+.logo img, .brand-mark img, .brandmark img,
+.brand-orb img, .hero-mark img, .mark img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  border-radius: inherit;
+}
+
 </style>
-  <link rel="icon" type="image/jpeg" href="assets/primetask.jpg">
+<link rel="icon" type="image/svg+xml" href="/assets/primetask-logo.svg">
+<style id="ptw-marketing-typography-scale">body { font-size: 11.25px; }</style>
 </head>
 <body>
 <header class="topbar">

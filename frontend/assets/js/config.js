@@ -20,7 +20,7 @@
   } else if (isLocal) {
     apiBase = "http://127.0.0.1:5001/api";
   } else {
-    apiBase = "https://primetask-mdcx.onrender.com/api";
+    apiBase = "https://primetask-gvfr.onrender.com/api";
   }
 
   apiBase = apiBase.replace(/\/+$/, "");
@@ -73,6 +73,8 @@
   window.PTW_API_BASE = apiBase;
   window.PTW_AUTH_API_REGISTER = `${apiBase}/auth/register`;
   window.PTW_AUTH_API_LOGIN = `${apiBase}/auth/login`;
+  window.PTW_AUTH_API_VERIFY_EMAIL = `${apiBase}/auth/verify-email`;
+  window.PTW_AUTH_API_RESEND_VERIFICATION = `${apiBase}/auth/resend-verification`;
   window.PTW_AUTH_API_ME = `${apiBase}/auth/me`;
   window.PTW_AUTH_API_LOGOUT = `${apiBase}/auth/logout`;
   window.PTW_REFERRAL_API_ME = `${apiBase}/referrals/me`;

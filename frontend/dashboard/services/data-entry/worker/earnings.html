@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  
+  
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#101d38">
+<title>Earnings & Transactions | PrimeTask Data Entry</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--navy:#101d38;--blue:#2878e8;--orange:#ff8b35;--ink:#17233b;--muted:#78869b;--line:#e7edf5;--page:#f4f7fc}
+*{box-sizing:border-box}
+body{margin:0;background:var(--page);color:var(--ink);font-family:"DM Sans",sans-serif}
+a{text-decoration:none;color:inherit}
+button,input,select{font:inherit}
+.app{min-height:100vh;display:grid;grid-template-columns:255px minmax(0,1fr)}
+.sidebar{background:var(--navy);color:white;padding:25px 17px;position:sticky;top:0;height:100vh;display:flex;flex-direction:column;z-index:20}
+.brand{display:flex;align-items:center;gap:12px;padding:4px 10px 30px}
+.brand-mark{width:43px;height:43px;border-radius:14px;background:linear-gradient(145deg,#3989ff,#1455bb);display:grid;place-items:center;font:800 19px Manrope}
+.brand-name{font:800 15px Manrope;display:block}.brand-sub{color:#aab9d2;font-size:10px;margin-top:3px;letter-spacing:1.3px;text-transform:uppercase;display:block}
+.nav-label{padding:13px 12px 9px;color:#8294b2;font-size:10px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase}
+.nav-list{display:grid;gap:6px}
+.nav-link{min-height:47px;padding:0 13px;border-radius:11px;display:flex;align-items:center;gap:12px;color:#bdc9dc;font-size:13px;font-weight:600}
+.nav-link:hover{background:#ffffff12;color:white}.nav-link.active{color:white;background:linear-gradient(100deg,#2878e8,#2366c7);box-shadow:0 7px 18px #1767d044}
+.nav-icon{width:21px;text-align:center;font-size:17px}
+.sidebar-bottom{margin-top:auto}.help-card{border:1px solid #ffffff1b;background:#ffffff0b;border-radius:15px;padding:15px;margin:18px 2px 0}
+.help-card strong{font-size:12px}.help-card p{color:#aab9d2;font-size:11px;line-height:1.6;margin:7px 0 12px}.help-card a{color:#ffad70;font-size:11px;font-weight:700}
+.main{min-width:0}.topbar{height:76px;padding:0 34px;background:#ffffffed;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:10;backdrop-filter:blur(12px)}
+.top-left,.top-right{display:flex;align-items:center;gap:13px}.menu-toggle{display:none;width:40px;height:40px;border:1px solid var(--line);background:white;border-radius:10px;font-size:19px}
+.breadcrumb{color:var(--muted);font-size:12px}.breadcrumb strong{color:var(--ink)}.secure{color:#718097;font-size:11px;font-weight:600}
+.avatar{width:39px;height:39px;border-radius:50%;background:#eaf2ff;color:var(--blue);display:grid;place-items:center;font-weight:800}
+.content{max-width:1450px;margin:auto;padding:30px 34px 55px}
+.hero{min-height:220px;border-radius:22px;padding:32px 35px;color:white;display:flex;align-items:center;position:relative;overflow:hidden;background:linear-gradient(90deg,#0d1d3af5 0%,#142e55df 55%,#142e5540 100%),url("https://images.unsplash.com/photo-1554224154-26032ffc0d07?auto=format&fit=crop&w=1800&q=85") center/cover;box-shadow:0 15px 35px #10264b20}
+.hero-content{position:relative;z-index:1;max-width:650px}.eyebrow{color:#ffb47f;font-size:10px;font-weight:800;letter-spacing:2px;text-transform:uppercase}
+h1{font:800 clamp(27px,3vw,37px) Manrope;margin:13px 0 9px;letter-spacing:-1px}
+.hero p{color:#d2dced;font-size:13px;line-height:1.8;margin:0;max-width:520px}
+.hero-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px}
+.btn{border:0;border-radius:9px;min-height:41px;padding:0 16px;display:inline-flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;cursor:pointer}
+.primary{background:var(--orange);color:#17233b}.secondary{border:1px solid #ffffff55;color:white;background:#ffffff10}
+.balance-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:13px;margin:22px 0}
+.balance-card{background:white;border:1px solid var(--line);border-radius:14px;padding:19px;position:relative;overflow:hidden}
+.balance-card.primary-card{background:linear-gradient(135deg,#142b50,#1e4b82);color:white;border:0}
+.balance-card small{font-size:10px;color:var(--muted);font-weight:600}.primary-card small{color:#c2d3ec}
+.balance-card strong{display:block;font:800 25px Manrope;margin-top:9px;letter-spacing:-.6px}
+.balance-card p{font-size:10px;color:var(--muted);margin:7px 0 0}.primary-card p{color:#c2d3ec}
+.section-head{display:flex;justify-content:space-between;align-items:end;gap:15px;margin:29px 0 14px}
+.section-head h2{font:800 17px Manrope;margin:0}.section-head p{font-size:11px;color:var(--muted);margin:5px 0 0}
+.filters{display:flex;gap:9px;flex-wrap:wrap}
+.field{height:40px;border:1px solid var(--line);border-radius:9px;padding:0 12px;color:var(--ink);background:white;outline:none;font-size:11px}
+.field:focus{border-color:var(--blue);box-shadow:0 0 0 3px #2878e817}
+.search{flex:1;min-width:190px}
+.transaction-wrap{background:white;border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.transaction-table{width:100%;border-collapse:collapse;text-align:left}
+.transaction-table th{padding:14px 17px;background:#f8fafd;color:#8290a4;font-size:9px;letter-spacing:.7px;text-transform:uppercase;font-weight:800}
+.transaction-table td{padding:16px 17px;border-top:1px solid var(--line);font-size:11px;vertical-align:middle}
+.transaction-table td:first-child{font-weight:700}
+.muted{color:var(--muted);font-size:10px}
+.amount{font-weight:800;color:#21845b;white-space:nowrap}
+.type-label{display:inline-flex;padding:6px 8px;border-radius:6px;background:#edf4ff;color:#386eb5;font-size:9px;font-weight:800}
+.status{display:inline-flex;padding:6px 8px;border-radius:6px;font-size:9px;font-weight:800}
+.status.pending{background:#fff5e8;color:#b96c20}.status.completed{background:#eaf7f1;color:#25845d}.status.failed{background:#fff0ef;color:#c14e4b}
+.empty{text-align:center;padding:45px 20px;color:var(--muted);font-size:11px}
+.empty strong{display:block;color:var(--ink);font:800 13px Manrope;margin-bottom:7px}
+.info-note{margin-top:17px;background:#edf4ff;border:1px solid #dce9fc;border-radius:11px;padding:14px 16px;color:#536d91;font-size:10px;line-height:1.7}
+.footer{text-align:center;color:#99a4b4;font-size:10px;padding:27px 0 0}
+@media(max-width:1050px){.content{padding:25px 23px 45px}.topbar{padding:0 23px}}
+@media(max-width:760px){
+.app{display:block}.sidebar{position:fixed;left:0;top:0;width:270px;transform:translateX(-105%);transition:transform .25s;box-shadow:15px 0 40px #07152b33}
+.sidebar.open{transform:translateX(0)}.menu-toggle{display:grid;place-items:center}.topbar{height:65px;padding:0 15px}.secure{display:none}
+.content{padding:18px 14px 35px}.hero{min-height:225px;padding:25px 21px;background-position:60% center}
+.balance-grid{grid-template-columns:1fr;gap:9px}.balance-card{padding:15px}.balance-card strong{font-size:22px}
+.section-head{align-items:flex-start;flex-direction:column}.filters{width:100%}.field{flex:1;min-width:130px}
+.transaction-wrap{overflow-x:auto}.transaction-table{min-width:680px}
+}
+</style>
+<link rel="icon" type="image/svg+xml" href="/assets/primetask-logo.svg">
+</head>
+<body>
+<div class="app">
+<aside class="sidebar" id="sidebar">
+<a class="brand" href="index"><span class="brand-mark">PT</span><span><span class="brand-name">PrimeTask</span><span class="brand-sub">Data Entry Workspace</span></span></a>
+<div class="nav-label">Workspace</div>
+<nav class="nav-list" aria-label="Data Entry navigation">
+<a class="nav-link" href="index"><span class="nav-icon">⌂</span>Dashboard</a>
+<a class="nav-link" href="jobs"><span class="nav-icon">▤</span>Available Orders</a>
+<a class="nav-link" href="my-jobs"><span class="nav-icon">◷</span>My Orders</a>
+<a class="nav-link" href="bids"><span class="nav-icon">◇</span>My Bids</a>
+<a class="nav-link" href="submissions"><span class="nav-icon">✓</span>Submissions</a>
+</nav>
+<div class="nav-label">Finance</div>
+<nav class="nav-list">
+<a class="nav-link" href="buy-bids"><span class="nav-icon">＋</span>Buy Bids</a>
+<a class="nav-link active" href="earnings"><span class="nav-icon">$</span>Earnings & Transactions</a>
+<a class="nav-link" href="withdrawals"><span class="nav-icon">⇧</span>Withdrawals</a>
+</nav>
+<div class="nav-label">Account</div>
+<nav class="nav-list">
+<a class="nav-link" href="profile"><span class="nav-icon">◎</span>My Profile</a>
+<a class="nav-link" href="../../../../data-entry"><span class="nav-icon">▧</span>Learning Guide</a>
+</nav>
+<div class="sidebar-bottom"><div class="help-card"><strong>Payment information</strong><p>Only approved Data Entry work is added to your earnings balance.</p><a href="withdrawals">View withdrawals →</a></div></div>
+</aside>
+
+<main class="main">
+<header class="topbar">
+<div class="top-left"><button class="menu-toggle" id="menuToggle" type="button" aria-label="Open navigation" aria-expanded="false">☰</button><div class="breadcrumb">Data Entry Workspace / <strong>Earnings & Transactions</strong></div></div>
+<div class="top-right"><span class="secure">PrimeTask secure workspace</span><div class="avatar" id="userAvatar">PT</div></div>
+</header>
+
+<div class="content">
+<section class="hero">
+<div class="hero-content">
+<div class="eyebrow">Data Entry finances</div>
+<h1>Your earnings, clearly tracked.</h1>
+<p>See what you have earned from approved orders, what is still pending review and the history of transactions in this service.</p>
+<div class="hero-actions">
+<a class="btn primary" href="withdrawals">Manage withdrawals →</a>
+<a class="btn secondary" href="submissions">Review submissions</a>
+</div>
+</div>
+</section>
+
+<section class="balance-grid" aria-label="Earnings summary">
+<div class="balance-card primary-card">
+<small>Available Data Entry earnings</small>
+<strong id="availableBalance">--</strong>
+<p>Approved earnings available for withdrawal</p>
+</div>
+<div class="balance-card">
+<small>Pending earnings</small>
+<strong id="pendingBalance">--</strong>
+<p>Work awaiting admin review or approval</p>
+</div>
+<div class="balance-card">
+<small>Total paid out</small>
+<strong id="paidBalance">--</strong>
+<p>Completed Data Entry withdrawals</p>
+</div>
+</section>
+
+<div class="section-head">
+<div><h2>Transaction history</h2><p>Data Entry earnings, bid purchases and withdrawal records.</p></div>
+<div class="filters">
+<input class="field search" id="searchTransactions" type="search" placeholder="Search transaction">
+<select class="field" id="typeFilter" aria-label="Filter by transaction type">
+<option value="all">All transactions</option>
+<option value="earning">Earnings</option>
+<option value="bid_purchase">Bid purchases</option>
+<option value="withdrawal">Withdrawals</option>
+</select>
+<select class="field" id="statusFilter" aria-label="Filter by transaction status">
+<option value="all">All statuses</option>
+<option value="pending">Pending</option>
+<option value="completed">Completed</option>
+<option value="failed">Failed</option>
+</select>
+</div>
+</div>
+
+<div class="transaction-wrap">
+<table class="transaction-table">
+<thead>
+<tr>
+<th>Description</th>
+<th>Type</th>
+<th>Date</th>
+<th>Amount (USD)</th>
+<th>Status</th>
+</tr>
+</thead>
+<tbody id="transactionBody">
+<tr><td colspan="5"><div class="empty"><strong>No transactions yet</strong>Your Data Entry financial activity will appear here when real transactions are recorded.</div></td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="info-note">
+<strong>Separate service ledger:</strong> This balance belongs exclusively to Data Entry. It is not combined with your main PrimeTask wallet, Notes earnings or Transcription wallet. Earnings are recorded after the applicable work review and approval process.
+</div>
+<footer class="footer">PrimeTask Workspace · Data Entry Earnings</footer>
+</div>
+</main>
+</div>
+
+<script src="../../../../assets/js/config.js"></script>
+<script>
+"use strict";
+
+const sidebar=document.getElementById("sidebar");
+const menuToggle=document.getElementById("menuToggle");
+
+menuToggle.addEventListener("click",()=>{
+  const open=sidebar.classList.toggle("open");
+  menuToggle.setAttribute("aria-expanded",String(open));
+  menuToggle.textContent=open?"×":"☰";
+});
+
+document.addEventListener("click",event=>{
+  if(window.innerWidth<=760&&sidebar.classList.contains("open")&&
+    !sidebar.contains(event.target)&&!menuToggle.contains(event.target)){
+    sidebar.classList.remove("open");
+    menuToggle.setAttribute("aria-expanded","false");
+    menuToggle.textContent="☰";
+  }
+});
+
+async function loadWorkerIdentity(){
+  if(typeof window.PTW_AUTH_API_ME!=="string")return;
+  try{
+    const response=await fetch(window.PTW_AUTH_API_ME,{
+      credentials:"include",
+      headers:{Accept:"application/json"}
+    });
+    if(!response.ok)return;
+    const result=await response.json();
+    const user=result.user||result.data?.user||result;
+    if(user.role!=="user")return;
+    const first=String(user.firstName||"").trim();
+    const last=String(user.lastName||"").trim();
+    document.getElementById("userAvatar").textContent=
+      (first.charAt(0)||"P").toUpperCase()+(last.charAt(0)||"").toUpperCase();
+  }catch(error){
+    console.error("Data Entry account check failed:",error);
+  }
+}
+loadWorkerIdentity();
+</script>
+</body>
+</html>

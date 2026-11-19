@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  
+  
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#061225">
+  <title>My Testimonial | PrimeTask Workspace</title>
+  <style>
+    :root {
+      --navy:#061225;
+      --panel:#0d2039;
+      --panel2:#102743;
+      --blue:#367cff;
+      --ink:#e8eef8;
+      --muted:#9aacc5;
+      --line:rgba(148,163,184,.19);
+      --green:#34d399;
+      --orange:#fb923c;
+      --red:#f87171;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;background:var(--navy);color:var(--ink);font-family:Inter,system-ui,-apple-system,sans-serif}
+    button,textarea{font:inherit}
+    .page{width:min(920px,calc(100% - 30px));margin:45px auto 70px}
+    .back{display:inline-flex;color:#a9c7f7;text-decoration:none;font-size:13px;margin-bottom:22px}
+    .eyebrow{color:#79aaff;font-size:11px;font-weight:800;letter-spacing:2px;text-transform:uppercase}
+    h1{font-size:clamp(29px,5vw,43px);letter-spacing:-1.5px;margin:8px 0}
+    .intro{color:var(--muted);line-height:1.7;font-size:14px;max-width:650px}
+    .layout{display:grid;grid-template-columns:300px minmax(0,1fr);gap:18px;margin-top:28px}
+    .panel{background:linear-gradient(145deg,var(--panel),#091a30);border:1px solid var(--line);border-radius:18px;padding:22px;min-width:0}
+    .identity{text-align:center}
+    .avatar{width:82px;height:82px;border-radius:50%;object-fit:cover;background:#193657;border:2px solid rgba(121,170,255,.35);margin:5px auto 14px}
+    .avatar-fallback{display:grid;place-items:center;font-size:28px;font-weight:800;color:#b9d3ff}
+    .identity h2{font-size:17px;margin:0 0 6px}
+    .identity p{font-size:12px;color:var(--muted);margin:0}
+    .plan{display:inline-flex;margin-top:15px;padding:7px 11px;border:1px solid rgba(121,170,255,.28);border-radius:30px;color:#b9d3ff;background:rgba(54,124,255,.1);font-size:11px;font-weight:750}
+    .identity-note{font-size:11px;color:#8196b3;line-height:1.6;margin-top:18px}
+    .form-panel h2{font-size:18px;margin:0 0 7px}
+    .form-panel>p{font-size:12px;color:var(--muted);line-height:1.6;margin:0 0 20px}
+    label{display:block;font-size:12px;font-weight:750;margin-bottom:9px}
+    textarea{width:100%;min-height:210px;resize:vertical;background:#07172b;color:var(--ink);border:1px solid #29415f;border-radius:12px;padding:15px;outline:none;line-height:1.7;font-size:14px}
+    textarea:focus{border-color:#5793ff;box-shadow:0 0 0 3px rgba(54,124,255,.13)}
+    textarea:disabled{opacity:.7}
+    .counter{display:flex;justify-content:space-between;gap:10px;color:#8196b3;font-size:11px;margin-top:8px}
+    .hint{font-size:11px;color:#8196b3;line-height:1.6;margin:16px 0}
+    .submit{border:0;border-radius:10px;background:var(--blue);color:white;padding:13px 18px;font-weight:800;font-size:13px;cursor:pointer}
+    .submit:disabled{opacity:.55;cursor:wait}
+    .notice{display:none;margin:0 0 17px;padding:12px 14px;border-radius:10px;font-size:12px;line-height:1.6}
+    .notice.show{display:block}
+    .notice.ok{background:rgba(16,185,129,.1);border:1px solid rgba(52,211,153,.25);color:#a7f3d0}
+    .notice.bad{background:rgba(248,113,113,.1);border:1px solid rgba(248,113,113,.25);color:#fecaca}
+    .notice.info{background:rgba(54,124,255,.1);border:1px solid rgba(121,170,255,.25);color:#c5dcff}
+    .status{display:inline-block;margin-bottom:15px;padding:6px 10px;border-radius:30px;font-size:10px;font-weight:850;text-transform:uppercase;letter-spacing:.7px;background:#26364c;color:#dbeafe}
+    .status.approved{background:rgba(16,185,129,.13);color:#86efac}
+    .status.rejected{background:rgba(248,113,113,.13);color:#fca5a5}
+    @media(max-width:700px){.page{margin-top:25px}.layout{grid-template-columns:1fr}.identity{display:grid;grid-template-columns:65px 1fr;column-gap:14px;text-align:left;align-items:center}.avatar{width:62px;height:62px;grid-row:span 2;margin:0}.identity h2{align-self:end}.identity p{align-self:start}.plan{grid-column:1/-1;justify-self:start}.identity-note{grid-column:1/-1}}
+  </style>
+<link rel="icon" type="image/svg+xml" href="/assets/primetask-logo.svg">
+</head>
+<body>
+  <main class="page">
+    <a class="back" href="/dashboard">← Back to dashboard</a>
+    <div class="eyebrow">Your PrimeTask story</div>
+    <h1>My Testimonial</h1>
+    <p class="intro">Share your experience with PrimeTask Workspace. Your testimonial will only appear publicly after it has been reviewed and approved by the administration team.</p>
+
+    <div class="layout">
+      <aside class="panel identity">
+        <img class="avatar" id="memberPhoto" alt="Your profile photo" hidden>
+        <div class="avatar avatar-fallback" id="avatarFallback">P</div>
+        <h2 id="memberName">Loading your profile…</h2>
+        <p id="memberCaption">Verified account information</p>
+        <span class="plan" id="membershipName">Checking membership…</span>
+        <div class="identity-note">Your name, profile photo and membership label are retrieved from your PrimeTask account. They cannot be edited from this form.</div>
+      </aside>
+
+      <section class="panel form-panel">
+        <div id="testimonialStatus"></div>
+        <h2>Tell us about your experience</h2>
+        <p>Be genuine and specific. Your words may help other people understand what working with PrimeTask is like.</p>
+        <div id="notice" class="notice" role="status" aria-live="polite"></div>
+        <form id="testimonialForm">
+          <label for="message">Your testimonial</label>
+          <textarea id="message" minlength="20" maxlength="1200" required placeholder="Write about your experience with PrimeTask Workspace…"></textarea>
+          <div class="counter"><span>Minimum 20 characters · Maximum 1,200</span><span id="count">0 / 1,200</span></div>
+          <p class="hint">Submitting an edited testimonial sends it back for review. Previously approved text will not remain public while the updated version is pending.</p>
+          <button class="submit" id="submitButton" type="submit" disabled>Submit testimonial</button>
+        </form>
+      </section>
+    </div>
+  </main>
+
+  <script src="../assets/js/config.js"></script>
+  <script>
+  "use strict";
+  (() => {
+    const $ = id => document.getElementById(id);
+    const form = $("testimonialForm");
+    const message = $("message");
+    const submit = $("submitButton");
+    let existing = null;
+
+    function apiRoot() {
+      if (!window.PTW_API_BASE) throw new Error("The API address is not configured.");
+      return window.PTW_API_BASE.replace(/\/+$/, "");
+    }
+
+    async function request(path, options = {}) {
+      const response = await fetch(apiRoot() + path, {
+        credentials: "include",
+        ...options,
+        headers: {
+          Accept: "application/json",
+          ...(options.body ? {"Content-Type":"application/json"} : {}),
+          ...(options.headers || {})
+        }
+      });
+      if (response.status === 401) {
+        window.location.href = "/auth/login";
+        throw new Error("Your session has expired. Sign in again.");
+      }
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok || data.success === false) {
+        throw new Error(data.message || "The request could not be completed.");
+      }
+      return data;
+    }
+
+    function notice(text, type = "info") {
+      $("notice").textContent = text;
+      $("notice").className = "notice show " + type;
+    }
+
+    function render(data) {
+      const member = data.member || data.data?.member || {};
+      existing = data.testimonial || data.data?.testimonial || null;
+
+      $("memberName").textContent = member.fullName || "PrimeTask Member";
+      $("memberCaption").textContent = "Your verified account";
+      $("membershipName").textContent = member.membershipName || "Community Member";
+
+      if (member.profilePictureUrl) {
+        $("memberPhoto").src = member.profilePictureUrl;
+        $("memberPhoto").hidden = false;
+        $("avatarFallback").hidden = true;
+        $("memberPhoto").onerror = () => {
+          $("memberPhoto").hidden = true;
+          $("avatarFallback").hidden = false;
+        };
+      }
+
+      if (existing) {
+        message.value = existing.message || "";
+        const status = existing.status || "pending";
+        $("testimonialStatus").innerHTML = "";
+        const badge = document.createElement("span");
+        badge.className = "status " + status;
+        badge.textContent = status === "pending" ? "Awaiting review" : status;
+        $("testimonialStatus").appendChild(badge);
+        if (status === "pending") notice("Your testimonial is awaiting admin review.", "info");
+        else if (status === "approved") notice("Your testimonial is approved and may appear on the landing page. Editing it will send it for review again.", "ok");
+        else notice("Your previous submission was not approved. You can revise it and submit again.", "bad");
+        submit.textContent = "Update testimonial";
+      }
+      updateCount();
+      submit.disabled = false;
+    }
+
+    function updateCount() {
+      $("count").textContent = message.value.length + " / 1,200";
+    }
+
+    message.addEventListener("input", updateCount);
+
+    form.addEventListener("submit", async event => {
+      event.preventDefault();
+      const text = message.value.trim();
+      if (text.length < 20 || text.length > 1200) {
+        notice("Your testimonial must contain between 20 and 1,200 characters.", "bad");
+        return;
+      }
+      submit.disabled = true;
+      submit.textContent = "Submitting…";
+      try {
+        const result = await request("/testimonials", {
+          method: "POST",
+          body: JSON.stringify({message:text})
+        });
+        existing = result.testimonial || result.data?.testimonial || {message:text,status:"pending"};
+        $("testimonialStatus").innerHTML = "";
+        const badge = document.createElement("span");
+        badge.className = "status";
+        badge.textContent = "Awaiting review";
+        $("testimonialStatus").appendChild(badge);
+        notice(result.message || "Your testimonial has been submitted for review.", "ok");
+        submit.textContent = "Update testimonial";
+      } catch (error) {
+        notice(error.message || "Submission failed.", "bad");
+        submit.textContent = existing ? "Update testimonial" : "Submit testimonial";
+      } finally {
+        submit.disabled = false;
+      }
+    });
+
+    request("/testimonials/mine")
+      .then(render)
+      .catch(error => {
+        notice(error.message || "Could not load your account details.", "bad");
+        $("memberName").textContent = "Profile unavailable";
+        $("membershipName").textContent = "Unavailable";
+      });
+  })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,564 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#050b18">
+<title>Available Jobs | PrimeTask Transcription</title>
+<style>
+:root{
+  --bg:#050b18;--panel:#0b1528;--panel2:#101e34;
+  --line:#20304a;--text:#f5f7fc;--muted:#9eacc2;
+  --orange:#ff8a24;--orange2:#ffb16b;
+  --green:#69dfad;--red:#ff8181
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);
+font:14px/1.5 Arial,Helvetica,sans-serif}
+a{color:inherit;text-decoration:none}
+button{font:inherit}
+.topline{height:4px;background:var(--orange)}
+header{position:sticky;top:0;z-index:10;background:#070e1d;
+border-bottom:1px solid var(--line)}
+.nav{max-width:1250px;margin:auto;padding:15px 20px;
+display:flex;align-items:center;justify-content:space-between;gap:15px}
+.brand{font-size:17px;font-weight:900;letter-spacing:-.4px}
+.brand small{display:block;color:var(--orange);font-size:9px;
+letter-spacing:2px;margin-top:3px}
+.menu-button{background:transparent;color:white;border:1px solid var(--line);
+border-radius:9px;padding:8px 11px;font-size:19px}
+.links{display:none;position:absolute;top:68px;left:12px;right:12px;
+padding:10px;background:#0b1528;border:1px solid var(--line);border-radius:12px}
+.links.open{display:grid}
+.links a{padding:10px 12px;border-radius:7px;color:var(--muted)}
+.links a.active,.links a:hover{background:var(--panel2);color:white}
+.links a.active{border-left:3px solid var(--orange)}
+main{max-width:1250px;margin:auto;padding:30px 18px 60px}
+.eyebrow{font-size:10px;font-weight:900;letter-spacing:2px;
+text-transform:uppercase;color:var(--orange)}
+.hero{display:flex;align-items:flex-end;justify-content:space-between;
+gap:20px;flex-wrap:wrap;margin-bottom:23px}
+h1{font-size:clamp(28px,5vw,42px);letter-spacing:-1.4px;
+line-height:1.1;margin:9px 0 12px}
+.hero p{color:var(--muted);max-width:680px;line-height:1.7;margin:0}
+.refresh{border:1px solid var(--line);background:var(--panel);
+color:white;border-radius:9px;padding:11px 15px;cursor:pointer}
+.refresh:hover{border-color:var(--orange)}
+.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));
+gap:12px;margin:24px 0}
+.stat{padding:17px;background:var(--panel);border:1px solid var(--line);
+border-radius:13px;min-width:0}
+.stat-label{font-size:10px;letter-spacing:1px;color:var(--muted);
+text-transform:uppercase}
+.stat-value{font-size:25px;font-weight:900;margin-top:6px;
+overflow-wrap:anywhere}
+.stat-value.accent{color:var(--orange2)}
+.board{background:var(--panel);border:1px solid var(--line);
+border-radius:15px;overflow:hidden}
+.board-head{display:flex;align-items:center;justify-content:space-between;
+gap:12px;flex-wrap:wrap;padding:18px 20px;border-bottom:1px solid var(--line)}
+.board-head h2{font-size:16px;margin:0}
+.live-label{font-size:10px;color:var(--green);letter-spacing:1px;
+font-weight:800;display:flex;align-items:center;gap:7px}
+.live-label:before{content:"";width:7px;height:7px;border-radius:50%;
+background:var(--green);box-shadow:0 0 10px #69dfad66}
+.table-scroll{overflow-x:auto}
+table{width:100%;border-collapse:collapse;min-width:990px}
+thead{background:#0e1a2e}
+th{text-align:left;padding:14px 13px;color:var(--muted);
+font-size:10px;text-transform:uppercase;letter-spacing:.8px;
+white-space:nowrap}
+td{padding:16px 13px;border-top:1px solid var(--line);
+vertical-align:middle;font-size:12px}
+tbody tr:hover{background:#ffffff04}
+.job-title{font-size:13px;font-weight:800;max-width:200px}
+.job-sub{display:block;color:var(--muted);font-size:11px;
+margin-top:5px;max-width:210px;line-height:1.5}
+.format{display:inline-block;border:1px solid #34445d;
+background:#111e31;padding:6px 8px;border-radius:7px;
+font-size:11px;color:#dbe5f5;max-width:170px}
+.duration{font-weight:800;white-space:nowrap}
+.amount{color:var(--orange2);font-size:15px;font-weight:900;
+white-space:nowrap}
+.amount small{display:block;color:var(--muted);font-size:10px;
+font-weight:500;margin-top:3px}
+.btn{border:1px solid var(--line);background:#14233b;color:white;
+border-radius:8px;padding:10px 12px;font-size:11px;
+font-weight:800;cursor:pointer;white-space:nowrap}
+.btn:hover{border-color:var(--orange)}
+.btn.primary{background:var(--orange);border-color:var(--orange);
+color:#211205}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.view-cell{min-width:145px}
+.wave-mini{height:25px;display:flex;align-items:center;gap:2px;
+margin-top:7px;overflow:hidden;max-width:130px}
+.wave-mini span{flex:1;min-width:2px;border-radius:3px;
+height:var(--h);background:var(--orange);opacity:.72}
+.wave-mini span:nth-child(3n){background:#ffd1a3}
+.claim-cell{min-width:135px}
+.table-foot{padding:14px 18px;color:var(--muted);font-size:11px;
+border-top:1px solid var(--line)}
+.message{padding:28px 18px;text-align:center;color:var(--muted);
+line-height:1.7}
+.message strong{display:block;color:white;font-size:15px;margin-bottom:5px}
+.message.error{color:#ffc3c3}
+.backdrop{display:none;position:fixed;inset:0;z-index:30;
+background:#000c;padding:16px;overflow-y:auto}
+.backdrop.show{display:block}
+.modal{max-width:760px;margin:3vh auto 30px;background:#081326;
+border:1px solid #263751;border-radius:16px;overflow:hidden;
+box-shadow:0 25px 90px #0009}
+.modal-head{padding:20px;display:flex;justify-content:space-between;
+align-items:flex-start;gap:15px;border-bottom:1px solid var(--line)}
+.modal-head h2{font-size:22px;line-height:1.25;margin:8px 0}
+.modal-head p{margin:0;color:var(--muted);line-height:1.6}
+.close{font-size:20px;padding:5px 11px}
+.modal-body{padding:20px}
+.info-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));
+gap:10px;margin-bottom:20px}
+.info{background:var(--panel);border:1px solid var(--line);
+border-radius:10px;padding:12px;min-width:0}
+.info small{display:block;color:var(--muted);font-size:10px;
+text-transform:uppercase;letter-spacing:.6px}
+.info strong{display:block;margin-top:5px;overflow-wrap:anywhere}
+.section-title{font-size:12px;letter-spacing:1px;text-transform:uppercase;
+margin:22px 0 10px;color:var(--orange2)}
+.instructions{white-space:pre-wrap;overflow-wrap:anywhere;color:#dce5f4;
+line-height:1.8;font-size:13px}
+.audio-box{border:1px solid var(--line);background:#050d1b;
+padding:16px;border-radius:12px}
+.audio-top{display:flex;justify-content:space-between;align-items:center;
+gap:10px;flex-wrap:wrap}
+.audio-top strong{font-size:12px}
+.audio-top small{color:var(--muted);font-size:10px}
+.claim-wide{width:100%;margin:14px 0 4px;padding:13px;font-size:12px}
+.wave-large{height:100px;display:flex;align-items:center;justify-content:center;
+gap:3px;overflow:hidden}
+.wave-large span{flex:1;min-width:2px;max-width:8px;height:var(--h);
+border-radius:4px;background:linear-gradient(180deg,#ffd1a3,var(--orange));
+opacity:.8;transform-origin:center}
+.wave-large.active span{animation:pulse .65s ease-in-out infinite alternate;
+animation-delay:calc(var(--i)*-31ms)}
+@keyframes pulse{from{transform:scaleY(.4);opacity:.45}
+to{transform:scaleY(1);opacity:1}}
+.audio-note{color:var(--muted);font-size:11px;line-height:1.6;margin:8px 0 0}
+.modal-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px}
+.notice{display:none;padding:12px;border:1px solid #285e49;
+background:#0b241d;color:#a9f2cf;border-radius:9px;margin-top:14px;
+font-size:12px;line-height:1.6}
+.notice.show{display:block}
+.notice.error{border-color:#713838;background:#2a1218;color:#ffc3c3}
+@media(min-width:850px){
+.menu-button{display:none}
+.links{display:flex!important;position:static;padding:0;border:0;
+background:transparent;gap:3px}
+.links a{padding:10px;font-size:12px}
+}
+@media(max-width:600px){
+main{padding:24px 11px 40px}
+.nav{padding:13px}
+.stats{gap:8px}
+.stat{padding:12px 10px}
+.stat-value{font-size:21px}
+.hero{align-items:flex-start}
+.info-grid{grid-template-columns:1fr 1fr}
+.modal-body,.modal-head{padding:15px}
+.wave-large{height:75px}
+}
+</style>
+</head>
+<body>
+<div class="topline"></div>
+<header>
+  <div class="nav">
+    <a class="brand" href="dashboard.html">PrimeTask
+      <small>TRANSCRIPTION WORKSPACE</small>
+    </a>
+    <button class="menu-button" id="menuButton" aria-label="Toggle navigation"
+      aria-expanded="false">☰</button>
+    <nav class="links" id="navLinks" aria-label="Main navigation">
+      <a href="dashboard.html">Dashboard</a>
+      <a class="active" href="jobs.html">Available jobs</a>
+      <a href="my-assignment.html">My assignment</a>
+      <a href="wallet.html">Wallet</a>
+      <a href="purchase-minutes.html">Purchase minutes</a>
+      <a href="withdrawal-history.html">Withdrawals</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <section class="hero">
+    <div>
+      <div class="eyebrow">Work area / Opportunities</div>
+      <h1>Available assignments</h1>
+      <p>Review the transcript requirements, audio length and reward before claiming an assignment. Clear instructions first, transcription second. Revolutionary, apparently.</p>
+    </div>
+    <button class="refresh" id="refreshJobs">↻ &nbsp; Refresh jobs</button>
+  </section>
+
+  <section class="stats" aria-label="Job summary">
+    <div class="stat">
+      <div class="stat-label">Available assignments</div>
+      <div class="stat-value" id="jobCount">—</div>
+    </div>
+    <div class="stat">
+      <div class="stat-label">Highest listed reward</div>
+      <div class="stat-value accent" id="highestReward">—</div>
+    </div>
+    <div class="stat">
+      <div class="stat-label">Job board status</div>
+      <div class="stat-value" style="font-size:18px" id="boardStatus">Connecting…</div>
+    </div>
+  </section>
+
+  <section class="board">
+    <div class="board-head">
+      <h2>Assignment board</h2>
+      <span class="live-label" id="liveLabel">CHECKING AVAILABILITY</span>
+    </div>
+    <div class="table-scroll">
+      <table>
+        <thead>
+          <tr>
+            <th>Job title</th>
+            <th>Required Transcript</th>
+            <th>Audio length</th>
+            <th>Amount</th>
+            <th>View assignment</th>
+            <th>Claim assignment</th>
+          </tr>
+        </thead>
+        <tbody id="jobsBody">
+          <tr><td colspan="6" class="message">Loading available assignments…</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="table-foot">Rewards are displayed in USD. Assignment availability and claims are determined by the existing server.</div>
+  </section>
+</main>
+
+<div class="backdrop" id="assignmentModal" role="dialog"
+  aria-modal="true" aria-labelledby="modalTitle">
+  <article class="modal">
+    <div class="modal-head">
+      <div>
+        <div class="eyebrow">Assignment details</div>
+        <h2 id="modalTitle">Assignment</h2>
+        <p id="modalDescription">Review the available job details below.</p>
+      </div>
+      <button class="btn close" id="closeModal" aria-label="Close assignment">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="info-grid">
+        <div class="info"><small>Audio length</small><strong id="modalDuration">—</strong></div>
+        <div class="info"><small>Reward</small><strong id="modalReward">—</strong></div>
+        <div class="info"><small>Transcript type</small><strong id="modalFormat">See instructions</strong></div>
+      </div>
+
+      <div class="section-title">Task instructions</div>
+      <div class="instructions" id="modalInstructions">No additional instructions supplied.</div>
+
+      <div class="section-title">Audio preview</div>
+      <div class="audio-box">
+        <div class="audio-top">
+          <strong>WAVEFORM VISUALIZATION</strong>
+          <small id="audioState">Preview unavailable before claim</small>
+        </div>
+
+        <button class="btn primary claim-wide" id="modalClaim">
+          Claim assignment
+        </button>
+
+        <div class="wave-large" id="waveform" role="img"
+          aria-label="Decorative waveform visualization"></div>
+        <p class="audio-note" id="audioNote">
+          This waveform is a visual indicator, not a recording or measured audio signal.
+          The existing server restricts the actual job audio until assignment access is granted.
+        </p>
+      </div>
+
+      <div class="notice" id="modalNotice" role="status" aria-live="polite"></div>
+      <div class="modal-actions">
+        <button class="btn" id="closeModalBottom">Close details</button>
+      </div>
+    </div>
+  </article>
+</div>
+
+<script src="../../../../frontend/assets/js/config.js"></script>
+<script>
+(() => {
+  "use strict";
+
+  const API_BASE = (
+    window.PTW_API_BASE ||
+    (["localhost", "127.0.0.1"].includes(location.hostname)
+      ? "http://127.0.0.1:5001/api"
+      : "https://primetask-mdcx.onrender.com/api")
+  ).replace(/\/+$/, "");
+
+  const $ = id => document.getElementById(id);
+  const body = $("jobsBody");
+  const modal = $("assignmentModal");
+  const waveform = $("waveform");
+
+  let jobs = [];
+  let selectedJob = null;
+  let claimingIds = new Set();
+
+  $("menuButton").addEventListener("click", () => {
+    const open = $("navLinks").classList.toggle("open");
+    $("menuButton").setAttribute("aria-expanded", String(open));
+  });
+
+  function escapeHTML(value) {
+    return String(value ?? "").replace(/[&<>"']/g, char => ({
+      "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;"
+    })[char]);
+  }
+
+  function money(value, currency = "USD") {
+    const amount = Number(value);
+    if (!Number.isFinite(amount)) return "—";
+    return new Intl.NumberFormat("en-US", {
+      style: "currency", currency: currency === "USD" ? "USD" : "USD",
+      minimumFractionDigits: 2, maximumFractionDigits: 2
+    }).format(amount);
+  }
+
+  function duration(value) {
+    const minutes = Number(value);
+    if (!Number.isFinite(minutes) || minutes < 0) return "—";
+    if (minutes < 1) return `${Math.round(minutes * 60)} sec`;
+    const wholeMinutes = Math.floor(minutes);
+    const seconds = Math.round((minutes - wholeMinutes) * 60);
+    return seconds ? `${wholeMinutes} min ${seconds} sec` : `${wholeMinutes} min`;
+  }
+
+  function transcriptType(job) {
+    const text = `${job.transcriptType || ""} ${job.instructions || ""} ${job.description || ""}`;
+    const patterns = [
+      ["Clean verbatim", /clean[\s-]+verbatim/i],
+      ["Intelligent verbatim", /intelligent[\s-]+verbatim/i],
+      ["Strict verbatim", /strict[\s-]+verbatim/i],
+      ["Timestamped", /timestamp/i],
+      ["Speaker-labelled", /speaker[\s-]+label|speaker identification/i],
+      ["Verbatim", /\bverbatim\b/i]
+    ];
+    for (const [label, pattern] of patterns) {
+      if (pattern.test(text)) return label;
+    }
+    return job.transcriptType || "See instructions";
+  }
+
+  function waveformBars(container, count) {
+    container.replaceChildren();
+    for (let i = 0; i < count; i++) {
+      const bar = document.createElement("span");
+      const height = 12 + Math.abs(
+        Math.sin(i * 1.73) * Math.cos(i * .37)
+      ) * (container === waveform ? 70 : 15);
+      bar.style.setProperty("--h", `${height}px`);
+      bar.style.setProperty("--i", i);
+      container.appendChild(bar);
+    }
+  }
+
+  function showNotice(message, isError = false) {
+    const notice = $("modalNotice");
+    notice.textContent = message;
+    notice.classList.add("show");
+    notice.classList.toggle("error", isError);
+  }
+
+  function hideModal() {
+    modal.classList.remove("show");
+    document.body.style.overflow = "";
+    selectedJob = null;
+  }
+
+  function showModal(job) {
+    selectedJob = job;
+    $("modalTitle").textContent = job.title || "Untitled assignment";
+    $("modalDescription").textContent = job.description || "No additional description supplied.";
+    $("modalDuration").textContent = duration(job.durationMinutes);
+    $("modalReward").textContent = money(job.reward, job.currency);
+    $("modalFormat").textContent = transcriptType(job);
+    $("modalInstructions").textContent =
+      job.instructions || job.description || "No additional instructions supplied.";
+    $("modalNotice").className = "notice";
+    $("audioState").textContent = "Preview unavailable before claim";
+    $("audioNote").textContent =
+      "This waveform is a visual indicator, not a recording or measured audio signal. The existing server restricts the actual job audio until assignment access is granted.";
+    $("modalClaim").disabled = claimingIds.has(String(job.id)) ||
+      !["available", "published"].includes(String(job.status || "available").toLowerCase());
+    $("modalClaim").textContent = claimingIds.has(String(job.id))
+      ? "Claiming assignment…" : "Claim assignment";
+    waveform.classList.remove("active");
+    modal.classList.add("show");
+    document.body.style.overflow = "hidden";
+  }
+
+  function renderJobs() {
+    $("jobCount").textContent = jobs.length;
+    const rewards = jobs.map(job => Number(job.reward)).filter(Number.isFinite);
+    $("highestReward").textContent = rewards.length
+      ? money(Math.max(...rewards)) : "—";
+
+    if (!jobs.length) {
+      body.innerHTML = '<tr><td colspan="6" class="message"><strong>No available assignments</strong>There are currently no jobs returned by the job service. Refresh to check again.</td></tr>';
+      return;
+    }
+
+    body.innerHTML = jobs.map((job, index) => {
+      const id = escapeHTML(job.id);
+      const title = escapeHTML(job.title || "Untitled assignment");
+      const description = escapeHTML(job.description || "Review task instructions");
+      const format = escapeHTML(transcriptType(job));
+      const length = escapeHTML(duration(job.durationMinutes));
+      const reward = escapeHTML(money(job.reward, job.currency));
+      const disabled = claimingIds.has(String(job.id));
+      return `<tr>
+        <td><div class="job-title">${title}</div><small class="job-sub">${description}</small></td>
+        <td><span class="format">${format}</span></td>
+        <td><span class="duration">${length}</span></td>
+        <td><span class="amount">${reward}<small>USD reward</small></span></td>
+        <td class="view-cell">
+          <button class="btn view-btn" data-view="${id}">View assignment</button>
+          <div class="wave-mini" aria-hidden="true" data-wave="${index}"></div>
+        </td>
+        <td class="claim-cell">
+          <button class="btn primary row-claim" data-claim="${id}" ${disabled ? "disabled" : ""}>
+            ${disabled ? "Claiming…" : "Claim assignment"}
+          </button>
+        </td>
+      </tr>`;
+    }).join("");
+
+    body.querySelectorAll("[data-wave]").forEach(el => waveformBars(el, 20));
+    body.querySelectorAll("[data-view]").forEach(button => {
+      button.addEventListener("click", () => {
+        const job = jobs.find(item => String(item.id) === button.dataset.view);
+        if (job) showModal(job);
+      });
+    });
+    body.querySelectorAll("[data-claim]").forEach(button => {
+      button.addEventListener("click", () => {
+        const job = jobs.find(item => String(item.id) === button.dataset.claim);
+        if (job) claimJob(job);
+      });
+    });
+  }
+
+  async function loadJobs() {
+    $("refreshJobs").disabled = true;
+    $("boardStatus").textContent = "Loading…";
+    $("liveLabel").textContent = "FETCHING ASSIGNMENTS";
+    body.innerHTML = '<tr><td colspan="6" class="message">Loading available assignments…</td></tr>';
+
+    try {
+      const response = await fetch(`${API_BASE}/transcription/jobs`, {
+        method: "GET",
+        credentials: "include",
+        headers: { "Accept": "application/json" }
+      });
+      const data = await response.json().catch(() => ({}));
+
+      if (!response.ok) {
+        throw new Error(data.message || data.error || `Request failed (${response.status})`);
+      }
+
+      jobs = Array.isArray(data.jobs) ? data.jobs : [];
+      $("boardStatus").textContent = "Connected";
+      $("boardStatus").style.color = "var(--green)";
+      $("liveLabel").textContent = "JOB SERVICE CONNECTED";
+      renderJobs();
+    } catch (error) {
+      jobs = [];
+      $("jobCount").textContent = "—";
+      $("highestReward").textContent = "—";
+      $("boardStatus").textContent = "Unavailable";
+      $("boardStatus").style.color = "var(--red)";
+      $("liveLabel").textContent = "CONNECTION ERROR";
+      body.innerHTML = `<tr><td colspan="6" class="message error"><strong>Could not load assignments</strong>${escapeHTML(error.message)}<br>Check the API server, network connection and login session, then refresh.</td></tr>`;
+    } finally {
+      $("refreshJobs").disabled = false;
+    }
+  }
+
+  async function claimJob(job) {
+    const id = String(job.id);
+    if (!id || claimingIds.has(id)) return;
+
+    claimingIds.add(id);
+    $("modalNotice").className = "notice";
+    $("modalClaim").disabled = true;
+    $("modalClaim").textContent = "Claiming assignment…";
+    renderJobs();
+
+    try {
+      const response = await fetch(
+        `${API_BASE}/transcription/jobs/${encodeURIComponent(id)}/claim`,
+        {
+          method: "POST",
+          credentials: "include",
+          headers: {
+            "Accept": "application/json",
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({})
+        }
+      );
+      const data = await response.json().catch(() => ({}));
+
+      if (!response.ok || data.success === false) {
+        throw new Error(data.message || data.error || `Claim failed (${response.status})`);
+      }
+
+      showNotice(data.message || "Assignment claimed successfully. Open My assignment to continue.");
+      $("modalClaim").textContent = "Assignment claimed";
+      $("modalClaim").disabled = true;
+      $("audioState").textContent = "Assignment access granted";
+      $("audioNote").textContent =
+        "The server confirmed the claim. Continue through My assignment to access the assigned task and its permitted workflow.";
+      $("boardStatus").textContent = "Claim recorded";
+      await loadJobs();
+      if (selectedJob && String(selectedJob.id) === id) {
+        $("modalClaim").textContent = "Assignment claimed";
+        $("modalClaim").disabled = true;
+      }
+    } catch (error) {
+      showNotice(error.message, true);
+      $("modalClaim").textContent = "Try claim again";
+      $("modalClaim").disabled = false;
+    } finally {
+      claimingIds.delete(id);
+      renderJobs();
+      if (selectedJob && String(selectedJob.id) === id &&
+          $("modal").classList.contains("show")) {
+        $("modalClaim").textContent = "Claim assignment";
+        $("modalClaim").disabled = false;
+      }
+    }
+  }
+
+  $("refreshJobs").addEventListener("click", loadJobs);
+  $("modalClaim").addEventListener("click", () => {
+    if (selectedJob) claimJob(selectedJob);
+  });
+  $("closeModal").addEventListener("click", hideModal);
+  $("closeModalBottom").addEventListener("click", hideModal);
+  modal.addEventListener("click", event => {
+    if (event.target === modal) hideModal();
+  });
+  document.addEventListener("keydown", event => {
+    if (event.key === "Escape" && modal.classList.contains("show")) hideModal();
+  });
+
+  waveformBars(waveform, 64);
+  loadJobs();
+})();
+</script>
+</body>
+</html>

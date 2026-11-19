@@ -1,0 +1,366 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Transcript Formatting Guide | PrimeTask Workspace</title>
+<style>
+:root{--bg:#050b18;--panel:#0b1426;--panel2:#101d33;--line:#243653;--text:#eaf1ff;--muted:#9fb0ca;--blue:#4ea1ff;--cyan:#67e8f9}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at top right,#10284b 0,transparent 38%),var(--bg);color:var(--text);font:15px/1.6 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
+header{border-bottom:1px solid var(--line);background:#050b18e8;position:sticky;top:0;z-index:4;backdrop-filter:blur(10px)}.nav{max-width:1200px;margin:auto;padding:14px 22px;display:flex;justify-content:space-between;gap:14px;align-items:center}.brand{font-weight:900;letter-spacing:.04em}.brand span{color:var(--blue)}.nav small{color:var(--muted)}
+main{max-width:1200px;margin:auto;padding:36px 22px 64px}.eyebrow{color:var(--cyan);font-size:.75rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase}h1{font-size:clamp(2rem,5vw,3.2rem);line-height:1.1;letter-spacing:-.04em;margin:10px 0 14px}.lead{color:var(--muted);max-width:800px;font-size:1.02rem}.chips{display:flex;flex-wrap:wrap;gap:8px;margin:22px 0 28px}.chip{border:1px solid var(--line);background:#0b172a;border-radius:999px;padding:6px 11px;color:#c8d8ef;font-size:.8rem}
+.layout{display:grid;grid-template-columns:300px minmax(0,1fr);gap:20px;align-items:start}.panel{border:1px solid var(--line);border-radius:17px;background:linear-gradient(180deg,#101d33f5,#081120f5);overflow:hidden}.panel-head{padding:16px 18px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:12px}.panel-head h2{font-size:1rem;margin:0}.panel-body{padding:18px}.rule{padding:13px 0;border-bottom:1px solid #243653a8}.rule:last-child{border:0}.rule strong{display:block;margin-bottom:4px}.rule p{margin:0;color:var(--muted);font-size:.88rem}.number{display:inline-grid;place-items:center;width:25px;height:25px;border-radius:8px;background:#132b4b;color:var(--cyan);font-size:.76rem;margin-right:7px}
+.buttons{display:flex;gap:8px;flex-wrap:wrap}.btn{cursor:pointer;border:1px solid #36577d;background:#132847;color:var(--text);border-radius:9px;padding:8px 11px;font:700 .82rem system-ui}.btn:hover{border-color:var(--blue)}.btn.primary{background:var(--blue);color:#061224;border-color:var(--blue)}
+.viewer{background:#f8fafc;color:#172033;border-radius:11px;padding:clamp(16px,3vw,30px);box-shadow:0 12px 32px #0003}.document{font-family:"Times New Roman",Georgia,serif;font-size:15px;line-height:1.55;overflow-wrap:anywhere}.doc-title{display:block;text-align:center;font-size:1.1rem;line-height:1.4;margin:0 0 16px}.meta-line{display:block;font-family:system-ui,sans-serif;font-size:.85rem;line-height:1.5}.speaker{display:block;font-family:system-ui,sans-serif;font-size:.83rem;color:#1d4f91;margin-top:15px}.timestamp{display:block;font-family:ui-monospace,Consolas,monospace;color:#64748b;font-size:.8rem;margin:2px 0 4px}.endmark{display:block;text-align:center;border-top:1px solid #cbd5e1;padding-top:15px;margin-top:22px;font-family:system-ui,sans-serif;letter-spacing:.1em}.document p{margin:5px 0 12px}.callout{margin-top:14px;border:1px solid var(--line);background:#0a1a2e;color:var(--muted);padding:12px 14px;border-radius:10px;font-size:.85rem}.section{margin-top:30px}.section h2{font-size:1.35rem;margin-bottom:8px}.section p{color:var(--muted)}.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.card{border:1px solid var(--line);background:var(--panel);padding:16px;border-radius:13px}.card h3{font-size:.94rem;margin:0 0 5px}.card p{font-size:.86rem;margin:0;color:var(--muted)}footer{border-top:1px solid var(--line);padding:23px;text-align:center;color:var(--muted);font-size:.82rem}.toast{display:none;position:fixed;bottom:18px;left:50%;transform:translateX(-50%);background:#d1fae5;color:#064e3b;padding:10px 15px;border-radius:9px;font-weight:800;z-index:10}
+@media(max-width:850px){.layout{grid-template-columns:1fr}.cards{grid-template-columns:1fr}.nav{align-items:flex-start;flex-direction:column}.panel-head{align-items:flex-start;flex-direction:column}}
+@media print{body{background:white;color:black}.nav,.intro,.rules,.section,footer,.buttons,.callout{display:none!important}main{padding:0}.layout{display:block}.panel{border:0;background:white}.panel-head{display:none}.panel-body{padding:0}.viewer{padding:0;box-shadow:none}}
+</style>
+</head>
+<body>
+<header><div class="nav"><div class="brand">PRIME<span>TASK</span> WORKSPACE</div><small>Transcription standards · Formatting reference</small></div></header>
+<main>
+<section class="intro">
+<div class="eyebrow">Training & quality guide</div>
+<h1>How a professional transcript is formatted</h1>
+<p class="lead">Use this reference to understand the structure of a transcript: metadata, speaker labels, timestamps, speech paragraphs, and the closing footer. The example below is based on the transcript supplied for this guide.</p>
+<div class="chips"><span class="chip">Transcript metadata</span><span class="chip">Speaker labels</span><span class="chip">Timestamps</span><span class="chip">Punctuation</span><span class="chip">Verbatim accuracy</span></div>
+</section>
+<div class="layout">
+<aside class="panel rules">
+<div class="panel-head"><h2>Formatting checklist</h2></div>
+<div class="panel-body">
+<div class="rule"><strong><span class="number">1</span>Transcript title</strong><p>Use a clear title that identifies the recording or case.</p></div>
+<div class="rule"><strong><span class="number">2</span>Metadata block</strong><p>Keep client ID, company, transcriber, duration, and date in a consistent order.</p></div>
+<div class="rule"><strong><span class="number">3</span>Speaker labels</strong><p>Keep labels such as Male_1 and Female_1 consistent. Do not swap speakers.</p></div>
+<div class="rule"><strong><span class="number">4</span>Timestamp format</strong><p>Use [HH:MM:SS --&gt; HH:MM:SS] where required, and verify it against the audio.</p></div>
+<div class="rule"><strong><span class="number">5</span>Speech and punctuation</strong><p>Use readable sentence punctuation and paragraph breaks without changing the words spoken.</p></div>
+<div class="rule"><strong><span class="number">6</span>Closing footer</strong><p>Include the required end marker and company copyright/footer details.</p></div>
+<div class="callout">Verbatim means preserving speech according to the assigned style. It does not mean ignoring the client’s formatting instructions, and it does not permit silently rewriting what the speaker said.</div>
+</div>
+</aside>
+<section class="panel">
+<div class="panel-head"><h2>Supplied transcript example</h2><div class="buttons"><button class="btn primary" id="copy">Copy transcript text</button><button class="btn" id="print">Print / Save PDF</button></div></div>
+<div class="panel-body">
+<div class="viewer"><article class="document" id="transcript"><strong class="doc-title">Transcript title: Carrera v. Carrera: Court Orders Mother to Pay Child Support for Daughter’s Extracurricular Activities</strong>
+
+<span class="meta-line">Client ID:_____</span>
+
+<span class="meta-line">Company: Primetask Workspace </span>
+
+<span class="meta-line">Transcriber: Keith Collins </span>
+
+<span class="meta-line">Duration: 00:05:13 </span>
+
+<span class="meta-line">Date: 11th October, 2026 </span>
+
+<strong class="speaker">Male_1:</strong>
+
+<span class="timestamp">[00:00:08 --&gt; 00:00:11]</span>
+
+All rise. Judge Vonda B. Court now in session.
+
+<strong class="speaker">Male_1:</strong>
+
+<span class="timestamp">[00:00:12 --&gt; 00:00:18]</span>
+
+Judge, this is case number JVB 1003, Carrera versus Carrera.
+
+<strong class="speaker">Female_1:</strong>
+
+<span class="timestamp">[00:00:19 --&gt; 00:00:22]</span>
+
+Thank you. You all may be seated.
+
+<strong class="speaker">Female_1:</strong>
+
+<span class="timestamp">[00:00:25 --&gt; 00:00:27]</span>
+
+Okay, Mr. Carrera?
+
+<strong class="speaker">Male_2:</strong>
+
+<span class="timestamp">[00:00:27 --&gt; 00:00:27]</span>
+
+Yes.
+
+<strong class="speaker">Female_1:</strong>
+
+<span class="timestamp">[00:00:28 --&gt; 00:00:30]</span>
+
+You brought this case before the court. What&#x27;s going on?
+
+<strong class="speaker">Male_2:</strong>
+
+<span class="timestamp">[00:00:31 --&gt; 00:00:44]</span>
+
+Yes. So I brought this case before you because I&#x27;m currently paying for extracurricular activities for our daughter. Okay. And it&#x27;s a little bit more money than I thought it was going to be. So I would like my wife, Sheila, to reimburse me for it.
+
+<strong class="speaker">Female_1:</strong>
+
+<span class="timestamp">[00:00:44 --&gt; 00:00:44]</span>
+
+Okay.
+
+<strong class="speaker">Female_1:</strong>
+
+<span class="timestamp">[00:00:46 --&gt; 00:00:47]</span>
+
+So you guys are separated?
+
+<strong class="speaker">Male_2:</strong>
+
+<span class="timestamp">[00:00:48 --&gt; 00:00:48]</span>
+
+Yes.
+
+<strong class="speaker">Female_1:</strong>
+
+<span class="timestamp">[00:00:48 --&gt; 00:00:53]</span>
+
+Okay. What type of extra extracurricular activities is the child involved?
+
+<strong class="speaker">Male_2:</strong>
+
+<span class="timestamp">[00:00:53 --&gt; 00:01:09]</span>
+
+So our daughter is very big into sports. Okay. So she plays soccer and, you know, it&#x27;s just like the cost of cleats, the cost of like gloves because she plays goalie. It&#x27;s just a lot of upkeep for me. And she makes more money than I do. So I kind of want help with it.
+
+<strong class="speaker">Female_1:</strong>
+
+<span class="timestamp">[00:01:10 --&gt; 00:01:23]</span>
+
+Okay. I see here, ma&#x27;am, from the tax returns that you make about $100,000 a year.
+
+<strong class="speaker">Male_2:</strong>
+
+<span class="timestamp">[00:01:15 --&gt; 00:01:16]</span>
+
+Yes, ma&#x27;am.
+
+<strong class="speaker">Female_1:</strong>
+
+<span class="timestamp">[00:01:16 --&gt; 00:01:18]</span>
+
+Okay. Child support was not previously ordered.
+
+<strong class="speaker">Male_2:</strong>
+
+<span class="timestamp">[00:01:18 --&gt; 00:01:18]</span>
+
+Yes.
+
+<strong class="speaker">Female_1:</strong>
+
+<span class="timestamp">[00:01:18 --&gt; 00:01:28]</span>
+
+Okay. So are you guys in agreement to do that? Or, you know, you don&#x27;t want to pay child support? What&#x27;s going on?
+
+<strong class="speaker">Female_2:</strong>
+
+<span class="timestamp">[00:01:28 --&gt; 00:01:39]</span>
+
+I don&#x27;t think it&#x27;s necessary. We split her 50-50. She&#x27;s at my house just as much. She&#x27;s with me just as much, if not more.
+
+<strong class="speaker">Male_2:</strong>
+
+<span class="timestamp">[00:01:40 --&gt; 00:01:46]</span>
+
+Your Honour, I would say that&#x27;s probably an argument for her to pay me. If we&#x27;re splitting 50-50, I shouldn&#x27;t have to pay all of it.
+
+<strong class="speaker">Female_1:</strong>
+
+<span class="timestamp">[00:01:47 --&gt; 00:01:59]</span>
+
+That&#x27;s exactly what I was getting ready to say. So you kind of like told on yourself. So you ready to move forward with the numbers? Sure. Okay. Well, let&#x27;s go ahead and get ready with the numbers.
+
+<strong class="speaker">Female_1:</strong>
+
+<span class="timestamp">[00:01:59 --&gt; 00:02:06]</span>
+
+So it looks like you make, like I said, $100,000 a year. Do you work overtime or is that regularly what you make?
+
+<strong class="speaker">Female_2:</strong>
+
+<span class="timestamp">[00:02:06 --&gt; 00:02:07]</span>
+
+No, I work overtime.
+
+<strong class="speaker">Female_1:</strong>
+
+<span class="timestamp">[00:02:08 --&gt; 00:02:10]</span>
+
+Okay. And does that include overtime?
+
+<strong class="speaker">Female_2:</strong>
+
+<span class="timestamp">[00:02:10 --&gt; 00:02:14]</span>
+
+Yes, ma&#x27;am. It&#x27;s a salaried position, so it&#x27;s just straight out.
+
+<strong class="speaker">Female_1:</strong>
+
+<span class="timestamp">[00:02:14 --&gt; 00:02:22]</span>
+
+Okay. Got it. All right. So at $100,000 a year, I have your gross at $10,000 a month.
+
+<strong class="speaker">Female_1:</strong>
+
+<span class="timestamp">[00:02:23 --&gt; 00:02:26]</span>
+
+Before I continue, who pays health insurance?
+
+<strong class="speaker">Female_2:</strong>
+
+<span class="timestamp">[00:02:26 --&gt; 00:02:27]</span>
+
+We both do.
+
+<strong class="speaker">Male_1:</strong>
+
+<span class="timestamp">[00:02:27 --&gt; 00:02:27]</span>
+
+We both do.
+
+<strong class="speaker">Female_1:</strong>
+
+<span class="timestamp">[00:02:28 --&gt; 00:02:29]</span>
+
+Okay. How much do you pay?
+
+<strong class="speaker">Female_2:</strong>
+
+<span class="timestamp">[00:02:31 --&gt; 00:02:34]</span>
+
+$386. And I pay $200.
+
+<strong class="speaker">Female_1:</strong>
+
+<span class="timestamp">[00:02:34 --&gt; 00:02:40]</span>
+
+Okay. And you both plan on maintaining those health insurance policies? Yes, ma&#x27;am. Okay. Okay. Great.
+
+<strong class="speaker">Female_1:</strong>
+
+<span class="timestamp">[00:02:40 --&gt; 00:03:02]</span>
+
+That way, nobody has to reimburse anybody for health insurance. But because you do carry health insurance and you&#x27;re going to be ordered to pay child support, I can give you credit for the $386. So that brings your net down to $6,988.19, which how many children? Just one? Just one. Okay.
+
+<strong class="speaker">Female_1:</strong>
+
+<span class="timestamp">[00:03:02 --&gt; 00:03:19]</span>
+
+So 20% of that brings your child support obligation to $1,391.64. That should cover any expenses and anything like that, because the child is heavily involved. Sounds like an extracurricular activity. Excuse me.
+
+<strong class="speaker">Female_1:</strong>
+
+<span class="timestamp">[00:03:21 --&gt; 00:03:22]</span>
+
+Are there any other questions?
+
+<strong class="speaker">Female_2:</strong>
+
+<span class="timestamp">[00:03:25 --&gt; 00:03:25]</span>
+
+No, ma&#x27;am.
+
+<strong class="speaker">Female_1:</strong>
+
+<span class="timestamp">[00:03:25 --&gt; 00:03:28]</span>
+
+You don&#x27;t look happy about this. What&#x27;s going on?
+
+<strong class="speaker">Female_2:</strong>
+
+<span class="timestamp">[00:03:28 --&gt; 00:03:37]</span>
+
+I just think that it&#x27;s a bit of an exorbitant amount, but we discussed it in the beginning when the split happened. He agreed.
+
+<strong class="speaker">Female_1:</strong>
+
+<span class="timestamp">[00:03:38 --&gt; 00:03:39]</span>
+
+Agreed to what amount?
+
+<strong class="speaker">Female_2:</strong>
+
+<span class="timestamp">[00:03:40 --&gt; 00:03:40]</span>
+
+None.
+
+<strong class="speaker">Female_1:</strong>
+
+<span class="timestamp">[00:03:40 --&gt; 00:03:49]</span>
+
+Oh, you&#x27;re saying child support. But you do understand that as the child gets older and heavily involved in different activities, I wasn&#x27;t done.
+
+<strong class="speaker">Female_2:</strong>
+
+<span class="timestamp">[00:03:49 --&gt; 00:03:50]</span>
+
+Oh, sorry.
+
+<strong class="speaker">Female_1:</strong>
+
+<span class="timestamp">[00:03:51 --&gt; 00:03:56]</span>
+
+Involved heavily in different activities, you understand that expenses increase?
+
+<strong class="speaker">Female_2:</strong>
+
+<span class="timestamp">[00:03:55 --&gt; 00:03:56]</span>
+
+Yes, ma&#x27;am.
+
+<strong class="speaker">Female_1:</strong>
+
+<span class="timestamp">[00:03:56 --&gt; 00:04:15]</span>
+
+Okay. And the amount of child support is based on how much money you make. Child support is based on a simple calculation. So you make $100,000 a year. That&#x27;s what your child support is. I mean, if you want it to be lower, you chose the profession. Yeah. Okay. So if there&#x27;s nothing further, you all are dismissed.
+
+<strong class="speaker">Female_1:</strong>
+
+<span class="timestamp">[00:04:17 --&gt; 00:04:38]</span>
+
+I just want to go over what you all witnessed in the case of Carrera versus Carrera. So they had an existing order where no child support was ordered. Well, under Texas law, when there&#x27;s been a material and substantial change in circumstance, the court can go in and review the order to determine whether or not child support should be paid.
+
+<strong class="speaker">Female_1:</strong>
+
+<span class="timestamp">[00:04:38 --&gt; 00:04:53]</span>
+
+Well, you heard that dad was covering all the expenses for the child to participate in all these different activities. So it warranted mom to be able to help finance those activities for the child. So that&#x27;s the reason why mom was ordered to pay child support.
+
+<strong class="speaker">Female_1:</strong>
+
+<span class="timestamp">[00:04:55 --&gt; 00:05:04]</span>
+
+Do you know of anyone who&#x27;s experienced a similar situation? Be sure to subscribe to our channel and make sure you comment below. You never know.
+
+<strong class="speaker">Female_1:</strong>
+
+<span class="timestamp">[00:05:04 --&gt; 00:05:13]</span>
+
+Their story may end up as a scenario on our show. After all, these kids aren&#x27;t raised on air alone. Support Court with Judge Vonda B.
+
+<strong class="endmark">END OF TRANSCRIPT</strong> 
+
+DURATION:
+
+©2026 PrimeTask Workspace. All Rights Reserved. </article></div>
+<div class="callout">Source fidelity note: this example is displayed from the uploaded document. Check names, wording, punctuation, and timestamp alignment against the original recording before using it as a model for assessed work.</div>
+</div>
+</section>
+</div>
+<section class="section"><h2>Three rules to remember</h2><p>Formatting makes a transcript easy to read; it must never be used as an excuse to alter the source.</p><div class="cards">
+<div class="card"><h3>Accurate, not guessed</h3><p>Replay unclear sections. Do not invent words, names, or timestamps to make a line look complete.</p></div>
+<div class="card"><h3>Readable, not rewritten</h3><p>Apply punctuation and capitalization as required by the style guide, while preserving the speaker’s wording.</p></div>
+<div class="card"><h3>Consistent to the end</h3><p>Use the same speaker-label format, timestamp style, spacing, and footer throughout.</p></div>
+</div></section>
+</main>
+<footer>PrimeTask Workspace · Creating Opportunities and Delivering Excellence.</footer>
+<div class="toast" id="toast" role="status">Copied</div>
+<script>
+const copyBtn=document.getElementById('copy'), toast=document.getElementById('toast');
+copyBtn.addEventListener('click',async()=>{const text=document.getElementById('transcript').innerText;try{await navigator.clipboard.writeText(text);toast.textContent='Transcript text copied.';}catch(e){const a=document.createElement('textarea');a.value=text;document.body.appendChild(a);a.select();const ok=document.execCommand('copy');a.remove();toast.textContent=ok?'Transcript text copied.':'Copy unavailable. Select the text manually.';}toast.style.display='block';setTimeout(()=>toast.style.display='none',2400);});
+document.getElementById('print').addEventListener('click',()=>window.print());
+</script>
+</body></html>

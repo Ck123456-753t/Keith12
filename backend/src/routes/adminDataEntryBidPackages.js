@@ -168,7 +168,7 @@ router.patch("/:id", async (req, res) => {
     const doc = await Package.findByIdAndUpdate(
       req.params.id,
       { $set: input },
-      { new: true, runValidators: true }
+      { returnDocument: 'after', runValidators: true }
     );
 
     if (!doc) {

@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#071426">
+<title>PrimeTask Workspace | Wallet</title>
+<style>
+:root{--navy:#071426;--navy2:#0b2039;--panel:rgba(12,31,54,.88);--line:rgba(255,255,255,.12);--white:#f5f8fc;--muted:#a8b7ca;--orange:#ff8a24;--green:#57d69a;--red:#ff7272}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;color:var(--white);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:linear-gradient(120deg,rgba(4,13,27,.96),rgba(5,20,39,.88)),url("https://images.unsplash.com/photo-1519608487953-e999c86e7455?auto=format&fit=crop&w=2000&q=85") center/cover fixed}
+a{color:inherit;text-decoration:none}
+button,input{font:inherit}
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:18px clamp(16px,4vw,48px);border-bottom:1px solid var(--line);background:rgba(4,13,27,.78);backdrop-filter:blur(16px);position:sticky;top:0;z-index:5}
+.brand{display:flex;align-items:center;gap:12px;font-weight:850;letter-spacing:.2px}
+.mark{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;background:linear-gradient(145deg,#ffb15c,#f36d13);color:#111827;font-weight:950;box-shadow:0 8px 24px #ff8a2430}
+.brand small{display:block;color:var(--muted);font-size:11px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;margin-top:2px}
+.top-actions{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.btn{border:1px solid var(--line);border-radius:11px;padding:10px 14px;background:#ffffff08;color:var(--white);font-weight:750;cursor:pointer;transition:.2s}
+.btn:hover{border-color:#ff8a2488;transform:translateY(-1px)}
+.btn.primary{background:var(--orange);color:#211407;border-color:var(--orange)}
+main{width:min(1160px,100%);margin:0 auto;padding:34px clamp(16px,4vw,32px) 54px}
+.eyebrow{font-size:11px;text-transform:uppercase;letter-spacing:2.4px;color:var(--orange);font-weight:850}
+h1{font-size:clamp(30px,5vw,46px);line-height:1.08;margin:10px 0}
+.lead{color:var(--muted);max-width:680px;line-height:1.65;margin:0}
+.hero{display:flex;align-items:flex-end;justify-content:space-between;gap:24px;margin-bottom:26px;flex-wrap:wrap}
+.status{display:inline-flex;align-items:center;gap:8px;border:1px solid #ffffff20;background:#ffffff08;padding:9px 12px;border-radius:999px;color:var(--muted);font-size:12px;font-weight:750}
+.dot{width:8px;height:8px;border-radius:50%;background:#8292a8}
+.dot.good{background:var(--green)}.dot.bad{background:var(--red)}.dot.wait{background:var(--orange)}
+.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+.panel{border:1px solid var(--line);background:var(--panel);backdrop-filter:blur(14px);border-radius:20px;padding:22px;box-shadow:0 16px 45px #00000016}
+.balance-panel{grid-column:span 2;position:relative;overflow:hidden;min-height:235px}
+.balance-panel:after{content:"$";position:absolute;right:24px;bottom:-65px;font-size:250px;font-weight:900;line-height:1;color:#ffffff06;pointer-events:none}
+.panel-label{color:var(--muted);font-size:13px;font-weight:650}
+.amount{font-size:clamp(34px,5vw,52px);font-weight:900;letter-spacing:-1.7px;margin:15px 0 8px;position:relative;z-index:1}
+.subtext{font-size:12px;color:var(--muted);line-height:1.55;position:relative;z-index:1}
+.panel h2{font-size:17px;margin:0 0 7px}
+.stat-value{font-size:28px;font-weight:850;margin:20px 0 7px;letter-spacing:-.7px}
+.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:24px;position:relative;z-index:1}
+.section{margin-top:22px}
+.section-head{display:flex;justify-content:space-between;align-items:center;gap:14px;margin-bottom:14px;flex-wrap:wrap}
+.section-head h2{margin:0;font-size:19px}
+.notice{border:1px solid #ff8a2450;background:#ff8a2410;border-radius:14px;padding:14px 16px;color:#f7d5b3;font-size:13px;line-height:1.6;margin-top:18px}
+.table-wrap{overflow:auto;border:1px solid var(--line);border-radius:15px}
+table{width:100%;border-collapse:collapse;min-width:620px;background:#091a2d99}
+th,td{text-align:left;padding:15px 16px;border-bottom:1px solid var(--line);font-size:13px}
+th{font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);background:#ffffff05}
+td{color:#e8eef6}tbody tr:last-child td{border-bottom:0}
+.empty{text-align:center;padding:28px 16px;color:var(--muted);line-height:1.6}
+.activity-icon{display:inline-grid;place-items:center;width:32px;height:32px;border-radius:10px;background:#ffffff0b;margin-right:9px}
+.pill{display:inline-block;padding:5px 8px;border-radius:99px;font-size:11px;font-weight:800;background:#ffffff10;color:var(--muted)}
+.pill.success{color:var(--green);background:#57d69a16}.pill.pending{color:#ffc27f;background:#ff8a2417}.pill.failed{color:var(--red);background:#ff727216}
+.footer{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;color:var(--muted);font-size:12px;margin-top:24px}
+#message{font-size:12px;color:var(--muted);margin-top:12px;min-height:18px}
+@media(max-width:760px){.grid{grid-template-columns:1fr}.balance-panel{grid-column:auto}.topbar{align-items:flex-start}.top-actions{justify-content:flex-end}.brand{font-size:14px}.panel{padding:18px}main{padding-top:27px}}
+</style>
+</head>
+<body>
+<header class="topbar">
+  <a class="brand" href="dashboard.html" aria-label="PrimeTask Workspace dashboard">
+    <span class="mark">PT</span><span>PrimeTask Workspace<small>Transcription · Wallet</small></span>
+  </a>
+  <nav class="top-actions" aria-label="Wallet navigation">
+    <a class="btn" href="dashboard.html">Dashboard</a>
+    <a class="btn" href="jobs.html">Jobs</a>
+    <a class="btn" href="withdrawal-history.html">Withdrawals</a>
+    <button class="btn" id="refreshBtn" type="button">↻ Refresh</button>
+  </nav>
+</header>
+<main>
+  <section class="hero">
+    <div><div class="eyebrow">Your money, clearly tracked</div><h1>Wallet</h1><p class="lead">Review verified wallet figures and recent transactions. Only information returned by the connected Workspace API will be shown here.</p></div>
+    <div class="status"><span class="dot" id="statusDot"></span><span id="connectionStatus">Checking wallet connection…</span></div>
+  </section>
+
+  <section class="grid" aria-label="Wallet summary">
+    <article class="panel balance-panel">
+      <div class="panel-label">Available wallet balance</div>
+      <div class="amount" id="availableBalance">—</div>
+      <div class="subtext" id="balanceNote">Waiting for verified wallet data from the server.</div>
+      <div class="actions">
+        <a class="btn primary" href="withdrawal-history.html">View withdrawals</a>
+        <a class="btn" href="jobs.html">Browse jobs</a>
+      </div>
+    </article>
+    <article class="panel">
+      <div class="panel-label">Lifetime earnings</div>
+      <div class="stat-value" id="lifetimeEarnings">—</div>
+      <div class="subtext">Confirmed earnings only. Pending earnings are not displayed.</div>
+    </article>
+    <article class="panel">
+      <div class="panel-label">Total withdrawn</div>
+      <div class="stat-value" id="totalWithdrawn">—</div>
+      <div class="subtext">Total completed withdrawals returned by the server.</div>
+    </article>
+    <article class="panel">
+      <div class="panel-label">Wallet currency</div>
+      <div class="stat-value" id="currencyValue">—</div>
+      <div class="subtext">Workspace balances are displayed in USD. No currency conversion is performed.</div>
+    </article>
+  </section>
+
+  <div class="notice"><strong>Wallet integrity:</strong> this page does not estimate earnings or manufacture balances. If the API is unavailable or the response does not contain a recognized field, the value remains unavailable instead of pretending your account is richer than it is.</div>
+
+  <section class="section panel">
+    <div class="section-head"><div><h2>Recent wallet activity</h2><div class="subtext">Latest transactions supplied by the connected API.</div></div><span class="pill" id="activityCount">Not loaded</span></div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Transaction</th><th>Date</th><th>Reference</th><th>Amount</th><th>Status</th></tr></thead>
+        <tbody id="activityRows"><tr><td colspan="5" class="empty">Wallet activity will appear after a successful API connection.</td></tr></tbody>
+      </table>
+    </div>
+    <div id="message" role="status" aria-live="polite"></div>
+  </section>
+  <div class="footer"><span>PrimeTask Workspace · Transcription Wallet</span><span>Secure account access is enforced by the Workspace backend.</span></div>
+</main>
+<script>
+(() => {
+  'use strict';
+  // Set this to your deployed backend origin if the API is not served from this page's origin.
+  const API_BASE = '';
+  const WALLET_ENDPOINT = '/api/transcription/wallet';
+  const $ = id => document.getElementById(id);
+  const money = value => {
+    if (value === null || value === undefined || value === '') return '—';
+    const n = Number(value);
+    if (!Number.isFinite(n)) return '—';
+    return new Intl.NumberFormat('en-US', {style:'currency', currency:'USD'}).format(n);
+  };
+  const firstDefined = (obj, keys) => {
+    for (const key of keys) {
+      const parts = key.split('.');
+      let value = obj;
+      for (const part of parts) value = value && typeof value === 'object' ? value[part] : undefined;
+      if (value !== undefined && value !== null && value !== '') return value;
+    }
+    return undefined;
+  };
+  const unwrap = payload => payload && (payload.data || payload.wallet || payload.result || payload);
+  const dateText = value => {
+    if (!value) return '—';
+    const date = new Date(value);
+    return Number.isNaN(date.getTime()) ? String(value) : date.toLocaleString();
+  };
+  const safeText = value => String(value ?? '—').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  function setStatus(text, type='') {
+    $('connectionStatus').textContent = text;
+    $('statusDot').className = 'dot' + (type ? ' ' + type : '');
+  }
+  function renderActivity(items) {
+    const rows = Array.isArray(items) ? items : [];
+    $('activityCount').textContent = rows.length ? `${rows.length} transaction${rows.length===1?'':'s'}` : 'No records returned';
+    if (!rows.length) {
+      $('activityRows').innerHTML = '<tr><td colspan="5" class="empty">No wallet activity was returned by the server.</td></tr>';
+      return;
+    }
+    $('activityRows').innerHTML = rows.slice(0,20).map(item => {
+      const type = firstDefined(item,['type','transactionType','description','title','kind']) ?? 'Wallet transaction';
+      const date = firstDefined(item,['createdAt','date','timestamp','updatedAt']);
+      const ref = firstDefined(item,['reference','transactionId','_id','id']);
+      const amount = firstDefined(item,['amountUsd','amountUSD','amount','amountDollars','value']);
+      const status = String(firstDefined(item,['status','paymentStatus','state']) ?? 'Recorded');
+      const normalized = status.toLowerCase();
+      const cls = /complete|success|paid|approved/.test(normalized) ? 'success' : /fail|reject|cancel/.test(normalized) ? 'failed' : 'pending';
+      return `<tr><td><span class="activity-icon">↗</span>${safeText(type)}</td><td>${safeText(dateText(date))}</td><td>${safeText(ref)}</td><td>${money(amount)}</td><td><span class="pill ${cls}">${safeText(status)}</span></td></tr>`;
+    }).join('');
+  }
+  async function loadWallet() {
+    $('refreshBtn').disabled = true;
+    $('message').textContent = '';
+    setStatus('Connecting to wallet API…','wait');
+    try {
+      const response = await fetch(API_BASE + WALLET_ENDPOINT, {
+        method:'GET', credentials:'include', headers:{'Accept':'application/json'}
+      });
+      let payload;
+      try { payload = await response.json(); } catch (_) { payload = null; }
+      if (response.status === 401 || response.status === 403) {
+        throw new Error('Your Workspace session is not authorized for this wallet. Open the main Workspace and sign in again.');
+      }
+      if (!response.ok) throw new Error(`Wallet API returned HTTP ${response.status}.`);
+      if (!payload || typeof payload !== 'object') throw new Error('The wallet API returned an unreadable response.');
+      const data = unwrap(payload);
+      const available = firstDefined(data,['availableBalanceUsd','availableBalanceUSD','availableBalance','balanceUsd','balanceUSD','balance','walletBalance']);
+      const earned = firstDefined(data,['lifetimeEarningsUsd','lifetimeEarningsUSD','lifetimeEarnings','totalEarnedUsd','totalEarned','earnings.total']);
+      const withdrawn = firstDefined(data,['totalWithdrawnUsd','totalWithdrawnUSD','totalWithdrawn','withdrawnAmount','withdrawals.totalCompleted']);
+      const currency = firstDefined(data,['currency','walletCurrency']) || 'USD';
+      $('availableBalance').textContent = available === undefined ? '—' : money(available);
+      $('lifetimeEarnings').textContent = earned === undefined ? '—' : money(earned);
+      $('totalWithdrawn').textContent = withdrawn === undefined ? '—' : money(withdrawn);
+      $('currencyValue').textContent = String(currency).toUpperCase();
+      $('balanceNote').textContent = available === undefined ? 'The server connected, but its response did not include a recognized available-balance field.' : 'Balance supplied by the Workspace wallet API.';
+      const activity = firstDefined(data,['transactions','activity','ledger','walletTransactions','recentTransactions']);
+      renderActivity(activity);
+      setStatus('Wallet API connected','good');
+      $('message').textContent = 'Wallet data refreshed from the server.';
+    } catch (error) {
+      setStatus('Wallet unavailable','bad');
+      $('availableBalance').textContent = '—';
+      $('lifetimeEarnings').textContent = '—';
+      $('totalWithdrawn').textContent = '—';
+      $('currencyValue').textContent = '—';
+      $('balanceNote').textContent = 'No verified balance is available right now.';
+      $('activityRows').innerHTML = '<tr><td colspan="5" class="empty">Activity unavailable until the wallet API connects successfully.</td></tr>';
+      $('activityCount').textContent = 'Unavailable';
+      $('message').textContent = error && error.message ? error.message : 'Could not load wallet data.';
+    } finally {
+      $('refreshBtn').disabled = false;
+    }
+  }
+  $('refreshBtn').addEventListener('click', loadWallet);
+  loadWallet();
+})();
+</script>
+</body>
+</html>

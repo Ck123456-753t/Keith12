@@ -117,7 +117,7 @@ router.post("/", async (req, res) => {
       const wallet = await NotesWallet.findOneAndUpdate(
         { userId: req.user._id, availableBalanceCents: { $gte: cents } },
         { $inc: { availableBalanceCents: -cents, reservedBalanceCents: cents } },
-        { new: true, session, runValidators: true }
+        { returnDocument: 'after', session, runValidators: true }
       );
       if (!wallet) {
         const error = new Error("INSUFFICIENT_NOTES_EARNINGS");
@@ -189,7 +189,7 @@ router.post("/:requestId/approve", async (req, res) => {
     const item = await NotesWithdrawal.findOneAndUpdate(
       { requestId: req.params.requestId, status: "pending_review" },
       { $set: { status: "approved", reviewedBy: req.user._id, reviewedAt: new Date(), adminNote: String(req.body?.note || "").slice(0, 300) } },
-      { new: true, runValidators: true }
+      { returnDocument: 'after', runValidators: true }
     );
     if (!item) return fail(res, 409, "Request not found or is no longer awaiting review.");
     return res.json({ success: true, withdrawal: publicRecord(item) });
@@ -218,7 +218,7 @@ router.post("/:requestId/reject", async (req, res) => {
       const wallet = await NotesWallet.findOneAndUpdate(
         { userId: item.userId, reservedBalanceCents: { $gte: item.amountCents } },
         { $inc: { reservedBalanceCents: -item.amountCents, availableBalanceCents: item.amountCents } },
-        { new: true, session, runValidators: true }
+        { returnDocument: 'after', session, runValidators: true }
       );
       if (!wallet) throw new Error("Notes reserved balance is inconsistent.");
 
@@ -264,7 +264,7 @@ router.post("/:requestId/initiate-b2c", async (req, res) => {
           b2cInitiatedAt: new Date()
         }
       },
-      { new: true, runValidators: true }
+      { returnDocument: 'after', runValidators: true }
     );
     if (!item) return fail(res, 409, "Request is not approved or payout initiation has already started.");
 

@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <base href="/dashboard/services/note-taking/admin/">
+  
+  
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#09111e">
+  <title>Points Packages | PrimeTask Notes Admin</title>
+  <link rel="stylesheet" href="assets/admin.css">
+  <style>
+    .package-form { display:grid; gap:16px; }
+    .package-form .form-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:14px; }
+    .package-form input { width:100%; box-sizing:border-box; }
+    .package-form button { min-height:42px; }
+    .package-id { display:block; color:var(--muted); font-size:11px; overflow-wrap:anywhere; margin-top:4px; }
+    .package-actions { display:flex; flex-wrap:wrap; gap:8px; }
+    .package-actions button { min-height:34px; padding:7px 11px; }
+    .package-status { font-weight:800; }
+    .package-status.active { color:var(--green); }
+    .package-status.inactive { color:var(--orange); }
+    @media(max-width:700px) {
+      .package-form .form-grid { grid-template-columns:1fr; }
+    }
+  </style>
+<link rel="icon" type="image/svg+xml" href="/assets/primetask-logo.svg">
+</head>
+<body data-page="points-packages">
+<div class="shell">
+  <aside class="sidebar">
+    <div class="brand">
+      <span class="brand-mark">PT</span>
+      <h2>PrimeTask Notes</h2>
+      <p>Administration workspace</p>
+    </div>
+    <div class="nav-label">Workspace</div>
+    <nav class="nav">
+      <a href="index">◫ Overview</a>
+      <a href="tasks">♫ Audio &amp; tasks</a>
+      <a href="submissions">▤ Submissions</a>
+      <a href="withdrawals">＄ Withdrawals</a>
+      <a class="active" href="points-packages">◉ Points Packages</a>
+    </nav>
+    <div class="sidebar-note"><strong>Separate by design</strong><br>Notes Points packages and purchases remain separate from the other PrimeTask wallets.</div>
+  </aside>
+
+  <main>
+    <header class="topbar">
+      <div>
+        <div class="eyebrow">PrimeTask Workspace / Notes</div>
+        <div class="muted">Dedicated administration</div>
+      </div>
+      <button class="secondary" id="refreshBtn" type="button">Refresh data</button>
+    </header>
+
+    <section style="margin-top:25px">
+      <div class="eyebrow">Points management</div>
+      <h1>Notes Points Packages</h1>
+      <p class="subtitle">Create packages, change their pricing, and control which packages members can purchase.</p>
+    </section>
+
+    <div id="message" class="message" role="status" aria-live="polite"></div>
+
+    <section class="panel">
+      <div class="panel-head">
+        <div>
+          <h2 id="formTitle">Create a package</h2>
+          <p class="muted">Points and KSh prices must be positive whole numbers.</p>
+        </div>
+      </div>
+
+      <form id="packageForm" class="package-form">
+        <input type="hidden" id="packageId">
+        <div class="form-grid">
+          <label class="field">
+            <span>Package name</span>
+            <input id="packageName" type="text" maxlength="120" placeholder="e.g. Starter Package" required>
+          </label>
+          <label class="field">
+            <span>Notes Points</span>
+            <input id="packagePoints" type="number" min="1" max="100000000" step="1" placeholder="e.g. 100" required>
+          </label>
+          <label class="field">
+            <span>Price (KSh)</span>
+            <input id="packagePrice" type="number" min="1" max="100000000" step="1" placeholder="e.g. 150" required>
+          </label>
+        </div>
+        <div class="actions">
+          <button id="savePackageBtn" type="submit">Create package</button>
+          <button id="cancelEditBtn" class="secondary" type="button" hidden>Cancel editing</button>
+        </div>
+      </form>
+    </section>
+
+    <section class="panel">
+      <div class="panel-head">
+        <div>
+          <h2>All packages</h2>
+          <p class="muted">Inactive packages remain here but are not offered to members.</p>
+        </div>
+        <span class="muted" id="packageCount">0 packages</span>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Package</th>
+              <th>Notes Points</th>
+              <th>Price</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="packageRows">
+            <tr><td colspan="5" class="empty">Loading packages...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <footer>PrimeTask Notes · Admin access required · Package prices shown in KSh</footer>
+  </main>
+</div>
+<script src="assets/config-loader.js"></script>
+</body>
+</html>

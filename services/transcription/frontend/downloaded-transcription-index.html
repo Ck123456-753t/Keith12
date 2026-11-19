@@ -1,0 +1,402 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0759d9">
+  <meta name="description" content="Learn transcription, build practical skills, and discover new opportunities with PrimeTask Transcription Academy.">
+  <title>PrimeTask Transcription Academy</title>
+  <style>
+    :root {
+      --blue: #0875f9;
+      --blue-dark: #062d70;
+      --navy: #041a3c;
+      --ink: #102d61;
+      --muted: #52698b;
+      --line: #c9e0ff;
+      --pale: #f2f8ff;
+      --white: #fff;
+      --shadow: 0 18px 45px rgba(6, 64, 145, .13);
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0; color: var(--ink); background: #fff;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+    a { color: inherit; text-decoration: none; }
+    button, a { -webkit-tap-highlight-color: transparent; }
+    .wrap { width: min(1120px, calc(100% - 44px)); margin-inline: auto; }
+    .topbar { height: 76px; display: flex; align-items: center; background: rgba(255,255,255,.96); border-bottom: 1px solid #e5efff; position: relative; z-index: 5; }
+    .nav { display: flex; align-items: center; justify-content: space-between; gap: 24px; }
+    .brand { display: flex; align-items: center; gap: 10px; min-width: 220px; font-weight: 850; letter-spacing: -.5px; color: #092b61; }
+    .brand-mark { width: 43px; height: 43px; display: grid; place-items: center; color: white; background: linear-gradient(145deg,#41a5ff,#0758dc); border-radius: 14px; box-shadow: 0 7px 16px #0875f933; }
+    .brand-mark svg { width: 27px; height: 27px; }
+    .brand-name { font-size: 19px; line-height: 1.1; }
+    .brand-name small { display: block; font-size: 10px; letter-spacing: .25px; color: #54709b; margin-top: 4px; font-weight: 700; }
+    .nav-links { display: flex; align-items: center; gap: clamp(16px, 2.5vw, 32px); font-size: 13px; font-weight: 700; color: #39547e; }
+    .nav-links a { padding: 10px 0; transition: color .2s; }
+    .nav-links a:hover, .nav-links a.active { color: var(--blue); }
+    .nav-actions { display: flex; gap: 9px; align-items: center; }
+    .btn { display: inline-flex; align-items: center; justify-content: center; gap: 10px; min-height: 44px; padding: 0 20px; border-radius: 999px; border: 1px solid transparent; font-weight: 800; font-size: 13px; cursor: pointer; transition: transform .2s, box-shadow .2s, background .2s; }
+    .btn:hover { transform: translateY(-2px); }
+    .btn-primary { color: #fff; background: linear-gradient(105deg,#168bff,#0060ed); box-shadow: 0 9px 22px #0875f933; }
+    .btn-outline { color: var(--blue); background: #fff; border-color: #8fc4ff; }
+    .btn-white { color: #0756c9; background: #fff; box-shadow: 0 8px 22px #001f6630; }
+    .menu-toggle { display: none; background: white; border: 1px solid var(--line); color: var(--ink); border-radius: 12px; width: 42px; height: 42px; font-size: 21px; }
+
+    .hero { position: relative; overflow: hidden; color: white; background: #031a3c; min-height: 440px; display: flex; align-items: center; }
+    .hero-media { position: absolute; inset: 0; overflow: hidden; }
+    .hero-media video { width: 100%; height: 100%; object-fit: cover; opacity: .48; filter: saturate(1.15); }
+    .hero-media:after { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg,rgba(2,20,49,.97) 0%,rgba(3,30,71,.87) 42%,rgba(0,68,160,.35) 100%), linear-gradient(0deg,rgba(0,20,55,.3),transparent 55%); }
+    .hero:before { content: ""; position: absolute; width: 460px; height: 460px; border-radius: 50%; right: -120px; top: -210px; background: #0875f9; filter: blur(100px); opacity: .42; z-index: 1; }
+    .hero-inner { position: relative; z-index: 2; padding: 58px 0 42px; display: grid; grid-template-columns: 1.05fr .95fr; align-items: center; gap: 36px; }
+    .eyebrow { display: inline-flex; align-items: center; gap: 9px; border: 1px solid #6bb8ff65; background: #0875f933; padding: 8px 14px; border-radius: 999px; color: #e3f2ff; font-size: 12px; font-weight: 800; letter-spacing: .3px; }
+    .eyebrow span { color: #65b6ff; }
+    h1 { margin: 20px 0 16px; max-width: 650px; font-size: clamp(38px, 5vw, 62px); letter-spacing: -2.5px; line-height: .99; }
+    .gradient-text { color: #73c2ff; }
+    .hero-copy { max-width: 540px; color: #d4e6ff; font-size: 15px; line-height: 1.75; margin: 0 0 23px; }
+    .hero-actions { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
+    .watch-link { display: inline-flex; gap: 10px; align-items: center; color: #f1f7ff; font-size: 13px; font-weight: 750; padding: 10px 4px; }
+    .play-small { display: grid; place-items: center; width: 30px; height: 30px; border: 1px solid #80c4ff; border-radius: 50%; color: #9bd4ff; }
+    .hero-proof { display: flex; flex-wrap: wrap; gap: 22px; margin-top: 31px; color: #d5e9ff; font-size: 11px; font-weight: 700; }
+    .hero-proof span { display: inline-flex; align-items: center; gap: 8px; }
+    .proof-icon { color: #59b8ff; font-size: 17px; }
+    .typing-panel { position: relative; min-height: 260px; display: flex; align-items: center; padding: 28px; border: 1px solid #8bc8ff66; border-radius: 25px; background: linear-gradient(145deg,#0c56b26b,#00193d91); box-shadow: inset 0 1px 0 #ffffff20, 0 25px 60px #00102b66; backdrop-filter: blur(7px); }
+    .typing-panel:before { content: ""; position: absolute; inset: 12px; border: 1px solid #ffffff12; border-radius: 17px; pointer-events: none; }
+    .typing-content { position: relative; width: 100%; }
+    .typing-label { color: #8dcaff; text-transform: uppercase; letter-spacing: 2px; font-size: 10px; font-weight: 850; margin-bottom: 17px; }
+    .typed-line { font-size: clamp(20px, 2.5vw, 29px); line-height: 1.5; font-weight: 850; letter-spacing: -.7px; color: #fff; min-height: 44px; }
+    .typed-line .cursor { display: inline-block; width: 2px; height: 1em; background: #70c6ff; margin-left: 4px; vertical-align: -.1em; animation: blink .8s steps(2,start) infinite; }
+    .typing-note { color: #c5ddff; font-size: 12px; margin-top: 16px; }
+    .soundwave { display: flex; align-items: center; gap: 4px; height: 28px; margin-top: 23px; }
+    .soundwave i { display: block; width: 3px; height: var(--h); border-radius: 4px; background: #42aaff; animation: wave 1s ease-in-out infinite alternate; animation-delay: var(--d); }
+    @keyframes blink { to { visibility: hidden; } }
+    @keyframes wave { from { transform: scaleY(.4); opacity: .55; } to { transform: scaleY(1); opacity: 1; } }
+
+    section { scroll-margin-top: 90px; }
+    .courses { padding: 55px 0 60px; background: linear-gradient(#fff,#f9fcff); }
+    .section-head { text-align: center; margin: 0 auto 27px; max-width: 650px; }
+    .kicker { color: #0868e8; font-size: 11px; text-transform: uppercase; letter-spacing: 1.5px; font-weight: 900; }
+    h2 { color: #0b3274; margin: 9px 0 8px; font-size: clamp(27px, 3.2vw, 36px); letter-spacing: -1px; line-height: 1.15; }
+    .section-head p { margin: 0; color: var(--muted); font-size: 14px; line-height: 1.6; }
+    .course-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 20px; }
+    .course-card { overflow: hidden; border: 1px solid #b7d8ff; border-radius: 13px; background: #fff; box-shadow: 0 8px 22px #174c8710; transition: transform .25s, box-shadow .25s; }
+    .course-card:hover { transform: translateY(-6px); box-shadow: var(--shadow); }
+    .video-cover { height: 174px; position: relative; overflow: hidden; background: #06336f; }
+    .video-cover video { width: 100%; height: 100%; object-fit: cover; opacity: .78; transition: transform .5s; }
+    .course-card:hover .video-cover video { transform: scale(1.06); }
+    .video-cover:after { content: ""; position: absolute; inset: 0; background: linear-gradient(0deg,#061f4c99,transparent 70%),linear-gradient(90deg,#0063d52b,#0a2b5c33); pointer-events: none; }
+    .duration { position: absolute; z-index: 1; top: 12px; right: 12px; background: #061b3bd9; color: white; border: 1px solid #ffffff44; padding: 5px 8px; border-radius: 6px; font-size: 10px; font-weight: 800; }
+    .cover-play { position: absolute; z-index: 1; top: 50%; left: 50%; transform: translate(-50%,-50%); width: 46px; height: 46px; display: grid; place-items: center; color: white; border: 2px solid #fff; border-radius: 50%; background: #0875f94d; font-size: 17px; }
+    .course-body { padding: 0 20px 19px; }
+    .course-icon { width: 50px; height: 50px; display: grid; place-items: center; margin-top: -25px; position: relative; z-index: 2; border: 3px solid #fff; border-radius: 50%; background: linear-gradient(145deg,#35a7ff,#0060ed); color: #fff; font-size: 22px; box-shadow: 0 5px 14px #0065df30; }
+    .course-body h3 { font-size: 17px; letter-spacing: -.35px; margin: 9px 0 7px; color: #102f65; }
+    .course-body p { color: #52698b; font-size: 12px; line-height: 1.7; min-height: 61px; margin: 0 0 14px; }
+    .btn-small { min-height: 36px; padding: 0 17px; font-size: 11px; }
+    .why { padding: 35px 0 40px; background: radial-gradient(ellipse at 10% 110%,#cfe8ff 0%,transparent 42%),linear-gradient(110deg,#f0f8ff,#fff 54%,#f1f8ff); position: relative; overflow: hidden; }
+    .why-grid { display: grid; grid-template-columns: .85fr 1.15fr; gap: 48px; align-items: center; }
+    .why-art { min-height: 200px; display: grid; place-items: center; color: #1685ff; position: relative; }
+    .art-orbit { width: 185px; height: 185px; border: 1px solid #a7d3ff; border-radius: 42% 58% 58% 42%; display: grid; place-items: center; transform: rotate(-10deg); background: linear-gradient(145deg,#fff,#d9edff); box-shadow: 0 22px 45px #0869d91a; }
+    .art-orbit svg { width: 100px; height: 100px; transform: rotate(10deg); }
+    .why-copy h2 { margin-top: 8px; }
+    .why-copy > p { max-width: 460px; color: #52698b; font-size: 13px; line-height: 1.8; }
+    .benefits { display: grid; grid-template-columns: 1fr 1fr; gap: 22px 18px; }
+    .benefit { display: flex; gap: 12px; align-items: center; }
+    .benefit-icon { flex: 0 0 48px; height: 48px; display: grid; place-items: center; color: #0875f9; background: #fff; border: 1px solid #b4d7ff; border-radius: 50%; font-size: 22px; }
+    .benefit strong { display: block; font-size: 12px; margin-bottom: 5px; color: #12366d; }
+    .benefit small { color: #617797; font-size: 10px; line-height: 1.5; }
+    .cta { color: white; text-align: center; padding: 29px 20px 32px; background: linear-gradient(110deg,#063b9a,#0875f9 58%,#0752c9); position: relative; overflow: hidden; }
+    .cta:before,.cta:after { content: ""; position: absolute; height: 130px; width: 120%; left: -10%; border: 1px solid #ffffff20; border-radius: 50%; transform: rotate(-5deg); }
+    .cta:before { top: 55px; } .cta:after { top: 78px; }
+    .cta-inner { position: relative; z-index: 1; }
+    .cta h2 { color: #fff; font-size: 23px; margin: 0 0 7px; }
+    .cta p { color: #d5e9ff; font-size: 12px; margin: 0 0 17px; }
+    .cta small { display: block; margin-top: 8px; color: #d5e9ff; font-size: 10px; }
+    footer { color: #d7e7ff; background: #031a3b; padding: 20px 0; font-size: 11px; }
+    .footer-inner { display: flex; align-items: center; justify-content: space-between; gap: 18px; }
+    .footer-brand { display: flex; align-items: center; gap: 9px; font-weight: 850; color: #fff; }
+    .footer-brand .brand-mark { width: 34px; height: 34px; border-radius: 11px; }
+    .footer-brand small { display: block; font-size: 9px; color: #a8c7f5; margin-top: 2px; font-weight: 600; }
+    .copyright { color: #a9c0e4; text-align: center; }
+    .socials { display: flex; gap: 13px; color: white; font-weight: 900; font-size: 13px; }
+    .socials a:hover { color: #6fc0ff; }
+
+    @media (max-width: 900px) {
+      .brand { min-width: auto; }
+      .nav-links { gap: 14px; }
+      .hero-inner { grid-template-columns: 1fr .8fr; gap: 20px; }
+      .typing-panel { padding: 22px; }
+      .course-grid { gap: 13px; }
+      .course-body { padding-inline: 15px; }
+      .why-grid { gap: 25px; }
+    }
+    @media (max-width: 720px) {
+      .wrap { width: min(100% - 32px, 560px); }
+      .topbar { height: 68px; }
+      .brand-name { font-size: 17px; }
+      .brand-mark { width: 39px; height: 39px; }
+      .menu-toggle { display: block; }
+      .nav-actions .btn-outline { display: none; }
+      .nav-actions .btn-primary { min-height: 39px; padding-inline: 14px; font-size: 11px; }
+      .nav-links { display: none; position: absolute; left: 16px; right: 16px; top: 61px; padding: 14px 18px; flex-direction: column; align-items: stretch; gap: 2px; border: 1px solid var(--line); border-radius: 15px; background: #fff; box-shadow: var(--shadow); }
+      .nav-links.open { display: flex; }
+      .nav-links a { padding: 11px 4px; }
+      .hero { min-height: auto; }
+      .hero-inner { grid-template-columns: 1fr; padding: 48px 0 36px; gap: 28px; }
+      h1 { font-size: clamp(39px, 11vw, 55px); letter-spacing: -1.8px; }
+      .hero-copy { font-size: 14px; }
+      .typing-panel { min-height: 205px; }
+      .typed-line { font-size: 25px; }
+      .hero-proof { gap: 12px 18px; }
+      .courses { padding: 42px 0; }
+      .course-grid { grid-template-columns: 1fr; gap: 18px; }
+      .video-cover { height: 195px; }
+      .course-body p { min-height: 0; }
+      .why { padding: 32px 0; }
+      .why-grid { grid-template-columns: 1fr; gap: 15px; }
+      .why-art { min-height: 145px; }
+      .art-orbit { width: 140px; height: 140px; }
+      .art-orbit svg { width: 78px; height: 78px; }
+      .benefits { gap: 18px 10px; }
+      .benefit { align-items: flex-start; gap: 9px; }
+      .benefit-icon { flex-basis: 40px; height: 40px; font-size: 19px; }
+      .footer-inner { flex-wrap: wrap; justify-content: center; text-align: center; }
+      .copyright { order: 3; width: 100%; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <!-- Update COURSE_URL below if this file is deployed at a different path. -->
+  <header class="topbar">
+    <div class="wrap nav">
+      <a class="brand" href="#home" aria-label="PrimeTask Transcription Academy home">
+        <span class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 32 32" fill="none"><path d="M7 18v-3a9 9 0 0 1 18 0v3" stroke="currentColor" stroke-width="2.8" stroke-linecap="round"/><rect x="4" y="16" width="6" height="10" rx="3" fill="currentColor"/><rect x="22" y="16" width="6" height="10" rx="3" fill="currentColor"/><path d="M12 17v8m4-11v14m4-11v8" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg>
+        </span>
+        <span class="brand-name">PrimeTask<small>Transcription Academy</small></span>
+      </a>
+      <nav class="nav-links" id="navLinks" aria-label="Main navigation">
+        <a class="active" href="#home">Home</a>
+        <a href="#courses">Courses</a>
+        <a href="#about">About</a>
+        <a href="#features">Features</a>
+        <a href="#contact">Contact</a>
+      </nav>
+      <div class="nav-actions">
+        <a class="btn btn-outline" href="../../../frontend/transcribe.html">Login</a>
+        <a class="btn btn-primary" href="../../../frontend/transcribe.html">Get Started</a>
+        <button class="menu-toggle" id="menuToggle" aria-label="Toggle navigation" aria-expanded="false">☰</button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero" id="home">
+      <div class="hero-media" aria-hidden="true">
+        <video autoplay muted loop playsinline preload="metadata" poster="https://images.pexels.com/photos/7567529/pexels-photo-7567529.jpeg?auto=compress&cs=tinysrgb&w=1600">
+          <source src="https://videos.pexels.com/video-files/3129671/3129671-hd_1920_1080_25fps.mp4" type="video/mp4">
+        </video>
+      </div>
+      <div class="wrap hero-inner">
+        <div>
+          <div class="eyebrow">LEARN <span>•</span> TRANSCRIBE <span>•</span> EARN</div>
+          <h1>PrimeTask<br><span class="gradient-text">Transcription Academy</span></h1>
+          <p class="hero-copy">Turn your listening skills into real opportunities. Learn transcription with practical guidance, focused training, and a clear path to stronger work.</p>
+          <div class="hero-actions">
+            <a class="btn btn-primary" href="../../../frontend/transcribe.html">Start Learning Now <span aria-hidden="true">→</span></a>
+            <a class="watch-link" href="#courses"><span class="play-small">▶</span> Explore the courses</a>
+          </div>
+          <div class="hero-proof">
+            <span><b class="proof-icon">▦</b> Flexible Learning</span>
+            <span><b class="proof-icon">∞</b> Learn at Your Pace</span>
+            <span><b class="proof-icon">✧</b> Practical Skills</span>
+          </div>
+        </div>
+        <div class="typing-panel" aria-label="Rotating academy messages">
+          <div class="typing-content">
+            <div class="typing-label">Your next skill starts here</div>
+            <div class="typed-line"><span id="typedText">Learn Transcription</span><span class="cursor" aria-hidden="true"></span></div>
+            <div class="typing-note" id="typingNote">Listen closely. Type accurately. Improve every day.</div>
+            <div class="soundwave" aria-hidden="true">
+              <i style="--h:8px;--d:-.1s"></i><i style="--h:17px;--d:-.4s"></i><i style="--h:11px;--d:-.2s"></i><i style="--h:24px;--d:-.6s"></i><i style="--h:15px;--d:-.3s"></i><i style="--h:27px;--d:-.5s"></i><i style="--h:12px;--d:-.1s"></i><i style="--h:20px;--d:-.7s"></i><i style="--h:9px;--d:-.2s"></i><i style="--h:25px;--d:-.4s"></i><i style="--h:15px;--d:-.1s"></i><i style="--h:21px;--d:-.5s"></i><i style="--h:10px;--d:-.3s"></i><i style="--h:18px;--d:-.6s"></i><i style="--h:7px;--d:-.2s"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="courses" id="courses">
+      <div class="wrap">
+        <div class="section-head">
+          <div class="kicker">Explore our courses</div>
+          <h2>Your Path to Success</h2>
+          <p>Choose a learning path and start building useful, real-world transcription skills.</p>
+        </div>
+        <div class="course-grid">
+          <article class="course-card">
+            <div class="video-cover">
+              <video autoplay muted loop playsinline preload="metadata" poster="https://images.pexels.com/photos/7516363/pexels-photo-7516363.jpeg?auto=compress&cs=tinysrgb&w=1000">
+                <source src="https://videos.pexels.com/video-files/3209298/3209298-hd_1920_1080_25fps.mp4" type="video/mp4">
+              </video>
+              <span class="duration">CORE SKILL</span><span class="cover-play" aria-hidden="true">▶</span>
+            </div>
+            <div class="course-body">
+              <div class="course-icon" aria-hidden="true">🎧</div>
+              <h3>Audio Transcription</h3>
+              <p>Practice turning audio into clear, accurate text while learning listening techniques and quality checks.</p>
+              <a class="btn btn-primary btn-small" href="../../../frontend/transcribe.html">Learn More <span>→</span></a>
+            </div>
+          </article>
+          <article class="course-card">
+            <div class="video-cover">
+              <video autoplay muted loop playsinline preload="metadata" poster="https://images.pexels.com/photos/4050315/pexels-photo-4050315.jpeg?auto=compress&cs=tinysrgb&w=1000">
+                <source src="https://videos.pexels.com/video-files/5198154/5198154-hd_1920_1080_25fps.mp4" type="video/mp4">
+              </video>
+              <span class="duration">PRACTICE</span><span class="cover-play" aria-hidden="true">▶</span>
+            </div>
+            <div class="course-body">
+              <div class="course-icon" aria-hidden="true">▤</div>
+              <h3>Typing &amp; Formatting</h3>
+              <p>Build typing speed, organize transcripts, and learn clean formatting for professional deliverables.</p>
+              <a class="btn btn-primary btn-small" href="../../../frontend/transcribe.html">Learn More <span>→</span></a>
+            </div>
+          </article>
+          <article class="course-card">
+            <div class="video-cover">
+              <video autoplay muted loop playsinline preload="metadata" poster="https://images.pexels.com/photos/7688336/pexels-photo-7688336.jpeg?auto=compress&cs=tinysrgb&w=1000">
+                <source src="https://videos.pexels.com/video-files/6804109/6804109-hd_1920_1080_25fps.mp4" type="video/mp4">
+              </video>
+              <span class="duration">CAREER PATH</span><span class="cover-play" aria-hidden="true">▶</span>
+            </div>
+            <div class="course-body">
+              <div class="course-icon" aria-hidden="true">↗</div>
+              <h3>Freelancing &amp; Earning</h3>
+              <p>Explore client communication, setting expectations, and building a reliable transcription workflow.</p>
+              <a class="btn btn-primary btn-small" href="../../../frontend/transcribe.html">Learn More <span>→</span></a>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="why" id="about">
+      <div class="wrap why-grid">
+        <div class="why-art" aria-hidden="true">
+          <div class="art-orbit">
+            <svg viewBox="0 0 120 120" fill="none"><path d="M28 22h47l18 18v57H28z" fill="#fff" stroke="#70b8ff" stroke-width="3"/><path d="M75 22v20h18" stroke="#70b8ff" stroke-width="3"/><path d="M42 57v13m9-22v31m9-25v19m9-30v37" stroke="#0875f9" stroke-width="4" stroke-linecap="round"/><path d="M42 84h39" stroke="#8fcaff" stroke-width="4" stroke-linecap="round"/><path d="M22 43v18a15 15 0 0 0 15 15h4M22 43a7 7 0 0 1 14 0v13a7 7 0 0 1-14 0zM78 43a7 7 0 0 1 14 0v13a7 7 0 0 1-14 0z" stroke="#0875f9" stroke-width="4" stroke-linecap="round"/></svg>
+          </div>
+        </div>
+        <div class="why-copy" id="features">
+          <div class="kicker">Why choose us</div>
+          <h2>Learn. Grow. Earn.</h2>
+          <p>PrimeTask Transcription Academy brings learning and practical skill-building together, helping you develop accuracy, confidence, and a stronger foundation for future opportunities.</p>
+          <div class="benefits">
+            <div class="benefit"><span class="benefit-icon">♧</span><div><strong>Guided Learning</strong><small>Clear steps for building your skills</small></div></div>
+            <div class="benefit"><span class="benefit-icon">♧</span><div><strong>Practical Exercises</strong><small>Learn by practising real workflows</small></div></div>
+            <div class="benefit"><span class="benefit-icon">∞</span><div><strong>Learn at Your Pace</strong><small>Return to lessons as you progress</small></div></div>
+            <div class="benefit"><span class="benefit-icon">♧</span><div><strong>Skill-Focused Support</strong><small>Build confidence one task at a time</small></div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="cta" id="contact">
+      <div class="cta-inner">
+        <h2>Ready to start your transcription journey?</h2>
+        <p>Build your skills with focused lessons and practical learning.</p>
+        <a class="btn btn-white" href="../../../frontend/transcribe.html">Go to Course <span>→</span></a>
+        <small>Course learning page: frontend/transcribe.html</small>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap footer-inner">
+      <a class="footer-brand" href="#home">
+        <span class="brand-mark" aria-hidden="true">♫</span>
+        <span>PrimeTask<small>Transcription Academy</small></span>
+      </a>
+      <div class="copyright">© <span id="year"></span> PrimeTask Transcription Academy. All rights reserved.</div>
+      <div class="socials" aria-label="Social links"><a href="#contact" aria-label="YouTube">▶</a><a href="#contact" aria-label="Facebook">f</a><a href="#contact" aria-label="LinkedIn">in</a></div>
+    </div>
+  </footer>
+
+  <script>
+    (() => {
+      // The page remains functional without a framework or separate JavaScript file.
+      const COURSE_URL = "../../../frontend/transcribe.html";
+      document.querySelectorAll('a[href="../../../frontend/transcribe.html"]').forEach(link => {
+        link.href = COURSE_URL;
+      });
+
+      const messages = [
+        { text: "Learn Transcription", note: "Listen closely. Type accurately. Improve every day." },
+        { text: "Build Your Skills", note: "Practise the details that make your work stand out." },
+        { text: "Earn Through Accuracy", note: "Turn reliable work habits into new opportunities." }
+      ];
+      const typedText = document.getElementById("typedText");
+      const typingNote = document.getElementById("typingNote");
+      const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      let messageIndex = 0;
+      let characterIndex = messages[0].text.length;
+      let deleting = true;
+
+      function typeLoop() {
+        const current = messages[messageIndex];
+        if (deleting) {
+          characterIndex--;
+          typedText.textContent = current.text.slice(0, Math.max(0, characterIndex));
+          if (characterIndex <= 0) {
+            deleting = false;
+            messageIndex = (messageIndex + 1) % messages.length;
+            typingNote.textContent = messages[messageIndex].note;
+            window.setTimeout(typeLoop, 350);
+            return;
+          }
+          window.setTimeout(typeLoop, 38);
+        } else {
+          const next = messages[messageIndex];
+          characterIndex++;
+          typedText.textContent = next.text.slice(0, characterIndex);
+          if (characterIndex >= next.text.length) {
+            deleting = true;
+            window.setTimeout(typeLoop, 1900);
+            return;
+          }
+          window.setTimeout(typeLoop, 78);
+        }
+      }
+
+      if (reduceMotion) {
+        typedText.textContent = messages[0].text;
+        typingNote.textContent = messages[0].note;
+      } else {
+        window.setTimeout(typeLoop, 1700);
+      }
+
+      const menuToggle = document.getElementById("menuToggle");
+      const navLinks = document.getElementById("navLinks");
+      menuToggle.addEventListener("click", () => {
+        const isOpen = navLinks.classList.toggle("open");
+        menuToggle.setAttribute("aria-expanded", String(isOpen));
+        menuToggle.textContent = isOpen ? "×" : "☰";
+      });
+      navLinks.querySelectorAll("a").forEach(link => link.addEventListener("click", () => {
+        navLinks.classList.remove("open");
+        menuToggle.setAttribute("aria-expanded", "false");
+        menuToggle.textContent = "☰";
+      }));
+      document.getElementById("year").textContent = new Date().getFullYear();
+
+      // If a video source fails, its poster and animated blue overlay remain visible.
+      document.querySelectorAll("video").forEach(video => {
+        video.addEventListener("error", () => { video.style.display = "none"; });
+      });
+    })();
+  </script>
+</body>
+</html>

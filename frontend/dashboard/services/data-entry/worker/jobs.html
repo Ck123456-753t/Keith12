@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  
+  
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#101d38">
+<title>Available Orders | PrimeTask Data Entry</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --navy:#101d38;--blue:#2878e8;--orange:#ff8b35;
+  --ink:#17233b;--muted:#78869b;--line:#e7edf5;
+  --page:#f4f7fc;--white:#fff;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--page);color:var(--ink);font-family:"DM Sans",sans-serif}
+a{text-decoration:none;color:inherit}
+button,input,select{font:inherit}
+.app{min-height:100vh;display:grid;grid-template-columns:255px minmax(0,1fr)}
+.sidebar{background:var(--navy);color:white;padding:25px 17px;position:sticky;top:0;height:100vh;display:flex;flex-direction:column;z-index:20}
+.brand{display:flex;align-items:center;gap:12px;padding:4px 10px 30px}
+.brand-mark{width:43px;height:43px;border-radius:14px;background:linear-gradient(145deg,#3989ff,#1455bb);display:grid;place-items:center;font:800 19px Manrope}
+.brand-name{font:800 15px Manrope;display:block}
+.brand-sub{color:#aab9d2;font-size:10px;margin-top:3px;letter-spacing:1.3px;text-transform:uppercase;display:block}
+.nav-label{padding:13px 12px 9px;color:#8294b2;font-size:10px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase}
+.nav-list{display:grid;gap:6px}
+.nav-link{min-height:47px;padding:0 13px;border-radius:11px;display:flex;align-items:center;gap:12px;color:#bdc9dc;font-size:13px;font-weight:600}
+.nav-link:hover{background:#ffffff12;color:white}
+.nav-link.active{color:white;background:linear-gradient(100deg,#2878e8,#2366c7);box-shadow:0 7px 18px #1767d044}
+.nav-icon{width:21px;text-align:center;font-size:17px}
+.sidebar-bottom{margin-top:auto}
+.help-card{border:1px solid #ffffff1b;background:#ffffff0b;border-radius:15px;padding:15px;margin:18px 2px 0}
+.help-card strong{font-size:12px}
+.help-card p{color:#aab9d2;font-size:11px;line-height:1.6;margin:7px 0 12px}
+.help-card a{color:#ffad70;font-size:11px;font-weight:700}
+.main{min-width:0}
+.topbar{height:76px;padding:0 34px;background:#ffffffed;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:10;backdrop-filter:blur(12px)}
+.top-left,.top-right{display:flex;align-items:center;gap:13px}
+.menu-toggle{display:none;width:40px;height:40px;border:1px solid var(--line);background:white;border-radius:10px;font-size:19px}
+.breadcrumb{color:var(--muted);font-size:12px}
+.breadcrumb strong{color:var(--ink)}
+.secure{color:#718097;font-size:11px;font-weight:600}
+.avatar{width:39px;height:39px;border-radius:50%;background:#eaf2ff;color:var(--blue);display:grid;place-items:center;font-weight:800}
+.content{max-width:1500px;margin:auto;padding:30px 34px 55px}
+.hero{min-height:220px;border-radius:22px;padding:32px 35px;color:white;display:flex;align-items:center;position:relative;overflow:hidden;background:linear-gradient(90deg,#0d1d3af2 0%,#142e55dc 54%,#142e5540 100%),url("https://images.unsplash.com/photo-1554224155-6726b3ff858f?auto=format&fit=crop&w=1800&q=85") center/cover;box-shadow:0 15px 35px #10264b20}
+.hero:after{content:"";position:absolute;width:270px;height:270px;border:1px solid #ffffff25;border-radius:50%;right:8%;top:-100px;box-shadow:0 0 0 35px #ffffff09,0 0 0 75px #ffffff06}
+.hero-content{position:relative;z-index:1;max-width:650px}
+.eyebrow{color:#ffb47f;font-size:10px;font-weight:800;letter-spacing:2px;text-transform:uppercase}
+h1{font:800 clamp(27px,3vw,37px) Manrope;margin:13px 0 9px;letter-spacing:-1px}
+.hero p{color:#d2dced;font-size:13px;line-height:1.8;margin:0;max-width:520px}
+.hero-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px}
+.btn{border:0;border-radius:9px;min-height:41px;padding:0 16px;display:inline-flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;cursor:pointer}
+.primary{background:var(--orange);color:#17233b}
+.secondary{border:1px solid #ffffff55;color:white;background:#ffffff10}
+.toolbar{display:flex;align-items:center;justify-content:space-between;gap:14px;margin:27px 0 16px}
+.heading h2{font:800 17px Manrope;margin:0}
+.heading p{font-size:11px;color:var(--muted);margin:5px 0 0}
+.bid-balance{background:white;border:1px solid var(--line);border-radius:12px;padding:11px 15px;display:flex;align-items:center;gap:12px}
+.bid-symbol{width:34px;height:34px;border-radius:10px;background:#fff1e7;color:#e47a2c;display:grid;place-items:center;font-weight:900}
+.bid-balance small{display:block;color:var(--muted);font-size:10px}
+.bid-balance strong{display:block;font:800 17px Manrope;margin-top:2px}
+.filters{background:white;border:1px solid var(--line);border-radius:14px;padding:13px;display:grid;grid-template-columns:minmax(180px,1fr) 190px 170px;gap:10px}
+.field{height:42px;border:1px solid var(--line);border-radius:9px;padding:0 12px;color:var(--ink);background:#fff;outline:none;width:100%;font-size:11px}
+.field:focus{border-color:var(--blue);box-shadow:0 0 0 3px #2878e817}
+.orders-heading{display:flex;justify-content:space-between;align-items:center;margin:24px 0 13px}
+.orders-heading strong{font:800 14px Manrope}
+.orders-heading span{font-size:10px;color:var(--muted)}
+.order-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:15px}
+.order-card{background:white;border:1px solid var(--line);border-radius:15px;padding:19px;min-width:0}
+.order-top{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.category{font-size:9px;font-weight:800;letter-spacing:.7px;text-transform:uppercase;color:#246dce;background:#edf4ff;padding:7px 9px;border-radius:7px}
+.status{font-size:9px;font-weight:800;color:#27865f;background:#eaf7f1;padding:7px 9px;border-radius:7px}
+.order-card h3{font:800 15px Manrope;margin:16px 0 7px}
+.description{font-size:11px;color:var(--muted);line-height:1.7;margin:0;min-height:38px}
+.meta{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:14px 0;margin:15px 0}
+.meta small{display:block;color:var(--muted);font-size:9px}
+.meta strong{display:block;font-size:12px;margin-top:5px}
+.meta .reward{color:#21845b}
+.card-bottom{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.format{color:var(--muted);font-size:10px}
+.apply{background:var(--blue);color:white;border-radius:8px;padding:10px 13px;font-size:10px;font-weight:800;border:0;cursor:pointer}
+.apply:disabled{background:#dce3ed;color:#78869b;cursor:not-allowed}
+.empty{background:white;border:1px solid var(--line);border-radius:15px;min-height:260px;display:flex;align-items:center;justify-content:center;text-align:center;padding:25px}
+.empty-icon{width:53px;height:53px;border-radius:16px;background:#edf4ff;color:var(--blue);display:grid;place-items:center;font-size:23px;margin:0 auto 12px}
+.empty strong{font:800 14px Manrope}
+.empty p{font-size:11px;color:var(--muted);line-height:1.7;max-width:350px;margin:8px auto 0}
+.footer{text-align:center;color:#99a4b4;font-size:10px;padding:27px 0 0}
+@media(max-width:1050px){.content{padding:25px 23px 45px}.topbar{padding:0 23px}}
+@media(max-width:760px){
+.app{display:block}.sidebar{position:fixed;left:0;top:0;width:270px;transform:translateX(-105%);transition:transform .25s;box-shadow:15px 0 40px #07152b33}
+.sidebar.open{transform:translateX(0)}.menu-toggle{display:grid;place-items:center}.topbar{height:65px;padding:0 15px}.secure{display:none}
+.content{padding:18px 14px 35px}.hero{min-height:235px;padding:25px 21px;background-position:60% center}
+.toolbar{align-items:flex-start;flex-direction:column}.filters{grid-template-columns:1fr}.order-grid{grid-template-columns:1fr}
+}
+</style>
+<link rel="icon" type="image/svg+xml" href="/assets/primetask-logo.svg">
+</head>
+<body>
+<div class="app">
+<aside class="sidebar" id="sidebar">
+  <a class="brand" href="index"><span class="brand-mark">PT</span><span><span class="brand-name">PrimeTask</span><span class="brand-sub">Data Entry Workspace</span></span></a>
+  <div class="nav-label">Workspace</div>
+  <nav class="nav-list" aria-label="Data Entry navigation">
+    <a class="nav-link" href="index"><span class="nav-icon">⌂</span>Dashboard</a>
+    <a class="nav-link active" href="jobs"><span class="nav-icon">▤</span>Available Orders</a>
+    <a class="nav-link" href="my-jobs"><span class="nav-icon">◷</span>My Orders</a>
+    <a class="nav-link" href="bids"><span class="nav-icon">◇</span>My Bids</a>
+    <a class="nav-link" href="submissions"><span class="nav-icon">✓</span>Submissions</a>
+  </nav>
+  <div class="nav-label">Finance</div>
+  <nav class="nav-list">
+    <a class="nav-link" href="buy-bids"><span class="nav-icon">＋</span>Buy Bids</a>
+    <a class="nav-link" href="earnings"><span class="nav-icon">$</span>Earnings & Transactions</a>
+    <a class="nav-link" href="withdrawals"><span class="nav-icon">⇧</span>Withdrawals</a>
+  </nav>
+  <div class="nav-label">Account</div>
+  <nav class="nav-list">
+    <a class="nav-link" href="profile"><span class="nav-icon">◎</span>My Profile</a>
+    <a class="nav-link" href="../../../../data-entry"><span class="nav-icon">▧</span>Learning Guide</a>
+  </nav>
+  <div class="sidebar-bottom"><div class="help-card"><strong>Need a hand?</strong><p>Review the Data Entry guide for tools, file formats and quality-control practices.</p><a href="../../../../data-entry">Open learning guide →</a></div></div>
+</aside>
+
+<main class="main">
+<header class="topbar">
+  <div class="top-left">
+    <button class="menu-toggle" id="menuToggle" type="button" aria-label="Open navigation" aria-expanded="false">☰</button>
+    <div class="breadcrumb">Data Entry Workspace / <strong>Available Orders</strong></div>
+  </div>
+  <div class="top-right"><span class="secure">PrimeTask secure workspace</span><div class="avatar" id="userAvatar">PT</div></div>
+</header>
+
+<div class="content">
+<section class="hero">
+  <div class="hero-content">
+    <div class="eyebrow">Order marketplace</div>
+    <h1>Find your next order.</h1>
+    <p>Explore available Data Entry assignments, review their requirements and use your purchased bids to apply. Read each order carefully before spending bids.</p>
+    <div class="hero-actions">
+      <a class="btn primary" href="buy-bids">Purchase bids ↗</a>
+      <a class="btn secondary" href="bids">View my bids</a>
+    </div>
+  </div>
+</section>
+
+<div class="toolbar">
+  <div class="heading"><h2>Browse available orders</h2><p>Only orders published by the Data Entry admin should appear here.</p></div>
+  <div class="bid-balance"><span class="bid-symbol">◇</span><span><small>Available bids</small><strong id="bidBalance">--</strong></span></div>
+</div>
+
+<section class="filters" aria-label="Order filters">
+  <input class="field" id="searchOrders" type="search" placeholder="Search orders by title or keyword">
+  <select class="field" id="categoryFilter">
+    <option value="">All categories</option>
+    <option value="spreadsheet">Spreadsheet data entry</option>
+    <option value="document">Document processing</option>
+    <option value="research">Data collection</option>
+    <option value="other">Other</option>
+  </select>
+  <select class="field" id="sortOrders">
+    <option value="newest">Newest orders</option>
+    <option value="reward-high">Highest reward</option>
+    <option value="deadline">Closest deadline</option>
+  </select>
+</section>
+
+<div class="orders-heading"><strong>Published orders</strong><span id="orderCount">Awaiting live order data</span></div>
+
+<section class="order-grid" id="orderGrid" aria-live="polite">
+  <div class="empty" style="grid-column:1/-1">
+    <div>
+      <div class="empty-icon">▤</div>
+      <strong>No orders loaded yet</strong>
+      <p>Published orders will appear here with their USD reward, required bids, deadline, instructions and accepted file formats.</p>
+    </div>
+  </div>
+</section>
+
+<footer class="footer">PrimeTask Workspace · Data Entry Order Marketplace</footer>
+</div>
+</main>
+</div>
+
+<script src="../../../../assets/js/config.js"></script>
+<script>
+"use strict";
+
+const sidebar = document.getElementById("sidebar");
+const menuToggle = document.getElementById("menuToggle");
+const orderGrid = document.getElementById("orderGrid");
+const bidBalanceElement = document.getElementById("bidBalance");
+const orderCountElement = document.getElementById("orderCount");
+const searchInput = document.getElementById("searchOrders");
+const categoryFilter = document.getElementById("categoryFilter");
+const sortFilter = document.getElementById("sortOrders");
+
+let availableJobs = [];
+let bidBalance = 0;
+let claimingJobId = null;
+
+menuToggle.addEventListener("click", () => {
+  const open = sidebar.classList.toggle("open");
+  menuToggle.setAttribute("aria-expanded", String(open));
+  menuToggle.textContent = open ? "×" : "☰";
+});
+
+document.addEventListener("click", event => {
+  if (
+    window.innerWidth <= 760 &&
+    sidebar.classList.contains("open") &&
+    !sidebar.contains(event.target) &&
+    !menuToggle.contains(event.target)
+  ) {
+    sidebar.classList.remove("open");
+    menuToggle.setAttribute("aria-expanded", "false");
+    menuToggle.textContent = "☰";
+  }
+});
+
+function apiUrl(path) {
+  const base = String(window.PTW_API_BASE || "").replace(/\/+$/, "");
+  if (!base) throw new Error("The PrimeTask API configuration is missing.");
+  return `${base}${path}`;
+}
+
+function escapeHtml(value) {
+  return String(value ?? "").replace(/[&<>"']/g, character => ({
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "'": "&#39;"
+  })[character]);
+}
+
+function formatUsd(cents) {
+  const amount = Number(cents);
+  if (!Number.isFinite(amount)) return "Unavailable";
+
+  return new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "USD"
+  }).format(amount / 100);
+}
+
+function formatCategory(category) {
+  const labels = {
+    spreadsheet: "Spreadsheet data entry",
+    document: "Document processing",
+    research: "Data collection",
+    other: "Other"
+  };
+
+  return labels[category] || "Data Entry";
+}
+
+function formatFileFormats(formats) {
+  if (!Array.isArray(formats) || !formats.length) {
+    return "No document upload";
+  }
+
+  return formats.map(format => String(format).toUpperCase()).join(", ");
+}
+
+function showMessage(title, message) {
+  orderGrid.innerHTML = `
+    <div class="empty" style="grid-column:1/-1">
+      <div>
+        <div class="empty-icon">▤</div>
+        <strong>${escapeHtml(title)}</strong>
+        <p>${escapeHtml(message)}</p>
+      </div>
+    </div>
+  `;
+}
+
+function updateBidBalance(value) {
+  const amount = Number(value);
+  bidBalance = Number.isSafeInteger(amount) && amount >= 0 ? amount : 0;
+  bidBalanceElement.textContent = String(bidBalance);
+}
+
+function renderJobs() {
+  const search = searchInput.value.trim().toLowerCase();
+  const category = categoryFilter.value;
+  const sort = sortFilter.value;
+
+  let filtered = availableJobs.filter(job => {
+    const searchable = [
+      job.title,
+      job.description,
+      job.instructions,
+      formatCategory(job.category)
+    ].join(" ").toLowerCase();
+
+    return (!search || searchable.includes(search)) &&
+      (!category || job.category === category);
+  });
+
+  filtered.sort((a, b) => {
+    if (sort === "reward-high") {
+      return Number(b.rewardCents || 0) - Number(a.rewardCents || 0);
+    }
+
+    if (sort === "deadline") {
+      return Number(a.timeLimitMinutes || 0) - Number(b.timeLimitMinutes || 0);
+    }
+
+    return new Date(b.publishedAt || b.createdAt || 0) -
+      new Date(a.publishedAt || a.createdAt || 0);
+  });
+
+  orderCountElement.textContent =
+    `${filtered.length} ${filtered.length === 1 ? "order" : "orders"} found`;
+
+  if (!filtered.length) {
+    showMessage(
+      availableJobs.length ? "No matching orders" : "No orders available",
+      availableJobs.length
+        ? "Try changing your search or category filters."
+        : "There are currently no published Data Entry orders. Check again later."
+    );
+    return;
+  }
+
+  orderGrid.innerHTML = filtered.map(job => {
+    const id = escapeHtml(job._id);
+    const title = escapeHtml(job.title);
+    const description = escapeHtml(job.description || "No additional description provided.");
+    const instructions = escapeHtml(job.instructions || "No additional instructions provided.");
+    const bids = Number(job.requiredBids || 0);
+    const minutes = Number(job.timeLimitMinutes || 0);
+    const formats = escapeHtml(formatFileFormats(job.acceptedFileFormats));
+    const insufficient = bidBalance < bids;
+
+    return `
+      <article class="order-card" data-job-id="${id}">
+        <div class="order-card-top">
+          <span class="order-category">${escapeHtml(formatCategory(job.category))}</span>
+          <span class="order-reward">${escapeHtml(formatUsd(job.rewardCents))}</span>
+        </div>
+
+        <h3>${title}</h3>
+        <p>${description}</p>
+
+        <div class="order-details">
+          <div><small>Required bids</small><strong>${bids}</strong></div>
+          <div><small>Work time limit</small><strong>${minutes} minutes</strong></div>
+          <div><small>Accepted files</small><strong>${formats}</strong></div>
+        </div>
+
+        <details class="order-instructions">
+          <summary>Read order instructions</summary>
+          <p>${instructions}</p>
+        </details>
+
+        <button
+          class="btn primary claim-order-btn"
+          type="button"
+          data-claim-id="${id}"
+          ${insufficient || claimingJobId ? "disabled" : ""}
+        >
+          ${claimingJobId === job._id
+            ? "Claiming..."
+            : insufficient
+              ? "Insufficient bids"
+              : `Claim order · ${bids} bids`}
+        </button>
+      </article>
+    `;
+  }).join("");
+}
+
+async function loadJobs() {
+  showMessage("Loading available orders", "Connecting to the Data Entry marketplace...");
+
+  try {
+    const response = await fetch(apiUrl("/data-entry/jobs"), {
+      method: "GET",
+      credentials: "include",
+      headers: { Accept: "application/json" }
+    });
+
+    const result = await response.json().catch(() => ({}));
+
+    if (!response.ok || result.success !== true) {
+      throw new Error(result.message || "Could not load available orders.");
+    }
+
+    availableJobs = Array.isArray(result.jobs) ? result.jobs : [];
+    updateBidBalance(result.bidBalance);
+    renderJobs();
+  } catch (error) {
+    console.error("Data Entry jobs loading failed:", error);
+    showMessage(
+      "Could not load orders",
+      error.message || "Check your connection and try again."
+    );
+  }
+}
+
+async function claimJob(jobId, button) {
+  const job = availableJobs.find(item => item._id === jobId);
+  if (!job || claimingJobId) return;
+
+  const requiredBids = Number(job.requiredBids || 0);
+
+  if (bidBalance < requiredBids) {
+    alert("You do not have enough Data Entry bids. Purchase more bids before claiming this order.");
+    return;
+  }
+
+  const confirmed = window.confirm(
+    `Claim "${job.title}" for ${requiredBids} bids?\n\n` +
+    `Your bids will be deducted immediately. Expired assignments are not refunded.\n\n` +
+    `You will have ${job.timeLimitMinutes} minutes to complete the order.`
+  );
+
+  if (!confirmed) return;
+
+  claimingJobId = jobId;
+  button.disabled = true;
+  button.textContent = "Claiming...";
+
+  try {
+    const response = await fetch(
+      apiUrl(`/data-entry/jobs/${encodeURIComponent(jobId)}/claim`),
+      {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({})
+      }
+    );
+
+    const result = await response.json().catch(() => ({}));
+
+    if (!response.ok || result.success !== true) {
+      if (result.code === "INSUFFICIENT_BIDS") {
+        updateBidBalance(0);
+      }
+
+      throw new Error(result.message || "Could not claim this order.");
+    }
+
+    if (result.bidWallet &&
+        Number.isSafeInteger(Number(result.bidWallet.balanceBids))) {
+      updateBidBalance(Number(result.bidWallet.balanceBids));
+    }
+
+    availableJobs = availableJobs.filter(item => item._id !== jobId);
+    renderJobs();
+
+    alert(
+      `Order claimed successfully!\n\n` +
+      `Order: ${result.job?.title || job.title}\n` +
+      `Remaining bids: ${bidBalance}\n\n` +
+      `Open My Orders to start working.`
+    );
+  } catch (error) {
+    console.error("Data Entry job claim failed:", error);
+    alert(error.message || "Could not claim this order.");
+    await loadJobs();
+  } finally {
+    claimingJobId = null;
+    renderJobs();
+  }
+}
+
+orderGrid.addEventListener("click", event => {
+  const button = event.target.closest("[data-claim-id]");
+  if (!button || button.disabled) return;
+
+  claimJob(button.dataset.claimId, button);
+});
+
+searchInput.addEventListener("input", renderJobs);
+categoryFilter.addEventListener("change", renderJobs);
+sortFilter.addEventListener("change", renderJobs);
+
+async function loadWorkerIdentity() {
+  if (typeof window.PTW_AUTH_API_ME !== "string") return;
+
+  try {
+    const response = await fetch(window.PTW_AUTH_API_ME, {
+      credentials: "include",
+      headers: { Accept: "application/json" }
+    });
+
+    if (!response.ok) return;
+
+    const result = await response.json();
+    const user = result.user || result.data?.user || result;
+
+    if (user.role !== "user") return;
+
+    const first = String(user.firstName || "").trim();
+    const last = String(user.lastName || "").trim();
+
+    document.getElementById("userAvatar").textContent =
+      (first.charAt(0) || "P").toUpperCase() +
+      (last.charAt(0) || "").toUpperCase();
+  } catch (error) {
+    console.error("Data Entry account check failed:", error);
+  }
+}
+
+const pageStyles = document.createElement("style");
+pageStyles.textContent = `
+  .order-card {
+    min-width: 0;
+    padding: 20px;
+    border: 1px solid var(--border, #e5e7eb);
+    border-radius: 14px;
+    background: var(--card, #fff);
+    display: flex;
+    flex-direction: column;
+    gap: 13px;
+  }
+  .order-card-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .order-category {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--muted, #64748b);
+  }
+  .order-reward {
+    font-size: 19px;
+    font-weight: 800;
+    color: var(--primary, #1d4ed8);
+  }
+  .order-card h3 { margin: 0; overflow-wrap: anywhere; }
+  .order-card > p { margin: 0; line-height: 1.6; }
+  .order-details {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+    gap: 12px;
+  }
+  .order-details > div {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    min-width: 0;
+  }
+  .order-details small {
+    color: var(--muted, #64748b);
+    font-size: 11px;
+  }
+  .order-details strong {
+    font-size: 13px;
+    overflow-wrap: anywhere;
+  }
+  .order-instructions {
+    padding: 11px;
+    border-radius: 9px;
+    background: var(--surface, #f8fafc);
+    font-size: 13px;
+  }
+  .order-instructions summary { cursor: pointer; font-weight: 700; }
+  .order-instructions p { line-height: 1.6; white-space: pre-wrap; }
+  .claim-order-btn:disabled { opacity: .55; cursor: not-allowed; }
+`;
+document.head.appendChild(pageStyles);
+
+loadWorkerIdentity();
+loadJobs();
+</script>
+</body>
+</html>

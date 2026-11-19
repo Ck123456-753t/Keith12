@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#09111e">
+<title>Submission Review | PrimeTask Notes Admin</title>
+<link rel="stylesheet" href="assets/admin.css">
+
+<style>
+
+/* PrimeTask Notes admin dropdown: additive page styling */
+.pt-notes-menu-wrap {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+  z-index: 100;
+}
+.pt-notes-menu-trigger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  min-height: 42px;
+  padding: 10px 14px;
+  border: 1px solid #263851;
+  border-radius: 10px;
+  background: #16243a;
+  color: #edf4ff;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 800;
+  cursor: pointer;
+}
+.pt-notes-menu-trigger:hover,
+.pt-notes-menu-trigger:focus-visible {
+  background: #203451;
+  outline: 2px solid #5c9dff;
+  outline-offset: 2px;
+}
+.pt-notes-menu-dropdown {
+  display: none;
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  width: 252px;
+  max-width: calc(100vw - 28px);
+  padding: 9px;
+  background: #111d2e;
+  color: #edf4ff;
+  border: 1px solid #263851;
+  border-radius: 14px;
+  box-shadow: 0 18px 45px rgba(0,0,0,.35);
+  z-index: 1000;
+}
+.pt-notes-menu-dropdown.open { display: block; }
+.pt-notes-menu-dropdown .dropdown-label {
+  padding: 9px 11px 6px;
+  color: #9aacc5;
+  font-size: 10px;
+  font-weight: 850;
+  letter-spacing: 1.1px;
+  text-transform: uppercase;
+}
+.pt-notes-menu-dropdown a {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding: 10px 11px;
+  border-radius: 9px;
+  color: #9aacc5;
+  font-size: 13px;
+  font-weight: 650;
+  text-decoration: none;
+}
+.pt-notes-menu-dropdown a:hover,
+.pt-notes-menu-dropdown a.active {
+  background: #172841;
+  color: #5c9dff;
+}
+.pt-notes-menu-dropdown .nav-icon {
+  width: 21px;
+  flex: 0 0 21px;
+  text-align: center;
+  font-size: 16px;
+}
+.pt-notes-menu-dropdown a:focus-visible {
+  outline: 2px solid #5c9dff;
+  outline-offset: 1px;
+}
+
+</style>
+</head>
+<body data-page="submissions">
+<div class="shell">
+<aside class="sidebar">
+  <div class="brand">
+    <span class="brand-mark">PT</span>
+    <h2>PrimeTask Notes</h2>
+    <p>Administration workspace</p>
+  </div>
+  <div class="nav-label">Workspace</div>
+  <nav class="nav">
+    <a class="" href="index.html">◫ Overview</a>
+    <a class="" href="tasks.html">♫ Audio &amp; tasks</a>
+    <a class="active" href="submissions.html">▤ Submissions</a>
+    <a class="" href="withdrawals.html">＄ Withdrawals</a>
+  </nav>
+  <div class="sidebar-note"><strong>Separate by design</strong><br>Notes Points, Notes earnings and Notes withdrawals remain separate from the other PrimeTask wallets.</div>
+</aside>
+<main>
+  <header class="topbar">
+    <div><div class="eyebrow">PrimeTask Workspace / Notes</div><div class="muted">Dedicated administration</div></div>
+    <button class="secondary" id="refreshBtn" type="button">Refresh data</button>
+<div class="pt-notes-menu-wrap"><button class="pt-notes-menu-trigger" type="button" aria-expanded="false" aria-controls="ptNotesAdminMenu"><span aria-hidden="true">☰</span><span>Menu</span><span aria-hidden="true">▼</span></button><nav class="pt-notes-menu-dropdown" id="ptNotesAdminMenu" aria-label="Administration navigation">
+<div class="dropdown-label">Administration</div>
+<a href="index.html"><span class="nav-icon" aria-hidden="true">◫</span>Overview</a>
+<a href="tasks.html"><span class="nav-icon" aria-hidden="true">♫</span>Audio & tasks</a>
+<a href="submissions.html" class="active" aria-current="page"><span class="nav-icon" aria-hidden="true">▤</span>Submissions</a>
+<a href="withdrawals.html"><span class="nav-icon" aria-hidden="true">$</span>Withdrawals</a>
+</nav></div>
+  </header>
+  <section style="margin-top:25px">
+    <div class="eyebrow">Control room</div>
+    <h1>Submission Review</h1>
+    <p class="subtitle">Read members' submitted notes and make review decisions.</p>
+  </section>
+  <div id="message" class="message" role="status" aria-live="polite"></div>
+  <section class="panel"><div class="panel-head"><div><h2>Notes submissions</h2><p class="muted">Approval credits the separate Notes earnings wallet. Rejection requires a reason.</p></div><div class="field"><label for="filterStatus">Submission status</label><select id="filterStatus"><option value="submitted">Awaiting review</option><option value="approved">Approved</option><option value="rejected">Rejected</option></select></div></div>
+<div class="table-wrap"><table><thead><tr><th>Task</th><th>Member</th><th>Submitted</th><th>Reward</th><th>Status</th><th>Actions</th></tr></thead><tbody id="submissionRows"><tr><td colspan="6" class="empty">Loading...</td></tr></tbody></table></div></section>
+  <footer>PrimeTask Notes · Admin access required · Financial records shown in USD unless explicitly marked KES</footer>
+</main>
+</div>
+<script src="assets/config-loader.js"></script>
+
+
+<script>
+(() => {
+  document.querySelectorAll('.pt-notes-menu-wrap').forEach(wrap => {
+    const trigger = wrap.querySelector('.pt-notes-menu-trigger');
+    const menu = wrap.querySelector('.pt-notes-menu-dropdown');
+    if (!trigger || !menu) return;
+
+    function closeMenu() {
+      menu.classList.remove('open');
+      trigger.setAttribute('aria-expanded', 'false');
+    }
+
+    trigger.addEventListener('click', event => {
+      event.stopPropagation();
+      const open = menu.classList.toggle('open');
+      trigger.setAttribute('aria-expanded', String(open));
+    });
+
+    document.addEventListener('click', event => {
+      if (!wrap.contains(event.target)) closeMenu();
+    });
+
+    document.addEventListener('keydown', event => {
+      if (event.key === 'Escape') {
+        closeMenu();
+        trigger.focus();
+      }
+    });
+  });
+})();
+</script>
+
+</body>
+</html>

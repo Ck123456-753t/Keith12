@@ -212,15 +212,15 @@ input.invalid{border-color:var(--danger)}
 
 .brand-mark img{width:100%;height:100%;display:block;object-fit:cover;border-radius:inherit}
 </style>
-  <link rel="icon" type="image/jpeg" href="../assets/primetask.jpg">
+  <link rel="icon" type="image/jpeg" href="/assets/primetask.jpg">
 </head>
 
 <body>
 <div class="page">
 
   <section class="visual" aria-label="PrimeTask Workspace introduction">
-    <a class="brand" href="../index.html">
-      <span class="brand-mark"><img src="../assets/primetask.jpg" alt="PrimeTask"></span>
+    <a class="brand" href="/">
+      <span class="brand-mark"><img src="/assets/primetask.jpg" alt="PrimeTask"></span>
       <span class="brand-name">PrimeTask Workspace
         <small>Creating Opportunities and Delivering Excellence.</small>
       </span>
@@ -246,8 +246,8 @@ input.invalid{border-color:var(--danger)}
   <main class="form-side">
     <div class="form-wrap">
 
-      <a class="mobile-brand" href="../index.html">
-        <span class="brand-mark"><img src="../assets/primetask.jpg" alt="PrimeTask"></span>
+      <a class="mobile-brand" href="/">
+        <span class="brand-mark"><img src="/assets/primetask.jpg" alt="PrimeTask"></span>
         <span class="brand-name">PrimeTask Workspace
           <small style="color:#91a5c2;font-size:10px">Work. Learn. Grow.</small>
         </span>
@@ -328,6 +328,13 @@ input.invalid{border-color:var(--danger)}
           </label>
         </div>
 
+        <div class="checkline">
+          <input id="marketingEmailOptIn" name="marketingEmailOptIn" type="checkbox">
+          <label for="marketingEmailOptIn">
+            I’d like to receive occasional PrimeTask Workspace service updates by email. This is optional; I can unsubscribe or change this preference at any time.
+          </label>
+        </div>
+
         <div class="message" id="formMessage" role="status" aria-live="polite"></div>
 
         <button class="primary" id="submitButton" type="submit">Create my account <span aria-hidden="true">→</span></button>
@@ -337,7 +344,7 @@ input.invalid{border-color:var(--danger)}
 
       <div class="login-line">
         Return to your workspace.<br>
-        <a href="login.html">Log in to PrimeTask →</a>
+        <a href="/auth/login.html">Log in to PrimeTask →</a>
       </div>
 
 
@@ -369,7 +376,7 @@ input.invalid{border-color:var(--danger)}
   // Supports /register/USERNAME and the fallback ?ref=USERNAME format.
   const sponsorUsername = (() => {
     const pathMatch = window.location.pathname.match(
-      /\/register\/([a-z0-9_]{3,30})\/?$/i
+      /\/(?:auth\/)?register\/([a-z0-9_]{3,30})\/?$/i
     );
     const queryRef = new URLSearchParams(window.location.search).get("ref");
     const candidate = (pathMatch ? pathMatch[1] : queryRef || "").trim();
@@ -494,6 +501,7 @@ input.invalid{border-color:var(--danger)}
       phone: document.getElementById("phone").value.trim(),
       password: password.value,
       termsAccepted: document.getElementById("termsAccepted").checked,
+      marketingEmailOptIn: document.getElementById("marketingEmailOptIn").checked,
       sponsorUsername: sponsorUsername,
       selectedService: new URLSearchParams(window.location.search).get("service") || ""
     };

@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#071426">
+<title>PrimeTask Workspace | Purchase Minutes</title>
+<style>
+:root{--navy:#071426;--navy2:#0b2a4b;--orange:#ff8a24;--ink:#102642;--muted:#66788e;--line:#d8e4f2;--green:#087b49;--red:#bd2c2c}
+*{box-sizing:border-box}body{margin:0;background:#eef3f9;color:var(--ink);font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif}
+a{color:inherit;text-decoration:none}button,input,select{font:inherit}
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;padding:14px clamp(16px,4vw,44px);background:#06162c;color:#fff;border-bottom:3px solid var(--orange)}
+.brand{display:flex;align-items:center;gap:11px;font-weight:900}.logo{height:42px;width:42px;border-radius:12px;background:var(--orange);display:grid;place-items:center;color:#111;font-weight:950}.brand small{display:block;color:#a9bbd0;font-size:10px;letter-spacing:2px;margin-top:2px}
+nav{display:flex;gap:8px;flex-wrap:wrap}nav a,.btn{padding:10px 13px;border-radius:10px;border:1px solid #d2dfef;background:white;color:#102642;font-weight:750;font-size:13px;cursor:pointer}nav a{background:#ffffff0a;border-color:#ffffff24;color:#fff}nav a.active{color:#ffb66e;border-color:var(--orange)}
+.hero{min-height:220px;display:flex;align-items:center;padding:34px clamp(18px,5vw,60px);color:#fff;background:linear-gradient(90deg,rgba(3,15,31,.96),rgba(3,15,31,.56)),url("https://images.unsplash.com/photo-1554224155-6726b3ff858f?auto=format&fit=crop&w=2000&q=85") center 48%/cover;border-bottom:4px solid var(--orange)}
+.hero-inner{max-width:1180px;width:100%;margin:auto}.eyebrow{color:#ffad57;font-size:11px;font-weight:850;letter-spacing:2.4px;text-transform:uppercase}.hero h1{font-size:clamp(31px,5vw,45px);margin:9px 0}.hero p{margin:0;color:#dce7f3;line-height:1.6;max-width:680px}
+main{max-width:1180px;padding:0 18px 40px;margin:-20px auto 0;position:relative}.layout{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(280px,.8fr);gap:18px;align-items:start}
+.card{background:#fff;border:1px solid var(--line);border-radius:17px;padding:21px;box-shadow:0 12px 32px #0b29470c}
+.section-head{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:15px}h2{font-size:18px;margin:0 0 6px}.sub{font-size:12px;color:var(--muted);line-height:1.6}
+.status{display:inline-flex;align-items:center;gap:8px;border-radius:99px;background:#f0f4f9;color:#61738a;padding:7px 10px;font-size:11px;font-weight:800}.dot{width:7px;height:7px;border-radius:50%;background:#98a6b7}.dot.good{background:#0b9b61}.dot.bad{background:#c73a3a}.dot.wait{background:#ff8a24}
+.summary{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-bottom:17px}.summary .tile{background:linear-gradient(135deg,#071a34,#0b3158);border-radius:14px;padding:17px;color:white}.tile span{font-size:11px;color:#b6c9df;font-weight:750}.tile strong{display:block;font-size:27px;margin-top:8px}.tile small{font-size:11px;color:#b6c9df}
+.package-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px}.package{border:1px solid var(--line);border-radius:14px;padding:17px;display:flex;flex-direction:column;min-height:180px;position:relative;background:#fff}.package.selected{border:2px solid var(--orange);padding:16px;box-shadow:0 0 0 3px #ff8a2414}.package h3{margin:0 0 8px;font-size:16px}.minutes{font-size:28px;font-weight:900;letter-spacing:-.8px}.package-price{font-size:20px;font-weight:850;margin-top:8px}.package-description{font-size:12px;color:var(--muted);line-height:1.5;margin-top:7px;flex:1}.package button{margin-top:14px;width:100%}
+.empty{padding:25px 15px;text-align:center;color:var(--muted);line-height:1.6;border:1px dashed #c9d8e9;border-radius:13px;grid-column:1/-1}
+.btn.primary{background:var(--orange);border-color:var(--orange);color:#261707}.btn:disabled{opacity:.55;cursor:not-allowed}
+.form-row{margin-top:15px}.form-row label{display:block;font-size:12px;font-weight:800;margin-bottom:7px}.form-row select,.form-row input{width:100%;padding:12px;border:1px solid #cbd9e9;border-radius:10px;background:#fff;color:var(--ink)}
+.notice{margin-top:15px;padding:13px;border-radius:11px;background:#fff5e9;border:1px solid #ffd7b0;color:#76420e;font-size:12px;line-height:1.6}
+.info-list{padding:0;margin:13px 0 0;list-style:none}.info-list li{display:flex;gap:9px;margin:12px 0;font-size:12px;line-height:1.5;color:#40556e}.check{color:var(--orange);font-weight:950}
+#message{font-size:12px;line-height:1.55;margin-top:13px;min-height:18px;color:var(--muted)}.error{color:var(--red)!important}.success{color:var(--green)!important}
+.history{margin-top:18px}.table-wrap{overflow:auto;border:1px solid var(--line);border-radius:12px;margin-top:13px}table{width:100%;min-width:560px;border-collapse:collapse}th,td{text-align:left;padding:13px 14px;border-bottom:1px solid #e7eef7;font-size:12px}th{background:#f1f6fc;color:#65778d;text-transform:uppercase;letter-spacing:.7px;font-size:10px}tbody tr:last-child td{border-bottom:0}.pill{padding:5px 8px;border-radius:99px;background:#edf1f6;color:#63758a;font-size:10px;font-weight:850}.pill.good{background:#e1f7eb;color:#087747}.pill.bad{background:#ffeded;color:#b52626}
+footer{max-width:1180px;margin:auto;padding:0 20px 25px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;color:#66768a;font-size:11px}
+@media(max-width:820px){.layout{grid-template-columns:1fr}.package-list{grid-template-columns:1fr}.hero{min-height:190px}.topbar{align-items:flex-start}}@media(max-width:420px){.summary{grid-template-columns:1fr}}
+</style></head>
+<body>
+<header class="topbar">
+<a class="brand" href="dashboard.html"><span class="logo">PT</span><span>PrimeTask Workspace<small>TRANSCRIPTION SERVICES</small></span></a>
+<nav aria-label="Main navigation"><a href="dashboard.html">Dashboard</a><a href="jobs.html">Jobs</a><a href="my-assignment.html">My Assignment</a><a href="wallet.html">Wallet</a><a class="active" href="purchase-minutes.html">Purchase Minutes</a></nav>
+</header>
+<section class="hero"><div class="hero-inner"><div class="eyebrow">More audio. More opportunity.</div><h1>Purchase Transcription Minutes</h1><p>Choose an available minute package and pay through M-Pesa only. No wallet payments or purchase-history section.</p></div></section>
+<main>
+<div class="layout">
+<div>
+<section class="card">
+<div class="section-head"><div><h2>Available Packages</h2><div class="sub">Package names, minute amounts, and prices must come from the live Workspace API.</div></div><span class="status"><span class="dot" id="catalogDot"></span><span id="catalogStatus">Loading catalog…</span></span></div>
+<div id="packageList" class="package-list"><div class="empty">Loading available minute packages…</div></div>
+<div id="catalogMessage" role="status" aria-live="polite" style="margin-top:12px" class="sub"></div>
+</section>
+
+</div>
+<aside>
+<section class="card">
+<div class="section-head"><div><h2>Purchase Summary</h2><div class="sub">Confirm your selected package before requesting payment.</div></div></div>
+<div class="summary"><div class="tile"><span>SELECTED MINUTES</span><strong id="selectedMinutes">—</strong><small>Audio minutes</small></div><div class="tile"><span>PACKAGE PRICE</span><strong id="selectedPrice">—</strong><small>USD, no conversion</small></div></div>
+<form id="purchaseForm">
+<div class="form-row"><label for="packageSelect">Selected package</label><select id="packageSelect" required><option value="">Load packages first</option></select></div>
+<div class="form-row"><label for="paymentMethod">Payment method</label><select id="paymentMethod" required disabled><option value="mpesa">M-Pesa only</option></select></div>
+<div class="form-row" id="phoneRow"><label for="phoneNumber">M-Pesa phone number</label><input id="phoneNumber" type="tel" inputmode="tel" autocomplete="tel" placeholder="e.g. 254712345678"></div>
+<button class="btn primary" id="purchaseBtn" type="submit" style="width:100%;margin-top:17px" disabled>Request Purchase →</button>
+<div id="purchaseMessage" role="status" aria-live="polite"></div>
+</form>
+<div class="notice"><strong>M-Pesa only</strong><br>Purchases use M-Pesa only. A request is not proof of payment or minutes credited; the backend must verify the payment before adding minutes.</div>
+</section>
+<section class="card" style="margin-top:16px"><h2>How it works</h2><ul class="info-list"><li><span class="check">✓</span><span>Choose a package from the verified catalog.</span></li><li><span class="check">✓</span><span>Confirm the package price in USD.</span></li><li><span class="check">✓</span><span>Complete payment through M-Pesa only.</span></li><li><span class="check">✓</span><span>Minutes should be credited only after the backend verifies payment.</span></li></ul></section>
+</aside>
+</div>
+</main>
+<footer><span>PrimeTask Workspace · Transcription Services</span><span>Work Smart. Earn More.</span></footer>
+<script>
+(() => {
+'use strict';
+// Match these routes to the actual backend API contract before enabling live purchases.
+const API_BASE = '';
+const CATALOG_ENDPOINT = '/api/transcription/minute-purchases/packages';
+const CREATE_PURCHASE_ENDPOINT = '/api/transcription/minute-purchases'; // Confirm this is the backend's M-Pesa checkout endpoint.
+const $ = id => document.getElementById(id);
+let packages = [];
+let selectedPackage = null;
+const first = (o,keys) => {for(const k of keys){let v=o;for(const p of k.split('.'))v=v&&typeof v==='object'?v[p]:undefined;if(v!==undefined&&v!==null&&v!=='')return v;}};
+const unwrap = p => p&&(p.data||p.result||p);
+const safe = s => String(s??'—').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const usd = v => {const n=Number(v);return v===undefined||v===null||v===''||!Number.isFinite(n)?'—':new Intl.NumberFormat('en-US',{style:'currency',currency:'USD'}).format(n);};
+const date = v => {if(!v)return '—';const d=new Date(v);return Number.isNaN(d.getTime())?String(v):d.toLocaleString();};
+function setCatalogStatus(text,kind=''){ $('catalogStatus').textContent=text;$('catalogDot').className='dot'+(kind?' '+kind:''); }
+function packageId(p){return String(first(p,['id','_id','packageId','code'])??'');}
+function packageMinutes(p){return first(p,['minutes','minuteCount','durationMinutes','includedMinutes','audioMinutes']);}
+function packagePrice(p){return first(p,['priceUsd','priceUSD','price','amountUsd','amountUSD','amount']);}
+function packageName(p){return first(p,['name','title','label','packageName'])||'Minute package';}
+function renderPackages(items){
+packages=Array.isArray(items)?items:(Array.isArray(items?.packages)?items.packages:[]);
+const list=$('packageList'),select=$('packageSelect');
+if(!packages.length){list.innerHTML='<div class="empty">No package catalog was returned. No sample prices or minute amounts have been invented.</div>';select.innerHTML='<option value="">No packages available</option>';$('purchaseBtn').disabled=true;setCatalogStatus('Catalog unavailable','bad');return;}
+list.innerHTML=packages.map((p,i)=>`<article class="package" data-package-index="${i}"><h3>${safe(packageName(p))}</h3><div class="minutes">${safe(packageMinutes(p)??'—')} <span style="font-size:13px;font-weight:700">minutes</span></div><div class="package-price">${usd(packagePrice(p))}</div><div class="package-description">${safe(first(p,['description','details','summary'])||'Audio minutes for transcription tasks.')}</div><button type="button" class="btn ${i===0?'primary':''}" data-select-package="${i}">Select package</button></article>`).join('');
+select.innerHTML='<option value="">Choose a package</option>'+packages.map((p,i)=>`<option value="${i}">${safe(packageName(p))} · ${safe(packageMinutes(p)??'—')} min · ${usd(packagePrice(p))}</option>`).join('');
+list.querySelectorAll('[data-select-package]').forEach(b=>b.addEventListener('click',()=>{select.value=b.dataset.selectPackage;selectPackage();}));
+setCatalogStatus('Catalog loaded','good');
+}
+function selectPackage(){
+const idx=$('packageSelect').value;
+selectedPackage=idx===''?null:packages[Number(idx)]||null;
+$('selectedMinutes').textContent=selectedPackage?(packageMinutes(selectedPackage)??'—'):'—';
+$('selectedPrice').textContent=selectedPackage?usd(packagePrice(selectedPackage)):'—';
+$('purchaseBtn').disabled=!selectedPackage||packageMinutes(selectedPackage)===undefined||packagePrice(selectedPackage)===undefined;
+document.querySelectorAll('.package').forEach((el,i)=>el.classList.toggle('selected',!!selectedPackage&&i===Number(idx)));
+}
+async function loadCatalog(){
+setCatalogStatus('Loading catalog…','wait');$('catalogMessage').textContent='';
+try{
+const r=await fetch(API_BASE+CATALOG_ENDPOINT,{credentials:'include',headers:{Accept:'application/json'}});
+const p=await r.json().catch(()=>null);if(!r.ok)throw Error(`Catalog API returned HTTP ${r.status}.`);
+if(!p||typeof p!=='object')throw Error('Catalog API returned an unreadable response.');
+const d=unwrap(p);renderPackages(Array.isArray(d)?d:first(d,['packages','minutePackages','items','data'])||[]);
+if(!packages.length)$('catalogMessage').textContent='The API responded but no recognized package list was found. Check the backend route and response schema.';
+}catch(e){renderPackages([]);$('catalogMessage').textContent=e.message+' Configure CATALOG_ENDPOINT to match the existing backend route.';}
+}
+$('packageSelect').addEventListener('change',selectPackage);
+$('paymentMethod').addEventListener('change',()=>{$('phoneRow').hidden=$('paymentMethod').value!=='mpesa';});
+$('purchaseForm').addEventListener('submit',async e=>{
+e.preventDefault();const msg=$('purchaseMessage');msg.className='';msg.textContent='';
+if(!selectedPackage){msg.textContent='Select a valid package first.';return;}
+const price=Number(packagePrice(selectedPackage));if(!Number.isFinite(price)||price<0){msg.textContent='The selected package has no valid server-provided USD price.';return;}
+const method='mpesa';const phone=$('phoneNumber').value.trim();
+if(method==='mpesa'&&!/^(?:\+?254|0)?[17]\d{8}$/.test(phone)){msg.textContent='Enter a valid Kenyan M-Pesa phone number.';return;}
+const payload={
+packageId:packageId(selectedPackage),
+phoneNumber:phone,
+idempotencyKey:(crypto.randomUUID?crypto.randomUUID():'ptw-'+Date.now()+'-'+Math.random().toString(36).slice(2))
+};
+if(!payload.packageId){msg.textContent='This package has no recognized ID. A stable package ID is required for secure checkout.';return;}
+const btn=$('purchaseBtn');btn.disabled=true;btn.textContent='Submitting…';
+try{
+const r=await fetch(API_BASE+CREATE_PURCHASE_ENDPOINT,{method:'POST',credentials:'include',headers:{'Content-Type':'application/json',Accept:'application/json'},body:JSON.stringify(payload)});
+const p=await r.json().catch(()=>null);if(!r.ok)throw Error(p?.message||p?.error||`Purchase API returned HTTP ${r.status}.`);
+msg.className=p?.paymentInitiationEnabled?'success':'error';
+msg.textContent=p?.message||'Purchase response received. Check the server-reported payment status before proceeding.';
+if(p?.paymentInitiationEnabled===false){
+msg.textContent+=' No M-Pesa prompt was initiated. Do not retry blindly or assume minutes were credited.';
+}
+}catch(err){msg.className='error';msg.textContent=(err.message||'Purchase request failed.')+' No payment or minutes are confirmed by this page alone.';}
+finally{btn.disabled=!selectedPackage;btn.textContent='Request Purchase →';}
+});
+$('paymentMethod').dispatchEvent(new Event('change'));loadCatalog();
+})();
+</script></body></html>

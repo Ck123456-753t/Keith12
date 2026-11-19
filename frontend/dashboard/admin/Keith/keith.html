@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  
+  
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#061225">
@@ -459,7 +461,7 @@
   </style>
 <link rel="stylesheet" href="/dashboard/admin/admin-forest.css" data-ptw-admin-forest="true">
   <link rel="stylesheet" href="/dashboard/admin/Keith/assets/admin-navigation.css">
-  <link rel="icon" type="image/jpeg" href="../../../assets/primetask.jpg">
+<link rel="icon" type="image/svg+xml" href="/assets/primetask-logo.svg">
 </head>
 <body>
   <main class="shell">
@@ -492,9 +494,9 @@
         <div class="stat-note" id="userBreakdown">Waiting for API</div>
       </article>
       <article class="stat">
-        <div class="stat-label">Active memberships</div>
+        <div class="stat-label">Live Member Accounts</div>
         <div class="stat-value" id="activeMemberships">—</div>
-        <div class="stat-note">Membership records marked active</div>
+        <div class="stat-note">Existing active accounts with a currently valid membership</div>
       </article>
       <article class="stat">
         <div class="stat-label">Payments to review</div>
@@ -536,7 +538,7 @@
           <strong>Withdrawal review</strong>
           <p>See withdrawal requests awaiting review.</p>
         </a>
-        <a class="nav-card" href="/dashboard/admin/Keith/transcription.html">
+        <a class="nav-card" href="/dashboard/admin/Keith/transcription">
           <div class="symbol">♫</div>
           <strong>Transcription operations</strong>
           <p>Create audio jobs, review submissions, and process transcription withdrawals.</p>
@@ -832,7 +834,7 @@
         const data = await response.json().catch(() => ({}));
 
         if (response.status === 401) {
-          window.location.href = "../../auth/login.html";
+          window.location.href = "/auth/login";
           return;
         }
         if (response.status === 403) {
@@ -935,7 +937,7 @@
 
         const data = await response.json().catch(() => ({}));
         if (response.status === 401) {
-          window.location.href = "../../auth/login.html";
+          window.location.href = "/auth/login";
           return;
         }
         if (response.status === 403) {
@@ -1022,7 +1024,7 @@
         const data = await response.json().catch(() => ({}));
 
         if (response.status === 401) {
-          window.location.href = "../../auth/login.html";
+          window.location.href = "/auth/login";
           return;
         }
 
@@ -1084,7 +1086,7 @@
         const data = await response.json().catch(() => ({}));
 
         if (response.status === 401) {
-          window.location.href = "../../auth/login.html";
+          window.location.href = "/auth/login";
           return;
         }
 
@@ -1107,7 +1109,7 @@
         byId("userBreakdown").textContent =
           number(stats.activeUsers) + " active · " +
           number(stats.suspendedUsers) + " suspended";
-        byId("activeMemberships").textContent = number(stats.activeMemberships);
+        byId("activeMemberships").textContent = number(stats.liveMemberAccounts);
         byId("paymentQueue").textContent =
           number(stats.pendingDeposits + stats.pendingPurchases);
         byId("pendingWithdrawals").textContent = number(stats.withdrawalsAwaitingReview);
@@ -1286,7 +1288,7 @@
       const data = await response.json().catch(() => ({}));
 
       if (response.status === 401) {
-        window.location.href = "../../auth/login.html";
+        window.location.href = "/auth/login";
         throw new Error("Your session has expired. Sign in again.");
       }
 

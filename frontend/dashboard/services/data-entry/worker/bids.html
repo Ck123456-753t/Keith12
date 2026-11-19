@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  
+  
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#101d38">
+<title>My Bids | PrimeTask Data Entry</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--navy:#101d38;--blue:#2878e8;--orange:#ff8b35;--ink:#17233b;--muted:#78869b;--line:#e7edf5;--page:#f4f7fc}
+*{box-sizing:border-box}
+body{margin:0;background:var(--page);color:var(--ink);font-family:"DM Sans",sans-serif}
+a{text-decoration:none;color:inherit}
+button,input,select{font:inherit}
+.app{min-height:100vh;display:grid;grid-template-columns:255px minmax(0,1fr)}
+.sidebar{background:var(--navy);color:white;padding:25px 17px;position:sticky;top:0;height:100vh;display:flex;flex-direction:column;z-index:20}
+.brand{display:flex;align-items:center;gap:12px;padding:4px 10px 30px}
+.brand-mark{width:43px;height:43px;border-radius:14px;background:linear-gradient(145deg,#3989ff,#1455bb);display:grid;place-items:center;font:800 19px Manrope}
+.brand-name{font:800 15px Manrope;display:block}.brand-sub{color:#aab9d2;font-size:10px;margin-top:3px;letter-spacing:1.3px;text-transform:uppercase;display:block}
+.nav-label{padding:13px 12px 9px;color:#8294b2;font-size:10px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase}
+.nav-list{display:grid;gap:6px}
+.nav-link{min-height:47px;padding:0 13px;border-radius:11px;display:flex;align-items:center;gap:12px;color:#bdc9dc;font-size:13px;font-weight:600}
+.nav-link:hover{background:#ffffff12;color:white}.nav-link.active{color:white;background:linear-gradient(100deg,#2878e8,#2366c7);box-shadow:0 7px 18px #1767d044}
+.nav-icon{width:21px;text-align:center;font-size:17px}
+.sidebar-bottom{margin-top:auto}.help-card{border:1px solid #ffffff1b;background:#ffffff0b;border-radius:15px;padding:15px;margin:18px 2px 0}
+.help-card strong{font-size:12px}.help-card p{color:#aab9d2;font-size:11px;line-height:1.6;margin:7px 0 12px}.help-card a{color:#ffad70;font-size:11px;font-weight:700}
+.main{min-width:0}.topbar{height:76px;padding:0 34px;background:#ffffffed;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:10;backdrop-filter:blur(12px)}
+.top-left,.top-right{display:flex;align-items:center;gap:13px}.menu-toggle{display:none;width:40px;height:40px;border:1px solid var(--line);background:white;border-radius:10px;font-size:19px}
+.breadcrumb{color:var(--muted);font-size:12px}.breadcrumb strong{color:var(--ink)}.secure{color:#718097;font-size:11px;font-weight:600}
+.avatar{width:39px;height:39px;border-radius:50%;background:#eaf2ff;color:var(--blue);display:grid;place-items:center;font-weight:800}
+.content{max-width:1500px;margin:auto;padding:30px 34px 55px}
+.hero{min-height:220px;border-radius:22px;padding:32px 35px;color:white;display:flex;align-items:center;position:relative;overflow:hidden;background:linear-gradient(90deg,#0d1d3af5 0%,#142e55df 55%,#142e5540 100%),url("https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=1800&q=85") center/cover;box-shadow:0 15px 35px #10264b20}
+.hero-content{position:relative;z-index:1;max-width:650px}.eyebrow{color:#ffb47f;font-size:10px;font-weight:800;letter-spacing:2px;text-transform:uppercase}
+h1{font:800 clamp(27px,3vw,37px) Manrope;margin:13px 0 9px;letter-spacing:-1px}
+.hero p{color:#d2dced;font-size:13px;line-height:1.8;margin:0;max-width:520px}
+.hero-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px}
+.btn{border:0;border-radius:9px;min-height:41px;padding:0 16px;display:inline-flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;cursor:pointer}
+.primary{background:var(--orange);color:#17233b}.secondary{border:1px solid #ffffff55;color:white;background:#ffffff10}
+.summary{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:22px 0}
+.summary-card{background:white;border:1px solid var(--line);border-radius:12px;padding:16px}
+.summary-card small{color:var(--muted);font-size:10px}.summary-card strong{display:block;font:800 21px Manrope;margin-top:6px}
+.heading-row{display:flex;justify-content:space-between;align-items:end;gap:15px;margin:27px 0 15px}
+.heading h2{font:800 17px Manrope;margin:0}.heading p{font-size:11px;color:var(--muted);margin:5px 0 0}
+.filters{display:flex;gap:9px;flex-wrap:wrap}.field{height:40px;border:1px solid var(--line);border-radius:9px;padding:0 12px;color:var(--ink);background:white;outline:none;font-size:11px}
+.search{flex:1;min-width:190px}.field:focus{border-color:var(--blue);box-shadow:0 0 0 3px #2878e817}
+.tabs{display:flex;gap:7px;margin:20px 0 14px;overflow-x:auto}
+.tab{border:1px solid var(--line);background:white;color:#6f7e94;border-radius:9px;padding:10px 14px;font-size:10px;font-weight:800;white-space:nowrap;cursor:pointer}
+.tab.active{background:#eaf2ff;border-color:#c9ddff;color:#2169d0}
+.bid-list{display:grid;gap:12px}
+.bid-card{background:white;border:1px solid var(--line);border-radius:14px;padding:18px}
+.bid-top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+.bid-title{font:800 14px Manrope;margin:0}.bid-date{color:var(--muted);font-size:10px;margin-top:6px}
+.status{padding:7px 10px;border-radius:7px;font-size:9px;font-weight:800;white-space:nowrap}
+.status.pending{background:#fff5e8;color:#b96c20}.status.selected{background:#eaf7f1;color:#25845d}.status.rejected{background:#fff0ef;color:#c14e4b}.status.withdrawn{background:#edf0f5;color:#66758a}
+.bid-details{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-top:17px;padding-top:14px;border-top:1px solid var(--line)}
+.bid-details small{display:block;color:var(--muted);font-size:9px}.bid-details strong{display:block;font-size:11px;margin-top:5px}
+.reward{color:#21845b}
+.bid-footer{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:14px;padding-top:13px;border-top:1px solid var(--line)}
+.bid-note{color:var(--muted);font-size:10px;line-height:1.6}
+.action{border:1px solid var(--line);background:white;border-radius:8px;padding:9px 12px;color:#50617a;font-size:10px;font-weight:800;cursor:pointer}
+.action.primary-action{background:var(--blue);border-color:var(--blue);color:white}
+.empty{background:white;border:1px solid var(--line);border-radius:15px;min-height:250px;display:grid;place-items:center;text-align:center;padding:25px}
+.empty-icon{width:53px;height:53px;border-radius:16px;background:#edf4ff;color:var(--blue);display:grid;place-items:center;font-size:23px;margin:0 auto 12px}
+.empty strong{font:800 14px Manrope}.empty p{font-size:11px;color:var(--muted);line-height:1.7;max-width:360px;margin:8px auto 0}
+.footer{text-align:center;color:#99a4b4;font-size:10px;padding:27px 0 0}
+@media(max-width:1050px){.content{padding:25px 23px 45px}.topbar{padding:0 23px}}
+@media(max-width:760px){
+.app{display:block}.sidebar{position:fixed;left:0;top:0;width:270px;transform:translateX(-105%);transition:transform .25s;box-shadow:15px 0 40px #07152b33}
+.sidebar.open{transform:translateX(0)}.menu-toggle{display:grid;place-items:center}.topbar{height:65px;padding:0 15px}.secure{display:none}
+.content{padding:18px 14px 35px}.hero{min-height:225px;padding:25px 21px;background-position:60% center}
+.heading-row{align-items:flex-start;flex-direction:column}.filters{width:100%}.field{flex:1;min-width:130px}
+.summary{gap:8px}.summary-card{padding:12px}.summary-card strong{font-size:18px}
+.bid-details{grid-template-columns:repeat(2,minmax(0,1fr));row-gap:14px}
+.bid-footer{align-items:flex-start;flex-direction:column}
+}
+</style>
+<link rel="icon" type="image/svg+xml" href="/assets/primetask-logo.svg">
+</head>
+<body>
+<div class="app">
+<aside class="sidebar" id="sidebar">
+<a class="brand" href="index"><span class="brand-mark">PT</span><span><span class="brand-name">PrimeTask</span><span class="brand-sub">Data Entry Workspace</span></span></a>
+<div class="nav-label">Workspace</div>
+<nav class="nav-list" aria-label="Data Entry navigation">
+<a class="nav-link" href="index"><span class="nav-icon">⌂</span>Dashboard</a>
+<a class="nav-link" href="jobs"><span class="nav-icon">▤</span>Available Orders</a>
+<a class="nav-link" href="my-jobs"><span class="nav-icon">◷</span>My Orders</a>
+<a class="nav-link active" href="bids"><span class="nav-icon">◇</span>My Bids</a>
+<a class="nav-link" href="submissions"><span class="nav-icon">✓</span>Submissions</a>
+</nav>
+<div class="nav-label">Finance</div>
+<nav class="nav-list">
+<a class="nav-link" href="buy-bids"><span class="nav-icon">＋</span>Buy Bids</a>
+<a class="nav-link" href="earnings"><span class="nav-icon">$</span>Earnings & Transactions</a>
+<a class="nav-link" href="withdrawals"><span class="nav-icon">⇧</span>Withdrawals</a>
+</nav>
+<div class="nav-label">Account</div>
+<nav class="nav-list">
+<a class="nav-link" href="profile"><span class="nav-icon">◎</span>My Profile</a>
+<a class="nav-link" href="../../../../data-entry"><span class="nav-icon">▧</span>Learning Guide</a>
+</nav>
+<div class="sidebar-bottom"><div class="help-card"><strong>Need a hand?</strong><p>Review the Data Entry guide for tools, file formats and quality-control practices.</p><a href="../../../../data-entry">Open learning guide →</a></div></div>
+</aside>
+
+<main class="main">
+<header class="topbar">
+<div class="top-left"><button class="menu-toggle" id="menuToggle" type="button" aria-label="Open navigation" aria-expanded="false">☰</button><div class="breadcrumb">Data Entry Workspace / <strong>My Bids</strong></div></div>
+<div class="top-right"><span class="secure">PrimeTask secure workspace</span><div class="avatar" id="userAvatar">PT</div></div>
+</header>
+
+<div class="content">
+<section class="hero">
+<div class="hero-content">
+<div class="eyebrow">Your bid activity</div>
+<h1>Track your bid balance.</h1>
+<p>See your available bid balance, purchases and the bids deducted when you claim orders.</p>
+<div class="hero-actions">
+<a class="btn primary" href="jobs">Browse available orders →</a>
+<a class="btn secondary" href="buy-bids">Buy more bids</a>
+</div>
+</div>
+</section>
+
+<div class="summary">
+<div class="summary-card"><small>Available bid balance</small><strong id="bidBalance">--</strong></div>
+<div class="summary-card"><small>Total bids purchased</small><strong id="totalPurchased">--</strong></div>
+<div class="summary-card"><small>Total bids spent</small><strong id="totalSpent">--</strong></div>
+</div>
+<div class="heading-row">
+<div class="heading"><h2>Your bid transactions</h2><p>Every recorded purchase, order claim and administrative adjustment.</p></div>
+<div class="filters">
+<input class="field search" id="searchBids" type="search" placeholder="Search order title">
+<select class="field" id="statusFilter" aria-label="Filter bid transactions">
+<option value="all">All transactions</option>
+<option value="purchase_credit">Bid purchases</option>
+<option value="job_claim">Order claims</option>
+<option value="admin_adjustment">Admin adjustments</option>
+</select>
+</div>
+</div>
+
+<div class="tabs" role="group" aria-label="Transaction type filters">
+<button class="tab active" data-filter="all">All transactions</button>
+<button class="tab" data-filter="purchase_credit">Purchases</button>
+<button class="tab" data-filter="job_claim">Order claims</button>
+<button class="tab" data-filter="admin_adjustment">Adjustments</button>
+</div>
+<section class="bid-list" id="bidList" aria-live="polite">
+<div class="empty"><div><div class="empty-icon">◇</div><strong>No bids submitted yet</strong><p>When you apply for an available order, your application and the bids spent will appear here. You can browse open orders and apply using your bid balance.</p><p><a href="jobs" style="color:#2878e8;font-weight:800">Browse available orders →</a></p></div></div>
+</section>
+<footer class="footer">PrimeTask Workspace · Data Entry Bid Management</footer>
+</div>
+</main>
+</div>
+
+<script src="../../../../assets/js/config.js"></script>
+<script>
+"use strict";
+
+const API = String(window.PTW_API_BASE || "").replace(/\/+$/, "");
+const sidebar = document.getElementById("sidebar");
+const menuToggle = document.getElementById("menuToggle");
+const bidList = document.getElementById("bidList");
+const searchInput = document.getElementById("searchBids");
+const statusFilter = document.getElementById("statusFilter");
+const tabs = [...document.querySelectorAll(".tab")];
+
+let transactions = [];
+
+menuToggle.addEventListener("click", () => {
+  const open = sidebar.classList.toggle("open");
+  menuToggle.setAttribute("aria-expanded", String(open));
+  menuToggle.textContent = open ? "×" : "☰";
+});
+
+document.addEventListener("click", event => {
+  if (
+    window.innerWidth <= 760 &&
+    sidebar.classList.contains("open") &&
+    !sidebar.contains(event.target) &&
+    !menuToggle.contains(event.target)
+  ) {
+    sidebar.classList.remove("open");
+    menuToggle.setAttribute("aria-expanded", "false");
+    menuToggle.textContent = "☰";
+  }
+});
+
+function escapeHTML(value) {
+  return String(value ?? "").replace(/[&<>"']/g, char => ({
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "'": "&#39;"
+  })[char]);
+}
+
+function formatDate(value) {
+  if (!value) return "Date unavailable";
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return "Date unavailable";
+  return date.toLocaleString();
+}
+
+function transactionType(type) {
+  const labels = {
+    purchase_credit: "Bid purchase",
+    job_claim: "Order claim",
+    admin_adjustment: "Admin adjustment"
+  };
+  return labels[type] || "Bid transaction";
+}
+
+function transactionStatus(type) {
+  if (type === "purchase_credit") return "selected";
+  if (type === "job_claim") return "withdrawn";
+  return "pending";
+}
+
+function renderTransactions() {
+  const query = searchInput.value.trim().toLowerCase();
+  const filter = statusFilter.value;
+
+  const filtered = transactions.filter(item => {
+    const searchable = [
+      item.description,
+      item.reference,
+      item.orderId?.title,
+      transactionType(item.type)
+    ].join(" ").toLowerCase();
+
+    return (filter === "all" || item.type === filter) &&
+      searchable.includes(query);
+  });
+
+  if (!filtered.length) {
+    bidList.innerHTML = `
+      <div class="empty">
+        <div>
+          <div class="empty-icon">◇</div>
+          <strong>${transactions.length ? "No matching transactions" : "No bid transactions yet"}</strong>
+          <p>${transactions.length
+            ? "Try another search term or transaction filter."
+            : "Your verified bid purchases and order-claim deductions will appear here."}</p>
+          <p><a href="jobs" style="color:#2878e8;font-weight:800">Browse available orders →</a></p>
+        </div>
+      </div>`;
+    return;
+  }
+
+  bidList.innerHTML = filtered.map(item => {
+    const amount = Number(item.bids);
+    const positive = amount > 0;
+    const orderTitle = item.orderId?.title || "";
+    const description = item.description || transactionType(item.type);
+    const amountText = `${positive ? "+" : ""}${amount.toLocaleString()} bids`;
+
+    return `
+      <article class="bid-card">
+        <div class="bid-top">
+          <div>
+            <h3 class="bid-title">${escapeHTML(transactionType(item.type))}</h3>
+            <div class="bid-date">${escapeHTML(formatDate(item.createdAt))}</div>
+          </div>
+          <span class="status ${transactionStatus(item.type)}">
+            ${escapeHTML(item.type.replaceAll("_", " "))}
+          </span>
+        </div>
+        <div class="bid-details">
+          <div>
+            <small>Bid movement</small>
+            <strong class="${positive ? "reward" : ""}">${escapeHTML(amountText)}</strong>
+          </div>
+          <div>
+            <small>Order</small>
+            <strong>${escapeHTML(orderTitle || "Not applicable")}</strong>
+          </div>
+          <div>
+            <small>Reference</small>
+            <strong>${escapeHTML(item.reference || "Unavailable")}</strong>
+          </div>
+          <div>
+            <small>Transaction type</small>
+            <strong>${escapeHTML(transactionType(item.type))}</strong>
+          </div>
+        </div>
+        <div class="bid-footer">
+          <span class="bid-note">${escapeHTML(description)}</span>
+        </div>
+      </article>`;
+  }).join("");
+}
+
+async function loadBidHistory() {
+  bidList.innerHTML = `
+    <div class="empty">
+      <div>
+        <div class="empty-icon">◇</div>
+        <strong>Loading bid transactions...</strong>
+        <p>Retrieving your Data Entry bid wallet.</p>
+      </div>
+    </div>`;
+
+  try {
+    const response = await fetch(`${API}/data-entry/bids`, {
+      method: "GET",
+      credentials: "include",
+      headers: { Accept: "application/json" }
+    });
+
+    const result = await response.json().catch(() => ({}));
+
+    if (!response.ok || !result.success) {
+      throw new Error(result.message || "Could not load bid history.");
+    }
+
+    const wallet = result.wallet || {};
+
+    document.getElementById("bidBalance").textContent =
+      Number(wallet.balanceBids || 0).toLocaleString();
+
+    document.getElementById("totalPurchased").textContent =
+      Number(wallet.totalPurchasedBids || 0).toLocaleString();
+
+    document.getElementById("totalSpent").textContent =
+      Number(wallet.totalSpentBids || 0).toLocaleString();
+
+    transactions = Array.isArray(result.transactions)
+      ? result.transactions
+      : [];
+
+    renderTransactions();
+  } catch (error) {
+    console.error("Data Entry bid history error:", error);
+
+    bidList.innerHTML = `
+      <div class="empty">
+        <div>
+          <div class="empty-icon">!</div>
+          <strong>Could not load bid history</strong>
+          <p>${escapeHTML(error.message || "Please refresh and try again.")}</p>
+          <button class="action primary-action" id="retryBids" type="button">Try again</button>
+        </div>
+      </div>`;
+
+    document.getElementById("retryBids")?.addEventListener("click", loadBidHistory);
+  }
+}
+
+tabs.forEach(tab => {
+  tab.addEventListener("click", () => {
+    tabs.forEach(item => item.classList.remove("active"));
+    tab.classList.add("active");
+    statusFilter.value = tab.dataset.filter;
+    renderTransactions();
+  });
+});
+
+statusFilter.addEventListener("change", () => {
+  tabs.forEach(tab => {
+    tab.classList.toggle("active", tab.dataset.filter === statusFilter.value);
+  });
+  renderTransactions();
+});
+
+searchInput.addEventListener("input", renderTransactions);
+
+async function loadWorkerIdentity() {
+  if (typeof window.PTW_AUTH_API_ME !== "string") return;
+
+  try {
+    const response = await fetch(window.PTW_AUTH_API_ME, {
+      credentials: "include",
+      headers: { Accept: "application/json" }
+    });
+
+    if (!response.ok) return;
+
+    const result = await response.json();
+    const user = result.user || result.data?.user || result;
+
+    if (user.role !== "user") return;
+
+    const first = String(user.firstName || "").trim();
+    const last = String(user.lastName || "").trim();
+
+    document.getElementById("userAvatar").textContent =
+      (first.charAt(0) || "P").toUpperCase() +
+      (last.charAt(0) || "").toUpperCase();
+  } catch (error) {
+    console.error("Data Entry account check failed:", error);
+  }
+}
+
+loadWorkerIdentity();
+loadBidHistory();
+</script>
+</body>
+</html>

@@ -114,7 +114,7 @@ adminRouter.patch("/:id", async (req, res, next) => {
 adminRouter.delete("/:id", async (req, res, next) => {
   try {
     if (!mongoose.isValidObjectId(req.params.id)) return res.status(400).json({ success: false, message: "Invalid announcement ID." });
-    const item = await PlatformAnnouncement.findByIdAndUpdate(req.params.id, { $set: { status: "archived", updatedBy: req.user._id } }, { new: true });
+    const item = await PlatformAnnouncement.findByIdAndUpdate(req.params.id, { $set: { status: "archived", updatedBy: req.user._id } }, { returnDocument: 'after' });
     if (!item) return res.status(404).json({ success: false, message: "Announcement not found." });
     return res.json({ success: true, announcement: serialize(item) });
   } catch (error) { return next(error); }

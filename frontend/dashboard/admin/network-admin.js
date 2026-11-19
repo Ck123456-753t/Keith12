@@ -44,7 +44,7 @@
     deposits: {
       title: "Deposit records",
       url: "/admin/reports/deposits",
-      columns: ["requestId", "user", "amountUsd", "currency", "expectedAmountKes", "paymentMode", "status", "phoneNumber", "mpesaReceipt", "walletTransactionId", "createdAt", "completedAt"],
+      columns: ["requestId", "user", "amountUsd", "currency", "expectedAmountKes", "paymentMode", "status", "phoneNumber", "mpesaReceipt", "walletTransactionId", "createdAt", "expiresAt", "completedAt"],
       filters: { status: ["pending", "completed", "failed", "cancelled"] }
     },
 
@@ -147,7 +147,7 @@
     return [];
   }
 
-  function renderTable(container, rows, configuredColumns, onWithdrawalAction) {
+  function renderTable(container, rows, configuredColumns, onWithdrawalAction, onDepositAction, onMembershipAction) {
     container.replaceChildren();
 
     const columns = configuredColumns?.length
@@ -163,6 +163,12 @@
 
     const withWithdrawalActions =
       page === "withdrawals" && typeof onWithdrawalAction === "function";
+    const withDepositActions =
+      page === "deposits" && typeof onDepositAction === "function";
+    const withMembershipActions =
+      page === "memberships" && typeof onMembershipAction === "function";
+    const withActions =
+      withWithdrawalActions || withDepositActions || withMembershipActions;
 
     const wrap = make("div", undefined, "na-table-wrap");
     const table = make("table", undefined, "na-table");
@@ -174,7 +180,7 @@
       header.append(th);
     });
 
-    if (withWithdrawalActions) {
+    if (withActions) {
       const actionsTemplate = document.getElementById("withdrawal-actions-column");
       const actionsHeader = actionsTemplate
         ? actionsTemplate.content.firstElementChild.cloneNode(true)
@@ -195,14 +201,25 @@
         tr.append(td);
       });
 
-      if (withWithdrawalActions) {
+      if (withActions) {
         const cell = make("td");
         cell.className = "na-actions-column";
         const actions = make("div", undefined, "na-withdrawal-actions");
         const requestId = String(row?.requestId || "").trim();
+        const actionId = withMembershipActions
+          ? String(row?._id || "").trim()
+          : requestId;
         let choices = [];
 
-        if (row?.status === "pending_review") {
+        if (withMembershipActions) {
+          if (["pending", "verification_required"].includes(row?.paymentStatus)) {
+            choices = [["reject-delete", "Reject & Delete"]];
+          }
+        } else if (withDepositActions) {
+          if (row?.status === "pending") {
+            choices = [["reject-delete", "Reject & Delete"]];
+          }
+        } else if (row?.status === "pending_review") {
           choices = [["approve", "Approve"], ["reject", "Reject"]];
         } else if (
           row?.status === "approved" &&
@@ -217,13 +234,25 @@
           choices.forEach(([action, label]) => {
             const button = make("button", label, "na-button");
             button.type = "button";
-            button.disabled = !requestId;
-            button.title = requestId
-              ? label + " withdrawal " + requestId
-              : "Missing withdrawal request ID";
+            button.disabled = !actionId;
+            button.title = actionId
+              ? label + (withMembershipActions
+                  ? " membership purchase "
+                  : withDepositActions ? " deposit " : " withdrawal ") + actionId
+              : withMembershipActions
+                ? "Missing membership purchase ID"
+                : withDepositActions
+                  ? "Missing deposit request ID"
+                  : "Missing withdrawal request ID";
 
             button.addEventListener("click", () => {
-              onWithdrawalAction(action, row, button);
+              if (withMembershipActions) {
+                onMembershipAction(action, row, button);
+              } else if (withDepositActions) {
+                onDepositAction(action, row, button);
+              } else {
+                onWithdrawalAction(action, row, button);
+              }
             });
 
             actions.append(button);
@@ -336,16 +365,88 @@
     section.append(content);
     sections.append(section);
 
-    try {
-      const payload = await request(config.url);
-      const holder = make("div");
-      renderTable(holder, rowsFrom(payload, config.arrayKey), config.columns);
-      content.replaceWith(holder);
-      return true;
-    } catch (error) {
-      content.textContent = error.message || "Could not load records.";
-      return false;
+    const holder = make("div");
+    content.replaceWith(holder);
+
+    async function refreshRecords() {
+      holder.replaceChildren(make("div", "Loading records…", "na-empty"));
+
+      try {
+        const payload = await request(config.url);
+        renderTable(
+          holder,
+          rowsFrom(payload, config.arrayKey),
+          config.columns,
+          null,
+          null,
+          config.url === "/admin/membership-reconciliation"
+            ? handleMembershipAction
+            : null
+        );
+        return true;
+      } catch (error) {
+        holder.replaceChildren(
+          make("div", error.message || "Could not load records.", "na-empty")
+        );
+        return false;
+      }
     }
+
+    async function handleMembershipAction(action, row, button) {
+      const purchaseId = String(row?._id || "").trim();
+
+      if (action !== "reject-delete" || !purchaseId) {
+        message("Invalid action or missing membership purchase ID.", "error");
+        return;
+      }
+
+      const reason = window.prompt(
+        "Enter why this unpaid membership purchase is being rejected and deleted (3 to 500 characters):"
+      );
+
+      if (reason === null) return;
+
+      const body = {
+        reason: reason.trim(),
+        safaricomStatusConfirmed: "unpaid"
+      };
+
+      if (body.reason.length < 3 || body.reason.length > 500) {
+        message("The reason must contain 3 to 500 characters.", "error");
+        return;
+      }
+
+      if (!window.confirm(
+        `Permanently reject and delete membership purchase ${row?.purchaseReference || purchaseId}?\n\n` +
+        "First check the Safaricom portal or statement and confirm that this STK payment is UNPAID.\n\n" +
+        "The pending purchase record will be deleted. Callback evidence is preserved. " +
+        "No wallet balance will be credited or debited. Purchases with linked financial or payment evidence will be blocked."
+      )) return;
+
+      button.disabled = true;
+
+      try {
+        const payload = await postRequest(
+          "/admin/membership-reconciliation/" +
+            encodeURIComponent(purchaseId) +
+            "/reject-delete",
+          body
+        );
+
+        message(
+          payload.message || "Membership purchase rejected and deleted.",
+          "ok"
+        );
+
+        await refreshRecords();
+
+      } catch (error) {
+        message(error.message || "Membership purchase deletion failed.", "error");
+        button.disabled = false;
+      }
+    }
+
+    return refreshRecords();
   }
 
   async function loadReport(config) {
@@ -464,6 +565,50 @@
       }
     }
 
+    async function handleDepositAction(action, row, button) {
+      const requestId = String(row?.requestId || "").trim();
+
+      if (action !== "reject-delete" || !requestId) {
+        message("Invalid deposit action or missing request ID.", "error");
+        return;
+      }
+
+      const reason = window.prompt(
+        "Enter why this unpaid pending deposit is being rejected and deleted (3 to 300 characters):"
+      );
+
+      if (reason === null) return;
+
+      const body = { reason: reason.trim() };
+
+      if (body.reason.length < 3 || body.reason.length > 300) {
+        message("Reason must contain 3 to 300 characters.", "error");
+        return;
+      }
+
+      if (!window.confirm(
+        `Permanently delete pending deposit ${requestId}?\n\n` +
+        "Confirm that you checked the payment status with Safaricom and that NO payment was received.\n\n" +
+        "This removes the pending deposit record. It does not refund or change wallet balances."
+      )) return;
+
+      button.disabled = true;
+
+      try {
+        const payload = await postRequest(
+          "/admin/reports/deposits/" +
+            encodeURIComponent(requestId) + "/reject-delete",
+          body
+        );
+
+        message(payload.message || "Pending deposit rejected and deleted.", "ok");
+        await load();
+      } catch (error) {
+        message(error.message || "Deposit deletion failed.", "error");
+        button.disabled = false;
+      }
+    }
+
     async function load() {
       if (busy) return;
       busy = true;
@@ -493,6 +638,9 @@
           config.columns,
           config.url === "/admin/reports/withdrawals"
             ? handleWithdrawalAction
+            : null,
+          config.url === "/admin/reports/deposits"
+            ? handleDepositAction
             : null
         );
 

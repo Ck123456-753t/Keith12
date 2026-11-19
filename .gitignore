@@ -31,3 +31,5 @@ nwnsnnsjshsbs
 *.bak-*
 patch-admin-config.py
 patch-transcription-admin.py
+.vercel
+.env*

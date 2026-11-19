@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  
+  
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#101d38">
+<title>Professional Profile | PrimeTask Data Entry</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--navy:#101d38;--blue:#2878e8;--orange:#ff8b35;--ink:#17233b;--muted:#78869b;--line:#e7edf5;--page:#f4f7fc}
+*{box-sizing:border-box}
+body{margin:0;background:var(--page);color:var(--ink);font-family:"DM Sans",sans-serif}
+a{text-decoration:none;color:inherit}
+button,input,select,textarea{font:inherit}
+.app{min-height:100vh;display:grid;grid-template-columns:255px minmax(0,1fr)}
+.sidebar{background:var(--navy);color:white;padding:25px 17px;position:sticky;top:0;height:100vh;display:flex;flex-direction:column;z-index:20}
+.brand{display:flex;align-items:center;gap:12px;padding:4px 10px 30px}
+.brand-mark{width:43px;height:43px;border-radius:14px;background:linear-gradient(145deg,#3989ff,#1455bb);display:grid;place-items:center;font:800 19px Manrope}
+.brand-name{font:800 15px Manrope;display:block}.brand-sub{color:#aab9d2;font-size:10px;margin-top:3px;letter-spacing:1.3px;text-transform:uppercase;display:block}
+.nav-label{padding:13px 12px 9px;color:#8294b2;font-size:10px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase}
+.nav-list{display:grid;gap:6px}
+.nav-link{min-height:47px;padding:0 13px;border-radius:11px;display:flex;align-items:center;gap:12px;color:#bdc9dc;font-size:13px;font-weight:600}
+.nav-link:hover{background:#ffffff12;color:white}.nav-link.active{color:white;background:linear-gradient(100deg,#2878e8,#2366c7);box-shadow:0 7px 18px #1767d044}
+.nav-icon{width:21px;text-align:center;font-size:17px}
+.sidebar-bottom{margin-top:auto}.help-card{border:1px solid #ffffff1b;background:#ffffff0b;border-radius:15px;padding:15px;margin:18px 2px 0}
+.help-card strong{font-size:12px}.help-card p{color:#aab9d2;font-size:11px;line-height:1.6;margin:7px 0 12px}.help-card a{color:#ffad70;font-size:11px;font-weight:700}
+.main{min-width:0}.topbar{height:76px;padding:0 34px;background:#ffffffed;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:10;backdrop-filter:blur(12px)}
+.top-left,.top-right{display:flex;align-items:center;gap:13px}.menu-toggle{display:none;width:40px;height:40px;border:1px solid var(--line);background:white;border-radius:10px;font-size:19px}
+.breadcrumb{color:var(--muted);font-size:12px}.breadcrumb strong{color:var(--ink)}.secure{color:#718097;font-size:11px;font-weight:600}
+.avatar-small{width:39px;height:39px;border-radius:50%;background:#eaf2ff;color:var(--blue);display:grid;place-items:center;font-weight:800}
+.content{max-width:1450px;margin:auto;padding:30px 34px 55px}
+.hero{min-height:215px;border-radius:22px;padding:32px 35px;color:white;display:flex;align-items:center;position:relative;overflow:hidden;background:linear-gradient(90deg,#0d1d3af5 0%,#142e55df 55%,#142e5540 100%),url("https://images.unsplash.com/photo-1521737711867-e3b97375f902?auto=format&fit=crop&w=1800&q=85") center/cover;box-shadow:0 15px 35px #10264b20}
+.hero-content{position:relative;z-index:1;max-width:650px}
+.eyebrow{color:#ffb47f;font-size:10px;font-weight:800;letter-spacing:2px;text-transform:uppercase}
+h1{font:800 clamp(27px,3vw,37px) Manrope;margin:13px 0 9px;letter-spacing:-1px}
+.hero p{color:#d2dced;font-size:13px;line-height:1.8;margin:0;max-width:540px}
+.hero-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px}
+.btn{border:0;border-radius:9px;min-height:41px;padding:0 16px;display:inline-flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;cursor:pointer}
+.primary{background:var(--orange);color:#17233b}.secondary{border:1px solid #ffffff55;color:white;background:#ffffff10}
+.layout{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:18px;margin-top:22px;align-items:start}
+.main-column{display:grid;gap:16px;min-width:0}
+.panel{background:white;border:1px solid var(--line);border-radius:14px;padding:20px}
+.panel-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:17px}
+.panel-head h2{font:800 15px Manrope;margin:0}
+.panel-head p{font-size:10px;color:var(--muted);margin:5px 0 0}
+.section-tag{font-size:9px;color:#5278ad;background:#edf4ff;padding:6px 9px;border-radius:6px;font-weight:800;white-space:nowrap}
+.profile-preview{display:flex;align-items:center;gap:17px;padding:18px;background:#f7f9fc;border:1px solid var(--line);border-radius:12px}
+.profile-photo{width:76px;height:76px;flex:0 0 76px;border-radius:50%;background:#e6efff;color:#2878e8;display:grid;place-items:center;font:800 24px Manrope;overflow:hidden}
+.profile-photo img{width:100%;height:100%;object-fit:cover}
+.profile-name{font:800 19px Manrope;margin:0 0 5px}
+.profile-meta{font-size:10px;color:var(--muted);line-height:1.7}
+.availability{display:inline-flex;align-items:center;gap:6px;color:#65758b;font-size:9px;font-weight:800;margin-top:8px}
+.availability:before{content:"";width:7px;height:7px;border-radius:50%;background:#a7b2c0}
+.availability.available:before{background:#26a36d}
+.form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.form-group{display:grid;gap:7px;min-width:0}
+.form-group.full{grid-column:1/-1}
+.form-group label{font-size:10px;font-weight:800;color:#5f6f86}
+.field{width:100%;min-height:42px;border:1px solid var(--line);border-radius:9px;padding:10px 12px;color:var(--ink);background:white;outline:none;font-size:11px}
+textarea.field{min-height:110px;resize:vertical;line-height:1.7}
+.field:focus{border-color:var(--blue);box-shadow:0 0 0 3px #2878e817}
+.field:disabled{background:#f5f7fa;color:#9aa5b5}
+.field-help{font-size:9px;color:var(--muted);line-height:1.5}
+.check-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.check-item{display:flex;align-items:flex-start;gap:9px;padding:11px;border:1px solid var(--line);border-radius:9px;font-size:10px;color:#52627a;line-height:1.5}
+.check-item input{accent-color:var(--blue);margin:1px 0 0}
+.skill-note{font-size:10px;color:var(--muted);line-height:1.6;margin:0 0 13px}
+.action-row{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:17px}
+.save-btn{height:42px;border:0;border-radius:9px;padding:0 18px;background:var(--blue);color:white;font-size:11px;font-weight:800;cursor:not-allowed;opacity:.6}
+.side-column{display:grid;gap:15px}
+.side-panel{background:white;border:1px solid var(--line);border-radius:14px;padding:18px}
+.side-panel h3{font:800 13px Manrope;margin:0 0 12px}
+.side-panel p{font-size:10px;color:var(--muted);line-height:1.7;margin:0}
+.visibility-list{display:grid;gap:11px}
+.visibility-item{display:flex;gap:9px;align-items:flex-start;font-size:10px;line-height:1.5;color:#5f6f86}
+.visibility-item span:first-child{color:#27835e;font-size:13px}
+.private-note{background:#fff7ed;border:1px solid #f9dfc4;color:#98602d;border-radius:10px;padding:12px;font-size:10px;line-height:1.7;margin-top:13px}
+.profile-tip{background:#edf4ff;border:1px solid #dce9fc;color:#536d91;border-radius:10px;padding:13px;font-size:10px;line-height:1.7}
+.footer{text-align:center;color:#99a4b4;font-size:10px;padding:27px 0 0}
+@media(max-width:1050px){.content{padding:25px 23px 45px}.topbar{padding:0 23px}.layout{grid-template-columns:minmax(0,1fr) 260px}}
+@media(max-width:800px){.layout{grid-template-columns:1fr}.side-column{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:760px){
+.app{display:block}.sidebar{position:fixed;left:0;top:0;width:270px;transform:translateX(-105%);transition:transform .25s;box-shadow:15px 0 40px #07152b33}
+.sidebar.open{transform:translateX(0)}.menu-toggle{display:grid;place-items:center}.topbar{height:65px;padding:0 15px}.secure{display:none}
+.content{padding:18px 14px 35px}.hero{min-height:225px;padding:25px 21px;background-position:60% center}
+.form-grid{grid-template-columns:1fr}.form-group.full{grid-column:auto}.check-grid{grid-template-columns:1fr}.side-column{grid-template-columns:1fr}
+.profile-preview{align-items:flex-start}.profile-photo{width:62px;height:62px;flex-basis:62px}.profile-name{font-size:16px}
+}
+</style>
+<link rel="icon" type="image/svg+xml" href="/assets/primetask-logo.svg">
+</head>
+<body>
+<div class="app">
+<aside class="sidebar" id="sidebar">
+<a class="brand" href="index"><span class="brand-mark">PT</span><span><span class="brand-name">PrimeTask</span><span class="brand-sub">Data Entry Workspace</span></span></a>
+<div class="nav-label">Workspace</div>
+<nav class="nav-list" aria-label="Data Entry navigation">
+<a class="nav-link" href="index"><span class="nav-icon">⌂</span>Dashboard</a>
+<a class="nav-link" href="jobs"><span class="nav-icon">▤</span>Available Orders</a>
+<a class="nav-link" href="my-jobs"><span class="nav-icon">◷</span>My Orders</a>
+<a class="nav-link" href="bids"><span class="nav-icon">◇</span>My Bids</a>
+<a class="nav-link" href="submissions"><span class="nav-icon">✓</span>Submissions</a>
+</nav>
+<div class="nav-label">Finance</div>
+<nav class="nav-list">
+<a class="nav-link" href="buy-bids"><span class="nav-icon">＋</span>Buy Bids</a>
+<a class="nav-link" href="earnings"><span class="nav-icon">$</span>Earnings & Transactions</a>
+<a class="nav-link" href="withdrawals"><span class="nav-icon">⇧</span>Withdrawals</a>
+</nav>
+<div class="nav-label">Account</div>
+<nav class="nav-list">
+<a class="nav-link active" href="profile"><span class="nav-icon">◎</span>My Profile</a>
+<a class="nav-link" href="../../../../data-entry"><span class="nav-icon">▧</span>Learning Guide</a>
+</nav>
+<div class="sidebar-bottom"><div class="help-card"><strong>Build client confidence</strong><p>A clear bio, relevant skills and genuine work samples help clients understand your strengths.</p><a href="../../../../data-entry">Open learning guide →</a></div></div>
+</aside>
+
+<main class="main">
+<header class="topbar">
+<div class="top-left"><button class="menu-toggle" id="menuToggle" type="button" aria-label="Open navigation" aria-expanded="false">☰</button><div class="breadcrumb">Data Entry Workspace / <strong>Professional Profile</strong></div></div>
+<div class="top-right"><span class="secure">PrimeTask secure workspace</span><div class="avatar-small" id="userAvatar">PT</div></div>
+</header>
+
+<div class="content">
+<section class="hero">
+<div class="hero-content">
+<div class="eyebrow">Your professional identity</div>
+<h1>Show clients what you can do.</h1>
+<p>Build a clear professional profile that highlights your skills, experience, tools, availability and work quality.</p>
+<div class="hero-actions">
+<a class="btn primary" href="jobs">Browse available orders →</a>
+<a class="btn secondary" href="submissions">View submissions</a>
+</div>
+</div>
+</section>
+
+<div class="layout">
+<div class="main-column">
+
+<section class="panel">
+<div class="panel-head"><div><h2>Professional profile preview</h2><p>This is the information intended for clients.</p></div><span class="section-tag">Client-facing</span></div>
+<div class="profile-preview">
+<div class="profile-photo" id="profilePhoto">PT</div>
+<div>
+<h2 class="profile-name" id="previewName">Your name</h2>
+<div class="profile-meta" id="previewHeadline">Professional Data Entry Worker</div>
+<div class="profile-meta" id="previewLocation">Location not added</div>
+<div class="availability" id="availabilityPreview">Availability not set</div>
+</div>
+</div>
+</section>
+
+<section class="panel">
+<div class="panel-head"><div><h2>Basic professional information</h2><p>Introduce yourself and explain the value you bring to client projects.</p></div></div>
+<div class="form-grid">
+<div class="form-group"><label for="displayName">Display name</label><input class="field" id="displayName" type="text" maxlength="80" placeholder="Name clients should see"></div>
+<div class="form-group"><label for="professionalTitle">Professional headline</label><input class="field" id="professionalTitle" type="text" maxlength="100" placeholder="e.g. Data Entry and Spreadsheet Specialist"></div>
+<div class="form-group"><label for="country">Country</label><input class="field" id="country" type="text" maxlength="80" placeholder="Country"></div>
+<div class="form-group"><label for="city">City or region</label><input class="field" id="city" type="text" maxlength="100" placeholder="City or region"></div>
+<div class="form-group full"><label for="bio">Professional bio</label><textarea class="field" id="bio" maxlength="1200" placeholder="Introduce yourself, describe your data entry strengths, the type of work you handle and what clients can expect when working with you."></textarea><span class="field-help">Maximum 1,200 characters. Keep it accurate, specific and professional.</span></div>
+<div class="form-group"><label for="experience">Relevant experience</label><select class="field" id="experience"><option value="">Select experience level</option><option value="beginner">Beginner</option><option value="less-than-1">Less than 1 year</option><option value="1-2">1–2 years</option><option value="3-5">3–5 years</option><option value="5-plus">Over 5 years</option></select></div>
+<div class="form-group"><label for="availability">Work availability</label><select class="field" id="availability"><option value="">Select availability</option><option value="available">Available for work</option><option value="limited">Limited availability</option><option value="busy">Currently busy</option><option value="unavailable">Unavailable</option></select></div>
+</div>
+</section>
+
+<section class="panel">
+<div class="panel-head"><div><h2>Professional skills</h2><p>Select the services you can genuinely deliver.</p></div></div>
+<p class="skill-note">Only select skills you can demonstrate through accurate, completed work.</p>
+<div class="check-grid">
+<label class="check-item"><input type="checkbox" name="skills" value="data-entry">Data entry and database updates</label>
+<label class="check-item"><input type="checkbox" name="skills" value="spreadsheet-management">Spreadsheet management</label>
+<label class="check-item"><input type="checkbox" name="skills" value="data-cleaning">Data cleaning and validation</label>
+<label class="check-item"><input type="checkbox" name="skills" value="web-research">Web research and data collection</label>
+<label class="check-item"><input type="checkbox" name="skills" value="document-formatting">Document formatting</label>
+<label class="check-item"><input type="checkbox" name="skills" value="pdf-conversion">PDF and document conversion</label>
+<label class="check-item"><input type="checkbox" name="skills" value="record-management">Record and information management</label>
+<label class="check-item"><input type="checkbox" name="skills" value="quality-checking">Data quality checks</label>
+</div>
+</section>
+
+<section class="panel">
+<div class="panel-head"><div><h2>Tools and software</h2><p>Tell clients which tools you can use confidently.</p></div></div>
+<div class="check-grid">
+<label class="check-item"><input type="checkbox" name="tools" value="microsoft-excel">Microsoft Excel</label>
+<label class="check-item"><input type="checkbox" name="tools" value="google-sheets">Google Sheets</label>
+<label class="check-item"><input type="checkbox" name="tools" value="microsoft-word">Microsoft Word</label>
+<label class="check-item"><input type="checkbox" name="tools" value="google-docs">Google Docs</label>
+<label class="check-item"><input type="checkbox" name="tools" value="csv-files">CSV files</label>
+<label class="check-item"><input type="checkbox" name="tools" value="pdf-tools">PDF tools</label>
+<label class="check-item"><input type="checkbox" name="tools" value="google-drive">Google Drive</label>
+<label class="check-item"><input type="checkbox" name="tools" value="microsoft-office">Microsoft Office</label>
+</div>
+</section>
+
+<section class="panel">
+<div class="panel-head"><div><h2>Languages</h2><p>List the languages you can use for client instructions and project communication.</p></div></div>
+<div class="form-grid">
+<div class="form-group"><label for="languages">Languages and proficiency</label><textarea class="field" id="languages" maxlength="500" placeholder="e.g. English – Fluent&#10;Swahili – Native"></textarea></div>
+<div class="form-group"><label for="workPreferences">Preferred project categories</label><textarea class="field" id="workPreferences" maxlength="500" placeholder="e.g. Spreadsheet updates, data cleaning, online research"></textarea></div>
+</div>
+</section>
+
+<section class="panel">
+<div class="panel-head"><div><h2>Portfolio and work samples</h2><p>Show examples that demonstrate your ability without exposing private client information.</p></div><span class="section-tag">Optional</span></div>
+<div class="form-grid">
+<div class="form-group full"><label for="portfolioDescription">Portfolio description</label><textarea class="field" id="portfolioDescription" maxlength="800" placeholder="Describe relevant sample projects, the tasks completed and the tools used."></textarea></div>
+<div class="form-group full"><label for="portfolioLinks">Work sample links</label><textarea class="field" id="portfolioLinks" maxlength="1000" placeholder="Add links to public or shareable sample work, one link per line."></textarea><span class="field-help">Only share links you have permission to make available to clients.</span></div>
+</div>
+</section>
+
+<section class="panel">
+<div class="panel-head"><div><h2>Profile photo</h2><p>A clear, professional photo helps clients recognise your profile.</p></div></div>
+<div class="form-grid">
+<div class="form-group full"><label for="profilePhotoFile">Choose profile image</label><input class="field" id="profilePhotoFile" type="file" accept="image/jpeg,image/png,image/webp" disabled><span class="field-help">Photo uploads will be enabled when secure profile-image storage is connected.</span></div>
+</div>
+</section>
+
+<section class="panel">
+<div class="panel-head"><div><h2>Account information</h2><p>Private account details used for your PTW login and communication.</p></div><span class="section-tag">Private</span></div>
+<div class="form-grid">
+<div class="form-group"><label for="accountEmail">Account email</label><input class="field" id="accountEmail" type="email" disabled placeholder="Loading account email"></div>
+<div class="form-group"><label for="accountPhone">Account phone</label><input class="field" id="accountPhone" type="tel" disabled placeholder="Loading account phone"></div>
+<div class="form-group"><label for="accountUsername">Username</label><input class="field" id="accountUsername" type="text" disabled placeholder="Loading username"></div>
+<div class="form-group"><label for="accountStatus">Account status</label><input class="field" id="accountStatus" type="text" disabled placeholder="Loading account status"></div>
+</div>
+<div class="private-note">Your email, phone number, login details and payout information are private. They are not part of the client-facing professional profile.</div>
+</section>
+
+<section class="panel">
+<div class="panel-head"><div><h2>Profile settings</h2><p>Control how your professional information is presented.</p></div></div>
+<div class="check-grid">
+<label class="check-item"><input type="checkbox" id="publicProfile">Allow clients to view my professional profile</label>
+<label class="check-item"><input type="checkbox" id="showExperience">Display my experience level on my profile</label>
+<label class="check-item"><input type="checkbox" id="showPortfolio">Display my portfolio links to clients</label>
+</div>
+<div class="action-row"><button class="save-btn" type="button" disabled>Profile saving not yet connected</button><span class="field-help">Changes will be saved after the Data Entry profile API is implemented.</span></div>
+</section>
+
+</div>
+
+<aside class="side-column">
+<section class="side-panel">
+<h3>What clients can see</h3>
+<div class="visibility-list">
+<div class="visibility-item"><span>✓</span><span>Display name and professional headline</span></div>
+<div class="visibility-item"><span>✓</span><span>Professional bio and selected skills</span></div>
+<div class="visibility-item"><span>✓</span><span>Tools, experience and availability</span></div>
+<div class="visibility-item"><span>✓</span><span>Approved portfolio details you choose to share</span></div>
+</div>
+<div class="private-note">Clients cannot see your login email, private phone number, M-Pesa number, withdrawal records or account security information.</div>
+</section>
+
+<section class="side-panel">
+<h3>Build a stronger profile</h3>
+<p>Use a specific headline, explain the kind of data work you handle, select relevant skills and describe your actual experience. Avoid exaggerated claims.</p>
+</section>
+
+<section class="side-panel">
+<h3>Work quality matters</h3>
+<p>Clients value accurate records, consistent formatting, careful checking, clear communication and meeting agreed deadlines.</p>
+</section>
+
+<section class="side-panel">
+<h3>Useful workspace links</h3>
+<div class="visibility-list">
+<div class="visibility-item"><span>↗</span><span><a href="../../../../data-entry">Data Entry learning guide</a></span></div>
+<div class="visibility-item"><span>↗</span><span><a href="jobs">Available orders</a></span></div>
+<div class="visibility-item"><span>↗</span><span><a href="submissions">Submission history</a></span></div>
+<div class="visibility-item"><span>↗</span><span><a href="earnings">Earnings and transactions</a></span></div>
+</div>
+</section>
+
+<div class="profile-tip"><strong>Privacy reminder:</strong> Never upload identity documents, passwords, private client records or confidential work samples to a public portfolio.</div>
+</aside>
+</div>
+
+<footer class="footer">PrimeTask Workspace · Data Entry Professional Profile</footer>
+</div>
+</main>
+</div>
+
+<script src="../../../../assets/js/config.js"></script>
+<script>
+"use strict";
+
+const sidebar=document.getElementById("sidebar");
+const menuToggle=document.getElementById("menuToggle");
+
+menuToggle.addEventListener("click",()=>{
+  const open=sidebar.classList.toggle("open");
+  menuToggle.setAttribute("aria-expanded",String(open));
+  menuToggle.textContent=open?"×":"☰";
+});
+
+document.addEventListener("click",event=>{
+  if(window.innerWidth<=760&&sidebar.classList.contains("open")&&
+    !sidebar.contains(event.target)&&!menuToggle.contains(event.target)){
+    sidebar.classList.remove("open");
+    menuToggle.setAttribute("aria-expanded","false");
+    menuToggle.textContent="☰";
+  }
+});
+
+const fields={
+  displayName:document.getElementById("displayName"),
+  professionalTitle:document.getElementById("professionalTitle"),
+  country:document.getElementById("country"),
+  city:document.getElementById("city"),
+  availability:document.getElementById("availability")
+};
+
+function updateProfilePreview(){
+  const name=fields.displayName.value.trim();
+  const title=fields.professionalTitle.value.trim();
+  const city=fields.city.value.trim();
+  const country=fields.country.value.trim();
+  const availability=fields.availability.value;
+  document.getElementById("previewName").textContent=name||"Your name";
+  document.getElementById("previewHeadline").textContent=title||"Professional Data Entry Worker";
+  document.getElementById("previewLocation").textContent=[city,country].filter(Boolean).join(", ")||"Location not added";
+  const availabilityElement=document.getElementById("availabilityPreview");
+  const labels={
+    available:"Available for work",
+    limited:"Limited availability",
+    busy:"Currently busy",
+    unavailable:"Unavailable"
+  };
+  availabilityElement.textContent=labels[availability]||"Availability not set";
+  availabilityElement.classList.toggle("available",availability==="available");
+  const initials=name.split(/\s+/).filter(Boolean).slice(0,2).map(part=>part[0].toUpperCase()).join("");
+  document.getElementById("profilePhoto").textContent=initials||"PT";
+}
+
+Object.values(fields).forEach(field=>field.addEventListener("input",updateProfilePreview));
+
+async function loadWorkerIdentity(){
+  if(typeof window.PTW_AUTH_API_ME!=="string")return;
+  try{
+    const response=await fetch(window.PTW_AUTH_API_ME,{
+      credentials:"include",
+      headers:{Accept:"application/json"}
+    });
+    if(!response.ok)return;
+    const result=await response.json();
+    const user=result.user||result.data?.user||result;
+    if(user.role!=="user")return;
+
+    const first=String(user.firstName||"").trim();
+    const last=String(user.lastName||"").trim();
+    const fullName=[first,last].filter(Boolean).join(" ");
+
+    document.getElementById("userAvatar").textContent=
+      (first.charAt(0)||"P").toUpperCase()+(last.charAt(0)||"").toUpperCase();
+
+    document.getElementById("accountEmail").value=user.email||"";
+    document.getElementById("accountPhone").value=user.phone||user.phoneNumber||"";
+    document.getElementById("accountUsername").value=user.username||"";
+    document.getElementById("accountStatus").value=user.status||"Active";
+
+    if(fullName&&!fields.displayName.value){
+      fields.displayName.value=fullName;
+      updateProfilePreview();
+    }
+
+    if(user.profilePictureUrl){
+      const image=document.createElement("img");
+      image.src=user.profilePictureUrl;
+      image.alt="Profile photo";
+      image.onerror=()=>image.remove();
+      document.getElementById("profilePhoto").replaceChildren(image);
+    }
+  }catch(error){
+    console.error("Data Entry account information could not be loaded:",error);
+  }
+}
+
+loadWorkerIdentity();
+</script>
+</body>
+</html>

@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  
+  
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#061225">
+<meta name="description" content="Manage your PrimeTask Workspace referral link and network.">
+<title>My Referrals | PrimeTask Workspace</title>
+<script src="../assets/js/config.js"></script>
+<style>
+:root{color-scheme:dark;--bg:#050b18;--panel:#0c1729;--blue:#3984ff;--text:#f5f8ff;--muted:#aab8cd;--border:rgba(255,255,255,.11)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:15px/1.6 Arial,Helvetica,sans-serif}
+a{color:inherit;text-decoration:none}button,input{font:inherit}
+.app{min-height:100vh;display:block;}
+.sidebar{width:245px;flex-shrink:0;padding:24px 15px;background:#08101f;border-right:1px solid var(--border);display:flex;flex-direction:column}
+.brand{display:flex;align-items:center;gap:11px;padding:5px 8px 28px;font-weight:800}
+.brand-mark{width:42px;height:42px;display:grid;place-items:center;border-radius:12px;background:linear-gradient(135deg,#3984ff,#1646a0)}
+.brand-sub{font-size:10px;letter-spacing:2px;color:var(--muted)}
+.nav-label{margin:15px 10px 8px;color:#7f93ad;font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase}
+.nav-link{display:block;margin:4px 0;padding:11px 12px;border:1px solid transparent;border-radius:9px;color:var(--muted);text-align:left;width:100%;background:transparent;cursor:pointer}
+.nav-link:hover,.nav-link.active{color:white;background:rgba(57,132,255,.13);border-color:rgba(57,132,255,.25)}
+.nav-icon{display:inline-block;width:28px}
+.sidebar-note{margin-top:auto;padding:15px 10px 0;color:var(--muted);font-size:12px}
+.sidebar-note strong{display:block;color:white}
+.main{flex:1;min-width:0;padding:34px;max-width:1400px}
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:15px;margin-bottom:28px}
+.eyebrow{color:#93c5fd;font-size:12px;text-transform:uppercase;letter-spacing:1.5px}
+h1{margin:5px 0;font-size:clamp(25px,4vw,34px)}
+h2,h3,p{margin-top:0}
+.muted{color:var(--muted)}
+.avatar{width:42px;height:42px;border-radius:50%;display:grid;place-items:center;background:#1e3a5f;color:#bfdbfe;font-weight:800}
+.card{padding:22px;margin-bottom:22px;border:1px solid var(--border);border-radius:16px;background:linear-gradient(145deg,#0c1729,#091323)}
+.panel-title{margin:0 0 5px;font-size:19px}
+.panel-subtitle{margin:0;color:var(--muted);font-size:13px}
+.referral-header{display:flex;justify-content:space-between;gap:12px}
+.referral-mark{width:42px;height:42px;display:grid;place-items:center;border-radius:13px;background:#1e3a5f;color:#bfdbfe;font-size:23px}
+.referral-link-row{display:flex;gap:10px;margin-top:18px}
+.referral-link-row input{width:100%;min-width:0;padding:12px;border:1px solid #334155;border-radius:10px;background:#050b16;color:#dbeafe}
+.btn{padding:11px 15px;border:0;border-radius:9px;background:#2563eb;color:white;font-weight:700;cursor:pointer;white-space:nowrap}
+.btn:disabled{opacity:.55;cursor:not-allowed}
+.feedback{min-height:22px;margin:9px 0 0;color:#93c5fd;font-size:13px;overflow-wrap:anywhere}
+.stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:18px}
+.stat{padding:16px;border:1px solid var(--border);border-radius:12px;background:#0b1424}
+.stat-label,.stat-foot{display:block;color:var(--muted);font-size:12px}
+.stat strong{display:block;margin:8px 0;font-size:23px;overflow-wrap:anywhere}
+.disclaimer{margin:16px 0 0;color:#94a3b8;font-size:12px}
+.level-tabs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin:18px 0}
+.level-btn{padding:12px 6px;border:1px solid var(--border);border-radius:12px;background:#0b1424;color:#cbd5e1;cursor:pointer}
+.level-btn strong{display:block;margin-top:5px;font-size:18px;color:white}
+.level-btn[aria-pressed="true"]{border-color:#60a5fa;background:#1e3a5f;color:#bfdbfe}
+.network-status{color:#93c5fd;font-size:13px}
+.network-list{display:grid;gap:10px}
+.member{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px;border:1px solid var(--border);border-radius:12px;background:#0b1424}
+.member-name{font-weight:700;overflow-wrap:anywhere}
+.member-meta{margin-top:4px;color:var(--muted);font-size:12px;overflow-wrap:anywhere}
+.member-status{flex-shrink:0;padding:4px 8px;border-radius:99px;background:#263449;color:#cbd5e1;font-size:11px;text-transform:capitalize}
+.member-status.active{background:#123524;color:#86efac}
+.warning{color:#fbbf24;font-size:12px}
+.notice{margin-bottom:18px;color:#fca5a5;font-size:13px}
+
+.network-toolbar{display:flex;justify-content:space-between;align-items:center;gap:15px;margin:24px 0 14px}
+.table-heading{font-size:16px;margin:0 0 4px}
+.network-search{width:min(280px,100%);padding:11px 13px;border:1px solid #334155;border-radius:10px;background:#071120;color:#f5f8ff;outline:none}
+.network-search:focus{border-color:#60a5fa;box-shadow:0 0 0 3px rgba(96,165,250,.13)}
+.table-wrap{width:100%;overflow-x:auto;border:1px solid var(--border);border-radius:13px;background:#091323}
+.network-table{width:100%;border-collapse:collapse;min-width:650px;text-align:left}
+.network-table th{padding:14px 16px;background:#101f35;color:#9fb2cc;font-size:11px;letter-spacing:.07em;text-transform:uppercase;white-space:nowrap}
+.network-table td{padding:15px 16px;border-top:1px solid var(--border);font-size:13px;vertical-align:middle}
+.network-table tbody tr:hover{background:rgba(57,132,255,.055)}
+.table-member-name{font-weight:700;color:#f5f8ff}
+.table-member-meta{font-size:11px;color:var(--muted);margin-top:3px}
+.table-username{color:#93c5fd}
+.table-date{color:#cbd5e1;white-space:nowrap}
+.table-phone{color:#cbd5e1;white-space:nowrap}
+.table-whatsapp{color:#86efac;font-weight:700;white-space:nowrap}
+.table-membership{color:#cbd5e1;white-space:nowrap}
+.table-empty{text-align:center;color:var(--muted);padding:30px!important}
+.member-status{display:inline-block;padding:5px 10px;border-radius:99px;background:#263449;color:#cbd5e1;font-size:11px;text-transform:capitalize;white-space:nowrap}
+.member-status.active{background:#123524;color:#86efac}
+@media(max-width:600px){.network-toolbar{align-items:stretch;flex-direction:column}.network-search{width:100%}.level-tabs{margin-bottom:14px}.network-table th,.network-table td{padding:12px}}
+
+
+.whatsapp-support{position:fixed;right:22px;bottom:22px;z-index:9000;display:flex;align-items:center;gap:9px;padding:13px 18px;border-radius:999px;background:#168b50;color:#fff;font-weight:700;font-size:13px;box-shadow:0 8px 25px rgba(0,0,0,.35)}
+.whatsapp-support:hover{background:#20a461}
+.whatsapp-support[hidden]{display:none!important}
+.whatsapp-support span:first-child{font-size:19px}
+@media(max-width:480px){.whatsapp-support{right:14px;bottom:14px;padding:13px 16px}}
+
+[hidden]{display:none!important}
+@media(max-width:760px){.app{display:block}.sidebar{width:100%;padding:12px;border-right:0;border-bottom:1px solid var(--border)}.brand{padding-bottom:10px}.sidebar nav{display:flex;flex-wrap:wrap;gap:4px}.nav-label,.sidebar-note{display:none}.nav-link{width:auto;margin:0;padding:9px;font-size:12px}.nav-icon{width:auto;margin-right:5px}.main{padding:20px 14px}.card{padding:17px}}
+@media(max-width:420px){.referral-link-row{flex-direction:column}.referral-link-row .btn{width:100%}.level-tabs{gap:5px}.level-btn{font-size:11px;padding:10px 3px}.level-btn strong{font-size:16px}.member{align-items:flex-start}.stats{grid-template-columns:1fr}}
+
+
+/* PrimeTask shared dropdown navigation */
+.ptw-menu-wrap {
+  position: fixed;
+  top: 18px;
+  right: 20px;
+  z-index: 9999;
+  font-family: inherit;
+}
+.ptw-menu-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  padding: 0;
+  border: 1px solid #29415f;
+  border-radius: 12px;
+  background: #0b1a30;
+  color: #e8eef8;
+  box-shadow: 0 5px 16px rgba(0,0,0,.18);
+  cursor: pointer;
+  font-size: 21px;
+}
+.ptw-menu-toggle:hover { background: #122642; }
+.ptw-menu-toggle:focus-visible,
+.ptw-menu-link:focus-visible,
+.ptw-signout:focus-visible {
+  outline: 3px solid #8ab4ff;
+  outline-offset: 2px;
+}
+.ptw-menu-panel {
+  position: absolute;
+  top: calc(100% + 9px);
+  right: 0;
+  width: min(270px, calc(100vw - 32px));
+  max-height: min(75vh, 560px);
+  overflow-y: auto;
+  padding: 9px;
+  border: 1px solid #20334d;
+  border-radius: 15px;
+  background: #0b1a30;
+  box-shadow: 0 14px 38px rgba(0,0,0,.35);
+}
+.ptw-menu-panel[hidden] { display: none !important; }
+.ptw-menu-heading {
+  padding: 9px 11px 11px;
+  color: #9aacc4;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+}
+.ptw-menu-link {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding: 11px 12px;
+  margin: 2px 0;
+  border-radius: 9px;
+  color: #c5d2e4;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 600;
+}
+.ptw-menu-icon {
+  display: inline-flex;
+  width: 23px;
+  justify-content: center;
+  color: #9aacc4;
+  font-size: 17px;
+}
+.ptw-menu-link:hover { background: #122642; }
+.ptw-menu-link[aria-current="page"] {
+  background: #17365d;
+  color: #8ab4ff;
+}
+.ptw-menu-link[aria-current="page"] .ptw-menu-icon {
+  color: #8ab4ff;
+}
+.ptw-menu-divider {
+  height: 1px;
+  margin: 8px 4px;
+  background: #20334d;
+}
+.ptw-signout {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  gap: 11px;
+  padding: 11px 12px;
+  border: 0;
+  border-radius: 9px;
+  background: transparent;
+  color: #ffaaa4;
+  text-align: left;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.ptw-signout:hover { background: #35212b; }
+@media(max-width:480px) {
+  .ptw-menu-wrap { top: 10px; right: 10px; }
+  .ptw-menu-toggle { width: 40px; height: 40px; }
+}
+
+/* PrimeTask shared logo: preserve the original image proportions. */
+.logo img, .brand-mark img, .brandmark img,
+.brand-orb img, .hero-mark img, .mark img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  border-radius: inherit;
+}
+
+</style>
+<link rel="icon" type="image/svg+xml" href="/assets/primetask-logo.svg">
+</head>
+<body>
+
+<div class="ptw-menu-wrap">
+  <button id="ptwMenuToggle" class="ptw-menu-toggle"
+          type="button" aria-label="Open navigation menu"
+          aria-controls="ptwMenuPanel" aria-expanded="false">
+    <span aria-hidden="true">☰</span>
+  </button>
+  <nav id="ptwMenuPanel" class="ptw-menu-panel"
+       aria-label="Main navigation" hidden>
+    <div class="ptw-menu-heading">PrimeTask Workspace</div>
+    <a class="ptw-menu-link" href="/dashboard"><span class="ptw-menu-icon" aria-hidden="true">⌂</span><span>Dashboard</span></a><a class="ptw-menu-link" href="/dashboard/services"><span class="ptw-menu-icon" aria-hidden="true">▦</span><span>Services</span></a><a class="ptw-menu-link" href="/dashboard/wallet"><span class="ptw-menu-icon" aria-hidden="true">$</span><span>My Wallet</span></a><a class="ptw-menu-link" href="/dashboard/membership"><span class="ptw-menu-icon" aria-hidden="true">◇</span><span>Membership</span></a><a class="ptw-menu-link" href="/dashboard/transactions"><span class="ptw-menu-icon" aria-hidden="true">↔</span><span>Transactions</span></a><a class="ptw-menu-link" href="/dashboard/my-referrals" aria-current="page"><span class="ptw-menu-icon" aria-hidden="true">♧</span><span>My Referrals</span></a><a class="ptw-menu-link" href="/dashboard/profile"><span class="ptw-menu-icon" aria-hidden="true">○</span><span>My Profile</span></a>
+    <div class="ptw-menu-divider"></div>
+    <button class="ptw-signout" id="logoutBtn" type="button">
+      ↪ Sign out
+    </button>
+  </nav>
+</div>
+
+<div class="app">
+<main class="main">
+  <header class="topbar">
+    <div><div class="eyebrow">PrimeTask Workspace</div><h1>My Referrals</h1><p class="muted">Share your link and keep track of your referral network.</p></div>
+    <div class="avatar" id="userAvatar">P</div>
+  </header>
+  <div class="notice" id="notice" role="status"></div>
+
+  <section class="card" aria-labelledby="referralTitle">
+    <div class="referral-header">
+      <div><h2 class="panel-title" id="referralTitle">Your personal referral link</h2><p class="panel-subtitle">Your username identifies you as the sponsor.</p></div>
+      <div class="referral-mark" aria-hidden="true">♧</div>
+    </div>
+    <div class="referral-link-row">
+      <label for="referralLink" hidden>Your referral link</label>
+      <input id="referralLink" type="text" readonly placeholder="Loading your referral link..." autocomplete="off">
+      <button class="btn" id="copyReferralLink" type="button" disabled>Copy link</button>
+    </div>
+    <p class="feedback" id="referralFeedback" role="status">Loading your referral information...</p>
+    <div class="stats">
+      <div class="stat"><span class="stat-label">Direct referrals</span><strong id="directReferralCount">—</strong><span class="stat-foot">Accounts directly sponsored by you</span></div>
+      <div class="stat"><span class="stat-label">Your sponsor</span><strong id="referralSponsor">—</strong><span class="stat-foot">The member who referred you</span></div>
+    </div>
+    <p class="disclaimer">Referral counts are not commission earnings. Eligible purchases, approved rates and payout limits determine any future commissions.</p>
+  </section>
+
+  <section class="card" aria-labelledby="networkTitle">
+    <h2 class="panel-title" id="networkTitle">My four-level network</h2>
+    <p class="panel-subtitle">Explore the members connected to you through your referral chain.</p>
+    <div class="level-tabs" role="group" aria-label="Filter network by level">
+      <button class="level-btn" type="button" data-network-level="1" aria-pressed="true">Level 1<strong id="networkCount1">—</strong></button>
+      <button class="level-btn" type="button" data-network-level="2" aria-pressed="false">Level 2<strong id="networkCount2">—</strong></button>
+      <button class="level-btn" type="button" data-network-level="3" aria-pressed="false">Level 3<strong id="networkCount3">—</strong></button>
+      <button class="level-btn" type="button" data-network-level="4" aria-pressed="false">Level 4<strong id="networkCount4">—</strong></button>
+    </div>
+    <p class="network-status" id="networkStatus" role="status" aria-live="polite">Loading your network...</p>
+    <p class="warning" id="networkWarning" hidden></p>
+    
+    <div class="network-toolbar">
+      <div>
+        <h3 class="table-heading">Network members</h3>
+        <p class="panel-subtitle">Members connected at the selected level, with contact and current membership details.</p>
+      </div>
+      <input id="networkSearch" class="network-search"
+        type="search" placeholder="Search members..." autocomplete="off"
+        aria-label="Search network members">
+    </div>
+    <div class="table-wrap">
+      <table class="network-table">
+        <thead>
+          <tr>
+            <th>Member</th>
+            <th>Username</th>
+            <th>Date joined</th>
+            <th>Account status</th>
+            <th>Phone</th>
+            <th>WhatsApp</th>
+            <th>Membership status</th>
+          </tr>
+        </thead>
+        <tbody id="networkMembers">
+          <tr><td colspan="7" class="table-empty">Loading network members...</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+  </section>
+
+<a id="whatsappSupport" class="whatsapp-support" href="#" target="_blank"
+   rel="noopener noreferrer" aria-label="Chat with PrimeTask support on WhatsApp"
+   hidden>
+  <span aria-hidden="true">◉</span>
+  <span>WhatsApp support</span>
+</a>
+</main>
+</div>
+
+<script>
+"use strict";
+const $ = id => document.getElementById(id);
+
+function apiRoot() {
+  if (typeof window.PTW_AUTH_API_ME !== "string") return null;
+  return window.PTW_AUTH_API_ME.replace(/\/auth\/me\/?$/, "");
+}
+
+async function apiGet(url) {
+  const response = await fetch(url, {
+    method: "GET",
+    credentials: "include",
+    headers: { Accept: "application/json" }
+  });
+  if (response.status === 401) {
+    window.location.replace("/auth/login");
+    throw new Error("Your session has expired. Please sign in again.");
+  }
+  const data = await response.json().catch(() => ({}));
+  if (!response.ok) throw new Error(data.message || "The request could not be completed.");
+  return data;
+}
+
+async function loadProfile() {
+  if (typeof window.PTW_AUTH_API_ME !== "string") {
+    $("notice").textContent = "The authentication API is not configured for this domain.";
+    return;
+  }
+  try {
+    const result = await apiGet(window.PTW_AUTH_API_ME);
+    const user = result.user || result.data || result;
+    const name = [user.firstName, user.lastName].filter(Boolean).join(" ");
+    $("userAvatar").textContent = (name || user.username || "P").charAt(0).toUpperCase();
+  } catch (error) {
+    if (!String(error.message).includes("session has expired")) {
+      $("notice").textContent = error.message || "Account details could not be loaded.";
+    }
+  }
+}
+
+async function loadReferral() {
+  const feedback = $("referralFeedback");
+  if (typeof window.PTW_REFERRAL_API_ME !== "string") {
+    feedback.textContent = "Referral information is unavailable because the API is not configured.";
+    $("directReferralCount").textContent = "Unavailable";
+    $("referralSponsor").textContent = "Unavailable";
+    return;
+  }
+  try {
+    const result = await apiGet(window.PTW_REFERRAL_API_ME);
+    const referral = result.referral || result.data || {};
+    const referralUsername =
+      typeof referral.username === "string" ? referral.username.trim() : "";
+
+    // Always generate the current referral URL format.
+    // Ignore older referral URLs returned by the API.
+    const referralLink = /^[a-z0-9_]{3,30}$/i.test(referralUsername)
+      ? window.location.origin + "/auth/register/" + encodeURIComponent(referralUsername)
+      : "";
+
+    if (!referralLink) {
+      throw new Error("The server did not return a usable referral link.");
+    }
+
+    $("referralLink").value = referralLink;
+    $("copyReferralLink").disabled = false;
+    $("directReferralCount").textContent =
+      Number.isFinite(Number(referral.directReferrals)) ? String(Number(referral.directReferrals)) : "0";
+    $("referralSponsor").textContent = referral.sponsor
+      ? "@" + (referral.sponsor.username || "unknown")
+      : "No sponsor";
+    feedback.textContent = "Your referral link is ready to share.";
+  } catch (error) {
+    if (String(error.message).includes("session has expired")) return;
+    feedback.textContent = error.message || "Could not load referral information.";
+    $("directReferralCount").textContent = "Unavailable";
+    $("referralSponsor").textContent = "Unavailable";
+  }
+}
+
+let selectedNetworkLevel = 1;
+let referralNetworkLevels = [];
+
+function renderNetworkLevel(level) {
+  selectedNetworkLevel = level;
+
+  document.querySelectorAll("[data-network-level]").forEach(button => {
+    button.setAttribute(
+      "aria-pressed",
+      String(Number(button.dataset.networkLevel) === level)
+    );
+  });
+
+  const body = $("networkMembers");
+  const status = $("networkStatus");
+  const warning = $("networkWarning");
+  const search = $("networkSearch");
+
+  body.replaceChildren();
+  warning.hidden = true;
+  warning.textContent = "";
+
+  const entry = referralNetworkLevels.find(item => item.level === level);
+
+  if (!entry || entry.unavailable) {
+    status.textContent =
+      "This level could not be fully calculated because the network scan limit was reached.";
+    body.innerHTML =
+      '<tr><td colspan="7" class="table-empty">Member information unavailable.</td></tr>';
+    return;
+  }
+
+  status.textContent =
+    `Level ${level}: ${entry.total} member${entry.total === 1 ? "" : "s"} in your network. Showing ${entry.returned}.`;
+
+  if (entry.truncated) {
+    warning.textContent =
+      "Only the first 50 members are displayed. The total count includes all members at this level.";
+    warning.hidden = false;
+  }
+
+  const members = Array.isArray(entry.members) ? entry.members : [];
+
+  function drawRows() {
+    const query = (search?.value || "").trim().toLowerCase();
+
+    const filtered = members.filter(member => {
+      const name = [member.firstName, member.lastName]
+        .filter(Boolean).join(" ") || member.username || "PrimeTask member";
+      const username = member.username || "";
+      const joined = member.joinedAt
+        ? new Date(member.joinedAt).toLocaleDateString()
+        : "Date unavailable";
+      const state = String(member.status || "unknown");
+      const phone = String(member.phone || "");
+      const membership = member.membership?.planName || "Inactive";
+
+      return `${name} ${username} ${joined} ${state} ${phone} ${membership}`
+        .toLowerCase().includes(query);
+    });
+
+    body.replaceChildren();
+
+    if (!filtered.length) {
+      const row = document.createElement("tr");
+      const cell = document.createElement("td");
+      cell.colSpan = 7;
+      cell.className = "table-empty";
+      cell.textContent = members.length
+        ? "No members match your search."
+        : entry.total === 0
+          ? "No members at this level yet."
+          : "No member records are available to display.";
+      row.appendChild(cell);
+      body.appendChild(row);
+      return;
+    }
+
+    filtered.forEach(member => {
+      const row = document.createElement("tr");
+
+      const nameCell = document.createElement("td");
+      const name = document.createElement("div");
+      name.className = "table-member-name";
+      name.textContent =
+        [member.firstName, member.lastName].filter(Boolean).join(" ") ||
+        member.username || "PrimeTask member";
+
+      const meta = document.createElement("div");
+      meta.className = "table-member-meta";
+      meta.textContent = `Network Level ${level}`;
+      nameCell.append(name, meta);
+
+      const usernameCell = document.createElement("td");
+      usernameCell.className = "table-username";
+      usernameCell.textContent = "@" + (member.username || "unknown");
+
+      const dateCell = document.createElement("td");
+      dateCell.className = "table-date";
+      dateCell.textContent = member.joinedAt
+        ? new Date(member.joinedAt).toLocaleDateString()
+        : "Date unavailable";
+
+      const statusCell = document.createElement("td");
+      const badge = document.createElement("span");
+      const memberStatus = String(member.status || "unknown").toLowerCase();
+      badge.className = "member-status";
+      if (memberStatus === "active") badge.classList.add("active");
+      badge.textContent = memberStatus;
+      statusCell.appendChild(badge);
+
+      const phoneCell = document.createElement("td");
+      phoneCell.className = "table-phone";
+      phoneCell.textContent = member.phone || "Not provided";
+
+      const whatsappCell = document.createElement("td");
+      const whatsappDigits = String(member.phone || "").replace(/\D/g, "");
+      if (whatsappDigits.length >= 8 && whatsappDigits.length <= 15) {
+        const whatsappLink = document.createElement("a");
+        whatsappLink.className = "table-whatsapp";
+        whatsappLink.href = `https://wa.me/${whatsappDigits}?text=${encodeURIComponent(
+          `Hello ${[member.firstName, member.lastName].filter(Boolean).join(" ") || member.username || "there"}, I’m contacting you about PrimeTask Workspace.`
+        )}`;
+        whatsappLink.target = "_blank";
+        whatsappLink.rel = "noopener noreferrer";
+        whatsappLink.textContent = "Message";
+        whatsappLink.setAttribute("aria-label", `Send WhatsApp message to ${member.username || "member"}`);
+        whatsappCell.appendChild(whatsappLink);
+      } else {
+        whatsappCell.textContent = "Unavailable";
+      }
+
+      const membershipCell = document.createElement("td");
+      membershipCell.className = "table-membership";
+      const planName = member.membership?.status === "active" && member.membership.planName
+        ? member.membership.planName
+        : "Inactive";
+      membershipCell.textContent = planName;
+
+      row.append(nameCell, usernameCell, dateCell, statusCell, phoneCell, whatsappCell, membershipCell);
+      body.appendChild(row);
+    });
+  }
+
+  drawRows();
+}
+
+async function loadReferralNetwork() {
+  const root = apiRoot();
+  const status = $("networkStatus");
+  if (!root) {
+    status.textContent = "The API is not configured for this domain.";
+    return;
+  }
+  status.textContent = "Loading your four-level network...";
+  $("networkWarning").hidden = true;
+  try {
+    const result = await apiGet(`${root}/referrals/network`);
+    const network = result.network || {};
+    const levels = Array.isArray(network.levels) ? network.levels : [];
+    referralNetworkLevels = levels;
+    [1, 2, 3, 4].forEach(level => {
+      const entry = levels.find(item => item.level === level);
+      $(`networkCount${level}`).textContent =
+        !entry || entry.total === null || entry.total === undefined ? "—" : Number(entry.total).toLocaleString();
+    });
+    if (result.success !== true || levels.length !== 4) {
+      throw new Error(result.message || "The network response was incomplete.");
+    }
+    renderNetworkLevel(selectedNetworkLevel);
+    if (network.traversalLimited) {
+      $("networkWarning").textContent = "The network scan limit was reached. Some deeper-level counts are unavailable.";
+      $("networkWarning").hidden = false;
+    }
+  } catch (error) {
+    if (String(error.message).includes("session has expired")) return;
+    status.textContent = error.message || "Your network could not be loaded.";
+    $("networkMembers").replaceChildren();
+    [1, 2, 3, 4].forEach(level => { $(`networkCount${level}`).textContent = "—"; });
+  }
+}
+
+async function copyReferralLink() {
+  const input = $("referralLink");
+  const feedback = $("referralFeedback");
+  if (!input.value) {
+    feedback.textContent = "Your referral link has not loaded yet.";
+    return;
+  }
+  try {
+    if (navigator.clipboard && window.isSecureContext) {
+      await navigator.clipboard.writeText(input.value);
+    } else {
+      input.focus();
+      input.select();
+      if (!document.execCommand("copy")) throw new Error("Copy was blocked.");
+    }
+    feedback.textContent = "Referral link copied. Share it with your invitee.";
+  } catch {
+    input.focus();
+    input.select();
+    feedback.textContent = "Copy was blocked. Select the link above and copy it manually.";
+  }
+}
+
+document.querySelectorAll("[data-network-level]").forEach(button => {
+  button.addEventListener("click", () => renderNetworkLevel(Number(button.dataset.networkLevel)));
+});
+$("networkSearch")?.addEventListener("input", () => renderNetworkLevel(selectedNetworkLevel));
+$("copyReferralLink").addEventListener("click", copyReferralLink);
+$("logoutBtn").addEventListener("click", async () => {
+  const root = apiRoot();
+  try {
+    if (root && typeof window.PTW_AUTH_API_LOGOUT === "string") {
+      await fetch(window.PTW_AUTH_API_LOGOUT, {
+        method: "POST", credentials: "include", headers: { Accept: "application/json" }
+      });
+    }
+  } catch (error) {
+    console.error("Sign-out request failed:", error);
+  } finally {
+    window.location.replace("/auth/login");
+  }
+});
+
+
+// Set the official support number in international format, digits only.
+// Example format for Kenya: 2547XXXXXXXX
+const WHATSAPP_SUPPORT_NUMBER = "";
+
+const whatsappButton = $("whatsappSupport");
+if (/^[1-9][0-9]{7,14}$/.test(WHATSAPP_SUPPORT_NUMBER)) {
+  whatsappButton.href =
+    `https://wa.me/${WHATSAPP_SUPPORT_NUMBER}?text=${encodeURIComponent("Hello PrimeTask Workspace Support, I need assistance.")}`;
+  whatsappButton.hidden = false;
+}
+
+async function init() {
+  await loadProfile();
+  await Promise.allSettled([loadReferral(), loadReferralNetwork()]);
+}
+init();
+</script>
+
+<script>
+
+(function () {
+  const toggle = document.getElementById("ptwMenuToggle");
+  const panel = document.getElementById("ptwMenuPanel");
+  if (!toggle || !panel) return;
+
+  function closeMenu() {
+    panel.hidden = true;
+    toggle.setAttribute("aria-expanded", "false");
+  }
+
+  toggle.addEventListener("click", function (event) {
+    event.stopPropagation();
+    const opening = panel.hidden;
+    panel.hidden = !opening;
+    toggle.setAttribute("aria-expanded", String(opening));
+  });
+
+  panel.addEventListener("click", function (event) {
+    const link = event.target.closest("a");
+    if (link) closeMenu();
+    event.stopPropagation();
+  });
+
+  document.addEventListener("click", function (event) {
+    if (!event.target.closest(".ptw-menu-wrap")) closeMenu();
+  });
+
+  document.addEventListener("keydown", function (event) {
+    if (event.key === "Escape") {
+      closeMenu();
+      toggle.focus();
+    }
+  });
+})();
+
+</script>
+</body>
+</html>

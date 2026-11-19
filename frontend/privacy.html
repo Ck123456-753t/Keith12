@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  
+  
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#061225">
@@ -33,7 +35,7 @@ button,input{font:inherit}
 .container{width:min(1200px,92%);margin:auto}
 .topbar{
   background:#030b17;border-bottom:1px solid var(--border);
-  padding:9px 0;font-size:11px;color:var(--muted);
+  padding:9px 0;font-size:8.25px;color:var(--muted);
 }
 .topbar .container{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
 header{
@@ -42,13 +44,13 @@ header{
   border-bottom:1px solid var(--border);
 }
 .nav{min-height:74px;display:flex;align-items:center;justify-content:space-between;gap:18px}
-.brand{display:flex;align-items:center;gap:11px;color:white;font-size:16px;font-weight:900}
+.brand{display:flex;align-items:center;gap:11px;color:white;font-size:12px;font-weight:900}
 .logo{
   display:grid;place-items:center;width:43px;height:43px;border-radius:13px;
   background:linear-gradient(135deg,var(--blue),#10366e);font-weight:900;
 }
-.brand small{display:block;color:var(--muted);font-size:9px;letter-spacing:1.6px}
-.navlinks{display:flex;align-items:center;gap:18px;font-size:12px;color:var(--muted)}
+.brand small{display:block;color:var(--muted);font-size:6.75px;letter-spacing:1.6px}
+.navlinks{display:flex;align-items:center;gap:18px;font-size:9px;color:var(--muted)}
 .navlinks a{color:var(--muted)}
 .navlinks a:hover{color:white}
 .menu-btn{display:none;background:var(--panel);border:1px solid var(--border);color:white;padding:9px 12px;border-radius:9px}
@@ -68,13 +70,13 @@ header{
 .eyebrow{
   display:inline-block;padding:6px 12px;border-radius:30px;
   background:#ff87381a;border:1px solid #ff87384a;color:#ffd0ac;
-  text-transform:uppercase;letter-spacing:1.7px;font-size:10px;font-weight:900;
+  text-transform:uppercase;letter-spacing:1.7px;font-size:7.5px;font-weight:900;
 }
-h1{font-size:clamp(38px,6vw,65px);line-height:1.1;letter-spacing:-2px;margin:20px 0}
+h1{font-size:clamp(28.5px,4.5vw,48.75px);line-height:1.1;letter-spacing:-2px;margin:20px 0}
 h1 span{color:var(--orange)}
-.hero p{max-width:790px;color:#d0ddef;font-size:15px}
+.hero p{max-width:790px;color:#d0ddef;font-size:11.25px}
 .meta{display:flex;gap:12px;flex-wrap:wrap;margin-top:26px}
-.meta span{padding:7px 11px;border:1px solid var(--border);border-radius:8px;background:#06122588;font-size:11px;color:#d1dff0}
+.meta span{padding:7px 11px;border:1px solid var(--border);border-radius:8px;background:#06122588;font-size:8.25px;color:#d1dff0}
 .layout{
   display:grid;grid-template-columns:275px minmax(0,1fr);
   gap:26px;align-items:start;padding:42px 0 80px;
@@ -84,12 +86,12 @@ h1 span{color:var(--orange)}
   border:1px solid var(--border);border-radius:17px;padding:20px;
   max-height:calc(100vh - 120px);overflow:auto;
 }
-.sidebar h3{font-size:14px;margin:0 0 12px}
-.sidebar .hint{font-size:11px;color:var(--muted);margin-bottom:15px}
+.sidebar h3{font-size:10.5px;margin:0 0 12px}
+.sidebar .hint{font-size:8.25px;color:var(--muted);margin-bottom:15px}
 .toc{display:grid;gap:3px}
 .toc a{
   display:block;padding:8px 10px;border-radius:8px;
-  color:var(--muted);font-size:11px;line-height:1.5;
+  color:var(--muted);font-size:8.25px;line-height:1.5;
   border-left:2px solid transparent;
 }
 .toc a:hover,.toc a.active{background:#2477e81b;color:white;border-left-color:var(--orange)}
@@ -101,10 +103,10 @@ h1 span{color:var(--orange)}
   border-radius:14px;margin-bottom:24px;
 }
 .notice strong{color:#ffc18f}
-.notice p{margin:7px 0 0;font-size:13px;color:#d4dfef}
+.notice p{margin:7px 0 0;font-size:9.75px;color:#d4dfef}
 .warning{
   padding:17px 20px;border:1px solid #ff79794d;background:#ff79790d;
-  border-radius:12px;margin:18px 0;color:#f4d0d0;font-size:13px;
+  border-radius:12px;margin:18px 0;color:#f4d0d0;font-size:9.75px;
 }
 .policy-section{
   padding:30px;margin-bottom:17px;background:linear-gradient(145deg,#0c1d35,#09172b);
@@ -113,12 +115,12 @@ h1 span{color:var(--orange)}
 .section-heading{display:flex;gap:15px;align-items:flex-start;margin-bottom:17px}
 .section-num{
   flex-shrink:0;display:grid;place-items:center;width:43px;height:43px;
-  border-radius:12px;background:#2477e81c;color:#8bbaff;font-size:13px;font-weight:900;
+  border-radius:12px;background:#2477e81c;color:#8bbaff;font-size:9.75px;font-weight:900;
 }
-.section-heading h2{margin:0;font-size:23px;line-height:1.35;letter-spacing:-.5px}
-.policy-section h3{font-size:16px;margin:24px 0 8px;color:#dceaff}
-.policy-section p{font-size:13px;color:#bdcce0;margin:10px 0}
-.policy-section ul,.policy-section ol{padding-left:23px;color:#bdcce0;font-size:13px}
+.section-heading h2{margin:0;font-size:17.25px;line-height:1.35;letter-spacing:-.5px}
+.policy-section h3{font-size:12px;margin:24px 0 8px;color:#dceaff}
+.policy-section p{font-size:9.75px;color:#bdcce0;margin:10px 0}
+.policy-section ul,.policy-section ol{padding-left:23px;color:#bdcce0;font-size:9.75px}
 .policy-section li{padding-left:3px;margin:7px 0}
 .policy-section strong{color:#edf4ff}
 .subsection{
@@ -128,7 +130,7 @@ h1 span{color:var(--orange)}
 .subsection h3{margin:0 0 7px}
 .subsection p{margin:6px 0}
 .table-wrap{overflow-x:auto;margin:18px 0;border:1px solid var(--border);border-radius:11px}
-table{width:100%;border-collapse:collapse;min-width:510px;font-size:12px}
+table{width:100%;border-collapse:collapse;min-width:510px;font-size:9px}
 th,td{padding:13px;text-align:left;vertical-align:top;border-bottom:1px solid var(--border)}
 th{background:#102744;color:#e9f2ff}
 td{color:#bdcce0}
@@ -139,7 +141,7 @@ tr:last-child td{border-bottom:0}
 .danger-list li:before{content:"!";color:var(--orange)}
 .definition{
   padding:12px 15px;margin:9px 0;border:1px solid var(--border);
-  border-radius:10px;background:#06122555;font-size:12px;color:var(--muted);
+  border-radius:10px;background:#06122555;font-size:9px;color:var(--muted);
 }
 .definition strong{color:white}
 .doc-tools{
@@ -149,7 +151,7 @@ tr:last-child td{border-bottom:0}
 }
 .tool-btn{
   border:1px solid var(--border);background:#102744;color:white;
-  border-radius:8px;padding:9px 12px;font-size:11px;font-weight:800;
+  border-radius:8px;padding:9px 12px;font-size:8.25px;font-weight:800;
 }
 .tool-btn:hover{background:#1b3a60}
 .reading-progress{
@@ -163,14 +165,14 @@ tr:last-child td{border-bottom:0}
 .last-box h3{margin-top:0;color:#8df0c9}
 footer{background:#030b17;border-top:1px solid var(--border);padding:40px 0 20px}
 .footer-grid{display:grid;grid-template-columns:1.5fr 1fr 1fr 1fr;gap:25px}
-footer h4{margin:0 0 12px;font-size:13px}
-footer p,footer a{font-size:11px;color:var(--muted)}
+footer h4{margin:0 0 12px;font-size:9.75px}
+footer p,footer a{font-size:8.25px;color:var(--muted)}
 footer a{display:block;margin:7px 0}
-.footer-bottom{border-top:1px solid var(--border);margin-top:25px;padding-top:16px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;color:#8192a9;font-size:10px}
+.footer-bottom{border-top:1px solid var(--border);margin-top:25px;padding-top:16px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;color:#8192a9;font-size:7.5px}
 .back-top{
   position:fixed;right:18px;bottom:18px;width:44px;height:44px;
   border:0;border-radius:13px;background:var(--orange);color:#1b0c02;
-  font-size:19px;font-weight:900;display:none;z-index:90;
+  font-size:14.25px;font-weight:900;display:none;z-index:90;
 }
 .back-top.show{display:block}
 @media(max-width:980px){
@@ -188,11 +190,11 @@ footer a{display:block;margin:7px 0}
   h1{letter-spacing:-1px}
   .layout{padding:25px 0 55px;gap:18px}
   .policy-section{padding:20px}
-  .section-heading h2{font-size:20px}
+  .section-heading h2{font-size:15px}
   .section-num{width:37px;height:37px}
   .toc{grid-template-columns:1fr}
   .footer-grid{grid-template-columns:1fr 1fr;gap:17px}
-  .brand{font-size:13px}
+  .brand{font-size:9.75px}
   .logo{width:38px;height:38px}
 }
 @media print{
@@ -210,13 +212,25 @@ footer a{display:block;margin:7px 0}
   .policy-section h3,.policy-section strong,.notice strong,.last-box h3,th{color:#111!important}
   .document a{color:#111!important;text-decoration:underline}
   .policy-section{margin-bottom:12px;padding:18px}
-  .policy-section h2{font-size:17px}
-  .policy-section p,.policy-section li{font-size:10pt}
+  .policy-section h2{font-size:12.75px}
+  .policy-section p,.policy-section li{font-size:7.5pt}
   .table-wrap{overflow:visible}
-  table{min-width:0;font-size:9pt}
+  table{min-width:0;font-size:6.75pt}
 }
+
+/* PrimeTask shared logo: preserve the original image proportions. */
+.logo img, .brand-mark img, .brandmark img,
+.brand-orb img, .hero-mark img, .mark img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  border-radius: inherit;
+}
+
 </style>
-  <link rel="icon" type="image/jpeg" href="assets/primetask.jpg">
+<link rel="icon" type="image/svg+xml" href="/assets/primetask-logo.svg">
+<style id="ptw-marketing-typography-scale">body { font-size: 12px; }</style>
 </head>
 
 <body>
@@ -232,13 +246,13 @@ footer a{display:block;margin:7px 0}
 <header>
   <div class="container nav">
     <a class="brand" href="index.html">
-      <span class="logo">PT</span>
+      <span class="logo">PT
       <span>PrimeTask Workspace<small>WORK · EARN · GROW</small></span>
     </a>
 
     <nav class="navlinks" id="navlinks">
       <a href="index.html">Home</a>
-      <a href="services.html">Services</a>
+      <a href="service.html">Services</a>
       <a href="how-it-works.html">How It Works</a>
       <a href="faq.html">FAQ</a>
       <a href="contact.html">Contact</a>
@@ -306,7 +320,7 @@ footer a{display:block;margin:7px 0}
       <button class="tool-btn" id="expandAll">Expand reading notes</button>
       <button class="tool-btn" id="collapseAll">Collapse reading notes</button>
       <button class="tool-btn" id="printPage">Print / Save PDF</button>
-      <span style="font-size:11px;color:var(--muted)">Use the contents menu to navigate this document.</span>
+      <span style="font-size:8.25px;color:var(--muted)">Use the contents menu to navigate this document.</span>
     </div>
 
     <div class="notice">
@@ -1299,7 +1313,7 @@ footer a{display:block;margin:7px 0}
   <div class="container">
     <div class="footer-grid">
       <div>
-        <a class="brand" href="index.html"><span class="logo">PT</span><span>PrimeTask Workspace<small>WORK · EARN · GROW</small></span></a>
+        <a class="brand" href="index.html"><span class="logo">PT<span>PrimeTask Workspace<small>WORK · EARN · GROW</small></span></a>
         <p>Creating Opportunities and Delivering Excellence.</p>
         <p>Responsible work. Clear processes. Respect for personal information.</p>
       </div>
@@ -1307,7 +1321,7 @@ footer a{display:block;margin:7px 0}
         <h4>Explore</h4>
         <a href="index.html">Home</a>
         <a href="about.html">About us</a>
-        <a href="services.html">Services</a>
+        <a href="service.html">Services</a>
         <a href="how-it-works.html">How it works</a>
       </div>
       <div>

@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#071426"><title>PrimeTask Workspace | Wallet</title>
+<style>
+:root{--navy:#071426;--navy2:#0a2442;--orange:#ff8a24;--ink:#102642;--muted:#64758a;--line:#d8e5f5;--panel:#fff;--green:#07864c;--red:#c83232}
+*{box-sizing:border-box}body{margin:0;font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif;background:#eef3f9;color:var(--ink)}
+a{color:inherit;text-decoration:none}button,input,select{font:inherit}
+.topbar{height:auto;min-height:72px;padding:14px clamp(16px,4vw,44px);display:flex;align-items:center;justify-content:space-between;gap:16px;background:#06162c;color:white;border-bottom:3px solid var(--orange);flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:11px;font-weight:900}.logo{width:42px;height:42px;border-radius:12px;background:var(--orange);display:grid;place-items:center;color:#111;font-size:19px;font-weight:950}.brand small{display:block;color:#aabbd0;font-size:10px;letter-spacing:2px;margin-top:2px}
+nav{display:flex;gap:8px;flex-wrap:wrap}nav a,.btn{border:1px solid #d6e2f3;border-radius:10px;padding:10px 13px;background:#fff;color:#102642;font-weight:750;font-size:13px;cursor:pointer}nav a{background:#ffffff0a;border-color:#ffffff25;color:white}nav a.active{border-color:var(--orange);color:#ffb66e}
+.hero{color:white;padding:36px clamp(16px,5vw,60px);background:linear-gradient(90deg,rgba(4,15,32,.95),rgba(4,15,32,.58)),url("https://images.unsplash.com/photo-1627123424574-724758594e93?auto=format&fit=crop&w=2000&q=85") center 52%/cover;min-height:210px;display:flex;align-items:center;border-bottom:4px solid var(--orange)}
+.hero-inner{max-width:1200px;width:100%;margin:auto}.eyebrow{font-size:11px;letter-spacing:2.4px;text-transform:uppercase;color:#ffad57;font-weight:850}.hero h1{font-size:clamp(32px,5vw,46px);margin:9px 0}.hero p{color:#e0e8f2;margin:0;line-height:1.6}
+main{max-width:1240px;margin:-22px auto 0;padding:0 18px 38px;position:relative}.layout{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(300px,.85fr);gap:18px;align-items:start}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:17px;padding:21px;box-shadow:0 12px 30px #0c2b4b0d}
+.balance{background:linear-gradient(135deg,#071a34,#0b3158);color:white;border:1px solid #1b4771;display:grid;grid-template-columns:1fr 1fr;gap:18px;align-items:center}
+.label{font-size:12px;color:#9eb4cc;font-weight:750}.amount{font-size:clamp(34px,4vw,48px);font-weight:900;letter-spacing:-1.5px;margin:10px 0}.hint{font-size:12px;color:#b9cce0;line-height:1.5}
+.btn.primary{background:var(--orange);border-color:var(--orange);color:#251606}.btn:disabled{opacity:.55;cursor:not-allowed}.balance .btn{margin-top:12px}
+.stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-top:15px}.stat strong{display:block;font-size:25px;margin:12px 0 5px}.stat span{font-size:12px;color:var(--muted)}
+h2{font-size:18px;margin:0 0 6px}.sub{font-size:12px;color:var(--muted);line-height:1.55}
+.section-head{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:15px}
+.form-row{margin-top:14px}.form-row label{display:block;font-size:12px;font-weight:800;margin-bottom:7px}.form-row input,.form-row select{width:100%;border:1px solid #cbd9e9;background:white;color:var(--ink);border-radius:10px;padding:12px;outline:none}.form-row input:focus,.form-row select:focus{border-color:#ff9a42;box-shadow:0 0 0 3px #ff8a2418}
+.method-note,.notice{margin-top:14px;padding:12px;border-radius:11px;background:#fff5e9;border:1px solid #ffd5a8;color:#76410f;font-size:12px;line-height:1.55}
+.form-error{color:var(--red);font-size:12px;line-height:1.5;margin-top:12px;min-height:16px}.form-success{color:var(--green)}
+.table-wrap{overflow:auto;border:1px solid var(--line);border-radius:12px;margin-top:14px}table{width:100%;min-width:580px;border-collapse:collapse}th,td{text-align:left;padding:13px 14px;border-bottom:1px solid #e7eef7;font-size:12px}th{background:#f1f6fc;color:#64758a;text-transform:uppercase;letter-spacing:.7px;font-size:10px}tbody tr:last-child td{border-bottom:0}.empty{text-align:center;color:var(--muted);padding:25px;line-height:1.6}.pill{font-size:10px;font-weight:850;border-radius:99px;padding:5px 8px;background:#edf1f6;color:#64758a}.pill.success{background:#e2f8ed;color:#087747}.pill.failed{background:#ffeded;color:#b52626}
+.security{margin-top:18px;background:#071a34;color:white;border-radius:14px;padding:17px;display:grid;grid-template-columns:repeat(3,1fr);gap:15px}.security b{font-size:12px}.security p{font-size:11px;color:#b8c9dc;line-height:1.5;margin:6px 0 0}
+footer{max-width:1240px;margin:auto;padding:0 20px 25px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;color:#66768a;font-size:11px}
+@media(max-width:800px){.layout{grid-template-columns:1fr}.balance{grid-template-columns:1fr}.hero{min-height:190px}.security{grid-template-columns:1fr}.topbar{align-items:flex-start}}
+</style></head>
+<body>
+<header class="topbar">
+<a class="brand" href="dashboard.html"><span class="logo">PT</span><span>PrimeTask Workspace<small>TRANSCRIPTION SERVICES</small></span></a>
+<nav aria-label="Main navigation"><a href="dashboard.html">Dashboard</a><a href="jobs.html">Jobs</a><a href="my-assignment.html">My Assignment</a><a class="active" href="wallet.html">Wallet</a><a href="withdrawal-history.html">Withdrawal History</a></nav>
+</header>
+<section class="hero"><div class="hero-inner"><div class="eyebrow">Your work. Your earnings.</div><h1>My Wallet</h1><p>Review your verified balance and request a withdrawal directly from your wallet.</p></div></section>
+<main>
+<div class="layout">
+<div>
+<section class="card balance">
+<div><div class="label">AVAILABLE BALANCE</div><div class="amount" id="availableBalance">—</div><div class="hint" id="balanceHint">Waiting for verified wallet data.</div><button class="btn primary" type="button" onclick="document.getElementById('withdrawAmount').focus()">↓ Withdraw funds</button></div>
+<div><div class="label">WALLET CURRENCY</div><div class="amount" id="currency" style="font-size:34px">USD</div><div class="hint">Withdrawals use your confirmed available balance. No currency conversion is performed on this page.</div></div>
+</section>
+<div class="stats">
+<section class="card stat"><div class="label">LIFETIME EARNINGS</div><strong id="lifetimeEarnings">—</strong><span>Confirmed earnings only</span></section>
+<section class="card stat"><div class="label">TOTAL WITHDRAWN</div><strong id="totalWithdrawn">—</strong><span>Completed withdrawals only</span></section>
+</div>
+<section class="card" style="margin-top:16px">
+<div class="section-head"><div><h2>Recent Wallet Activity</h2><div class="sub">Transactions returned by the Workspace server.</div></div><button class="btn" id="refreshBtn" type="button">↻ Refresh</button></div>
+<div class="table-wrap"><table><thead><tr><th>Date &amp; Time</th><th>Type</th><th>Reference</th><th>Amount (USD)</th><th>Status</th></tr></thead><tbody id="activityRows"><tr><td class="empty" colspan="5">Activity will appear when the wallet API connects.</td></tr></tbody></table></div>
+<div id="loadMessage" class="sub" role="status" aria-live="polite" style="margin-top:12px"></div>
+</section>
+</div>
+<aside>
+<section class="card" id="withdrawPanel">
+<div class="section-head"><div><h2>Withdraw Funds</h2><div class="sub">Request payment from your available wallet balance.</div></div></div>
+<form id="withdrawForm">
+<div class="form-row"><label for="withdrawMethod">Withdrawal method</label><select id="withdrawMethod" name="method" required><option value="mpesa">Mobile Money (M-Pesa)</option><option value="bank">Bank transfer</option></select></div>
+<div class="form-row" id="phoneRow"><label for="phoneNumber">M-Pesa phone number</label><input id="phoneNumber" name="phoneNumber" type="tel" inputmode="tel" autocomplete="tel" placeholder="e.g. 254712345678"></div>
+<div class="form-row" id="bankRow" hidden><label for="bankDetails">Bank payout details</label><input id="bankDetails" name="bankDetails" autocomplete="off" placeholder="Enter your saved bank payout reference"></div>
+<div class="form-row"><label for="withdrawAmount">Amount to withdraw (USD)</label><input id="withdrawAmount" name="amount" type="number" min="10" step="0.01" placeholder="Minimum $10.00" required></div>
+<div class="method-note"><strong>Before you submit</strong><br>Only your available balance can be withdrawn. The minimum request is $10.00. A request is not a completed payment; the server must validate and process it.</div>
+<button class="btn primary" id="withdrawBtn" type="submit" style="width:100%;margin-top:16px;padding:13px">Request Withdrawal →</button>
+<div id="withdrawMessage" class="form-error" role="status" aria-live="polite"></div>
+</form>
+</section>
+<section class="card" style="margin-top:16px"><h2>Wallet Rules</h2><div class="sub" style="margin-top:10px">• Amounts are shown in USD.<br>• No pending earnings are displayed.<br>• Withdrawal requests must be validated by the backend.<br>• Never submit another person's payment details.<br>• Check Withdrawal History for request status.</div></section>
+</aside>
+</div>
+<section class="security"><div><b>▣ Secure requests</b><p>Requests should be authenticated and verified by the Workspace backend.</p></div><div><b>↻ Processing</b><p>Processing times depend on the configured payment workflow.</p></div><div><b>✓ Balance protection</b><p>The server must prevent withdrawals above the available balance.</p></div></section>
+</main>
+<footer><span>PrimeTask Workspace · Transcription Services</span><span>Work Smart. Earn More.</span></footer>
+<script>
+(() => {
+'use strict';
+const API_BASE = '';
+const WALLET_ENDPOINT = '/api/transcription/wallet';
+// Confirm this route exists in the backend before enabling live withdrawals.
+const WITHDRAW_ENDPOINT = '/api/transcription/wallet/withdraw';
+const $ = id => document.getElementById(id);
+let availableBalance = null;
+const money = v => { if(v===null||v===undefined||v==='')return '—'; const n=Number(v); return Number.isFinite(n)?new Intl.NumberFormat('en-US',{style:'currency',currency:'USD'}).format(n):'—'; };
+const first = (o, keys) => { for(const k of keys){let v=o;for(const p of k.split('.'))v=v&&typeof v==='object'?v[p]:undefined;if(v!==undefined&&v!==null&&v!=='')return v;} };
+const unwrap = p => p&&(p.data||p.wallet||p.result||p);
+const safe = s => String(s??'—').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const date = v => {if(!v)return '—';const d=new Date(v);return Number.isNaN(d.getTime())?String(v):d.toLocaleString();};
+function showRows(items){const rows=Array.isArray(items)?items:[];if(!rows.length){$('activityRows').innerHTML='<tr><td class="empty" colspan="5">No wallet activity was returned by the server.</td></tr>';return;} $('activityRows').innerHTML=rows.slice(0,25).map(x=>{const s=String(first(x,['status','paymentStatus','state'])||'Recorded');const low=s.toLowerCase();const cls=/complete|success|paid|approved/.test(low)?'success':/fail|reject|cancel/.test(low)?'failed':'';return `<tr><td>${safe(date(first(x,['createdAt','date','timestamp'])))}</td><td>${safe(first(x,['type','transactionType','description','title'])||'Wallet transaction')}</td><td>${safe(first(x,['reference','transactionId','_id','id']))}</td><td>${money(first(x,['amountUsd','amountUSD','amount','value']))}</td><td><span class="pill ${cls}">${safe(s)}</span></td></tr>`;}).join('');}
+async function loadWallet(){
+$('refreshBtn').disabled=true;$('loadMessage').textContent='Loading wallet data…';
+try{
+const r=await fetch(API_BASE+WALLET_ENDPOINT,{credentials:'include',headers:{Accept:'application/json'}});
+const p=await r.json().catch(()=>null);if(!r.ok)throw Error(r.status===401||r.status===403?'Workspace session is not authorized. Sign in through the main Workspace.':`Wallet API returned HTTP ${r.status}.`);
+if(!p||typeof p!=='object')throw Error('Wallet API returned an unreadable response.');
+const d=unwrap(p);const bal=first(d,['availableBalanceUsd','availableBalanceUSD','availableBalance','balanceUsd','balanceUSD','balance','walletBalance']);const earn=first(d,['lifetimeEarningsUsd','lifetimeEarningsUSD','lifetimeEarnings','totalEarnedUsd','totalEarned','earnings.total']);const out=first(d,['totalWithdrawnUsd','totalWithdrawnUSD','totalWithdrawn','withdrawnAmount','withdrawals.totalCompleted']);
+availableBalance=bal===undefined?null:Number(bal);$('availableBalance').textContent=bal===undefined?'—':money(bal);$('lifetimeEarnings').textContent=earn===undefined?'—':money(earn);$('totalWithdrawn').textContent=out===undefined?'—':money(out);$('currency').textContent=String(first(d,['currency','walletCurrency'])||'USD').toUpperCase();$('balanceHint').textContent=bal===undefined?'Connected, but no recognized available balance field was returned.':'Verified balance returned by the wallet API.';showRows(first(d,['transactions','activity','ledger','walletTransactions','recentTransactions']));$('loadMessage').textContent='Wallet refreshed from the server.';
+}catch(e){availableBalance=null;$('availableBalance').textContent='—';$('lifetimeEarnings').textContent='—';$('totalWithdrawn').textContent='—';$('balanceHint').textContent='No verified balance is available.';$('activityRows').innerHTML='<tr><td class="empty" colspan="5">Wallet activity unavailable until the API connects.</td></tr>';$('loadMessage').textContent=e.message||'Unable to load wallet.';}
+finally{$('refreshBtn').disabled=false;}
+}
+$('withdrawMethod').addEventListener('change',()=>{const mpesa=$('withdrawMethod').value==='mpesa';$('phoneRow').hidden=!mpesa;$('bankRow').hidden=mpesa;$('phoneNumber').required=mpesa;$('bankDetails').required=!mpesa;});
+$('withdrawForm').addEventListener('submit',async e=>{
+e.preventDefault();const msg=$('withdrawMessage');msg.className='form-error';msg.textContent='';
+const amount=Number($('withdrawAmount').value);const method=$('withdrawMethod').value;
+if(!Number.isFinite(amount)||amount<10){msg.textContent='Enter a withdrawal amount of at least $10.00.';return;}
+if(availableBalance===null||!Number.isFinite(availableBalance)){msg.textContent='Withdrawal blocked: a verified available balance could not be loaded.';return;}
+if(amount>availableBalance){msg.textContent='Withdrawal blocked: the amount exceeds your available balance.';return;}
+const phone=$('phoneNumber').value.trim();const bankDetails=$('bankDetails').value.trim();
+if(method==='mpesa'&&!/^(?:\+?254|0)?[17]\d{8}$/.test(phone)){msg.textContent='Enter a valid Kenyan M-Pesa phone number.';return;}
+if(method==='bank'&&!bankDetails){msg.textContent='Enter your registered bank payout reference.';return;}
+const btn=$('withdrawBtn');btn.disabled=true;btn.textContent='Submitting request…';
+try{
+const r=await fetch(API_BASE+WITHDRAW_ENDPOINT,{method:'POST',credentials:'include',headers:{'Content-Type':'application/json',Accept:'application/json'},body:JSON.stringify({amountUsd:amount,method,phoneNumber:method==='mpesa'?phone:undefined,bankDetails:method==='bank'?bankDetails:undefined})});
+const p=await r.json().catch(()=>null);if(!r.ok)throw Error(p?.message||p?.error||`Withdrawal endpoint returned HTTP ${r.status}.`);
+msg.className='form-error form-success';msg.textContent=p?.message||'Withdrawal request received by the server.';$('withdrawForm').reset();$('withdrawMethod').dispatchEvent(new Event('change'));await loadWallet();
+}catch(err){msg.textContent=(err.message||'Withdrawal request failed.')+' No payment has been confirmed. If the withdrawal API route is not implemented, the backend must be completed before live requests can work.';}
+finally{btn.disabled=false;btn.textContent='Request Withdrawal →';}
+});
+$('refreshBtn').addEventListener('click',loadWallet);$('withdrawMethod').dispatchEvent(new Event('change'));loadWallet();
+})();
+</script></body></html>

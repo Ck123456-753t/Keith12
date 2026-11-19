@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  
+  
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#061225">
@@ -67,7 +69,7 @@ header {
 }
 
 .brand {
-  font-size: 1.08rem;
+  font-size: 0.81rem;
   font-weight: 800;
   letter-spacing: -.5px;
   white-space: nowrap;
@@ -84,7 +86,7 @@ header {
 }
 
 .nav-links a {
-  font-size: .9rem;
+  font-size: 0.675rem;
   color: var(--muted);
 }
 
@@ -172,7 +174,7 @@ header {
   display: inline-flex;
   align-items: center;
   gap: 9px;
-  font-size: .8rem;
+  font-size: 0.6rem;
   letter-spacing: 1.5px;
   font-weight: 800;
   color: var(--orange);
@@ -189,7 +191,7 @@ header {
 }
 
 h1 {
-  font-size: clamp(2.7rem, 6vw, 5rem);
+  font-size: clamp(2.025rem, 4.5vw, 3.75rem);
   line-height: 1.07;
   letter-spacing: -2px;
   margin-bottom: 25px;
@@ -202,7 +204,7 @@ h1 span {
 .hero p {
   max-width: 640px;
   color: #d4dfed;
-  font-size: 1.08rem;
+  font-size: 0.81rem;
   margin-bottom: 30px;
 }
 
@@ -239,7 +241,7 @@ h1 span {
 }
 
 .section-heading h2 {
-  font-size: clamp(2rem, 4vw, 3.2rem);
+  font-size: clamp(1.5rem, 3vw, 2.4rem);
   line-height: 1.2;
   letter-spacing: -1px;
   margin-bottom: 15px;
@@ -305,13 +307,13 @@ h1 span {
 }
 
 .step-card h3 {
-  font-size: 1.13rem;
+  font-size: 0.8475rem;
   margin-bottom: 10px;
 }
 
 .step-card p {
   color: var(--muted);
-  font-size: .92rem;
+  font-size: 0.69rem;
 }
 
 /* IMAGE + TEXT */
@@ -355,11 +357,11 @@ h1 span {
 
 .image-label span {
   color: var(--muted);
-  font-size: .88rem;
+  font-size: 0.66rem;
 }
 
 .story-copy h2 {
-  font-size: clamp(2rem, 4vw, 3rem);
+  font-size: clamp(1.5rem, 3vw, 2.25rem);
   line-height: 1.2;
   margin-bottom: 20px;
 }
@@ -403,7 +405,7 @@ h1 span {
 
 .check-list p {
   color: var(--muted);
-  font-size: .91rem;
+  font-size: 0.6825rem;
 }
 
 /* SERVICE TYPES */
@@ -441,7 +443,7 @@ h1 span {
   height: 53px;
   display: grid;
   place-items: center;
-  font-size: 1.5rem;
+  font-size: 1.125rem;
   border-radius: 13px;
   background: rgba(57,132,255,.14);
 }
@@ -452,12 +454,12 @@ h1 span {
 
 .service-card p {
   color: var(--muted);
-  font-size: .93rem;
+  font-size: 0.6975rem;
   margin-bottom: 12px;
 }
 
 .service-card a {
-  font-size: .9rem;
+  font-size: 0.675rem;
   font-weight: 700;
   color: var(--cyan);
 }
@@ -475,7 +477,7 @@ h1 span {
 }
 
 .notice-icon {
-  font-size: 1.6rem;
+  font-size: 1.2rem;
 }
 
 .notice h3 {
@@ -484,7 +486,7 @@ h1 span {
 
 .notice p {
   color: var(--muted);
-  font-size: .94rem;
+  font-size: 0.705rem;
 }
 
 /* CTA */
@@ -511,14 +513,14 @@ h1 span {
   right: 25px;
   top: 20px;
   color: var(--orange);
-  font-size: 2rem;
+  font-size: 1.5rem;
   opacity: .6;
   letter-spacing: 8px;
 }
 
 .cta-box h2 {
   max-width: 700px;
-  font-size: clamp(2rem, 4vw, 3.2rem);
+  font-size: clamp(1.5rem, 3vw, 2.4rem);
   line-height: 1.2;
   margin-bottom: 17px;
 }
@@ -547,7 +549,7 @@ footer {
 
 .footer-inner p {
   color: var(--muted);
-  font-size: .86rem;
+  font-size: 0.645rem;
 }
 
 .footer-links {
@@ -558,7 +560,7 @@ footer {
 
 .footer-links a {
   color: var(--muted);
-  font-size: .86rem;
+  font-size: 0.645rem;
 }
 
 .footer-links a:hover {
@@ -653,7 +655,8 @@ footer {
   }
 }
 </style>
-  <link rel="icon" type="image/jpeg" href="assets/primetask.jpg">
+<link rel="icon" type="image/svg+xml" href="/assets/primetask-logo.svg">
+<style id="ptw-marketing-typography-scale">body { font-size: 12px; }</style>
 </head>
 
 <body>
@@ -667,7 +670,7 @@ footer {
 
     <nav class="nav-links" id="navLinks">
       <a href="index.html">Home</a>
-      <a href="services.html">Services</a>
+      <a href="service.html">Services</a>
       <a href="how-it-works.html" class="active">How It Works</a>
       <a href="about.html">About</a>
       <a href="faq.html">FAQ</a>
@@ -695,7 +698,7 @@ footer {
 
       <div class="hero-buttons">
         <a href="auth/register.html" class="btn">Create an Account →</a>
-        <a href="services.html" class="btn btn-outline">Explore Services</a>
+        <a href="service.html" class="btn btn-outline">Explore Services</a>
       </div>
     </div>
   </div>
@@ -840,7 +843,7 @@ footer {
         <div>
           <h3>Transcription</h3>
           <p>Convert audio into accurate written transcripts using the requested format.</p>
-          <a href="services.html">Explore transcription →</a>
+          <a href="service.html">Explore transcription →</a>
         </div>
       </article>
 
@@ -849,7 +852,7 @@ footer {
         <div>
           <h3>Note-Taking</h3>
           <p>Organise information from lectures and meetings into useful notes.</p>
-          <a href="services.html">Explore note-taking →</a>
+          <a href="service.html">Explore note-taking →</a>
         </div>
       </article>
 
@@ -858,7 +861,7 @@ footer {
         <div>
           <h3>Data Entry</h3>
           <p>Enter, organise and check information carefully and consistently.</p>
-          <a href="services.html">Explore data entry →</a>
+          <a href="service.html">Explore data entry →</a>
         </div>
       </article>
 
@@ -867,7 +870,7 @@ footer {
         <div>
           <h3>Academic Writing Support</h3>
           <p>Assist with research structure, editing, formatting and referencing.</p>
-          <a href="services.html">Explore academic support →</a>
+          <a href="service.html">Explore academic support →</a>
         </div>
       </article>
 
@@ -928,7 +931,7 @@ footer {
     </div>
 
     <nav class="footer-links" aria-label="Footer navigation">
-      <a href="services.html">Services</a>
+      <a href="service.html">Services</a>
       <a href="about.html">About</a>
       <a href="privacy.html">Privacy</a>
       <a href="terms.html">Terms</a>

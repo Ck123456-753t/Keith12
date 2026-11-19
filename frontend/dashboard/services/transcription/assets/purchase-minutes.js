@@ -1,17 +1,13 @@
 (() => {
   const base = String(window.PTW_API_BASE || "").replace(/\/+$/, "");
   const root = document.getElementById("minutePackages");
-  const select = document.getElementById("minutePackage");
-  const form = document.getElementById("minutePurchaseForm");
   const notice = document.getElementById("minuteNotice");
-  const history = document.getElementById("minutePurchaseHistory");
-  const button = document.getElementById("minutePurchaseButton");
-  const summary = document.getElementById("minuteSelectedSummary");
   const phone = document.getElementById("minutePhone");
 
   let packages = [];
+  let purchaseInProgress = false;
 
-  if (!root || !select || !form || !notice || !history || !button || !summary || !phone) return;
+  if (!root || !notice || !phone) return;
 
   function message(text, error = false) {
     notice.textContent = text;
@@ -51,130 +47,104 @@
     return el;
   }
 
-  function updateSummary() {
-    const pkg = packages.find(p => p.id === select.value);
-    summary.textContent = pkg
-      ? `${pkg.name}: ${pkg.minutes} minutes, ${usd(pkg.price)}. M-Pesa amount: KSh ${Number(pkg.priceKes).toLocaleString()}.`
-      : "Select a package to review its price.";
-  }
+  async function loadMinutesBalance() {
+    const available = document.getElementById("availableMinutes");
+    const balanceNotice = document.getElementById("minuteBalanceNotice");
 
-  async function loadPackages() {
+    if (!available || !balanceNotice) return;
+
+    balanceNotice.textContent = "Loading your minute balance…";
+
     try {
-      const data = await api("/transcription/minute-purchases/packages");
-      packages = Array.isArray(data.packages) ? data.packages : [];
+      const data = await api("/transcription/minute-purchases/wallet");
+      const wallet = data.wallet;
 
-      root.replaceChildren();
-      select.replaceChildren();
-
-      const placeholder = add(
-        select,
-        "option",
-        packages.length ? "Choose a package" : "No packages available"
-      );
-      placeholder.value = "";
-
-      for (const pkg of packages) {
-        const card = document.createElement("article");
-        card.className = "card";
-        add(card, "h3", pkg.name);
-        add(card, "p", `${Number(pkg.minutes).toLocaleString()} minutes`);
-        add(card, "p", usd(pkg.price));
-        add(card, "p", `M-Pesa amount: KSh ${Number(pkg.priceKes).toLocaleString()}`);
-        root.appendChild(card);
-
-        const option = document.createElement("option");
-        option.value = pkg.id;
-        option.textContent = `${pkg.name} · ${pkg.minutes} minutes · ${usd(pkg.price)}`;
-        select.appendChild(option);
+      if (!wallet || !Number.isSafeInteger(wallet.availableMinutes)) {
+        throw new Error("The server returned an invalid minute balance.");
       }
 
-      button.disabled = packages.length === 0;
-      updateSummary();
-      message(packages.length
-        ? "Minute packages loaded."
-        : "No active minute packages are available.");
+      available.textContent = wallet.availableMinutes.toLocaleString("en-US");
+      balanceNotice.textContent = "";
+      balanceNotice.setAttribute("role", "status");
     } catch (error) {
-      message(error.message, true);
-      root.textContent = "Could not load packages.";
-      button.disabled = true;
+      available.textContent = "Unavailable";
+      balanceNotice.textContent = error.message;
+      balanceNotice.setAttribute("role", "alert");
     }
   }
 
-  async function loadHistory() {
-    history.textContent = "Loading purchase history…";
+  function renderPackages() {
+    root.replaceChildren();
 
-    try {
-      const data = await api("/transcription/minute-purchases");
-      history.replaceChildren();
-
-      const purchases = Array.isArray(data.purchases) ? data.purchases : [];
-      if (!purchases.length) {
-        add(history, "p", "No minute purchases recorded yet.");
-        return;
-      }
-
-      for (const p of purchases) {
-        const card = document.createElement("article");
-        card.className = "card";
-
-        add(card, "h3", p.packageName || "Minute purchase");
-        add(card, "p", `${Number(p.minutes).toLocaleString()} minutes · ${usd(p.price)}`);
-
-        const status = String(p.paymentStatus || "unknown");
-        add(card, "p", `Status: ${status.replaceAll("_", " ")}`);
-        add(card, "p", `Reference: ${p.purchaseReference || "Unavailable"}`);
-        add(card, "p", `M-Pesa amount: KSh ${Number(p.expectedAmountKes || 0).toLocaleString()}`);
-
-        if (p.checkoutRequestId) {
-          add(card, "p", "M-Pesa prompt request recorded. Payment still requires verification.");
-        }
-
-        if (p.mpesaReceipt) {
-          add(card, "p", `Verified receipt: ${p.mpesaReceipt}`);
-        }
-
-        if (status === "verification_required") {
-          add(
-            card,
-            "p",
-            "This purchase requires reconciliation. Do not retry the payment prompt."
-          );
-        } else if (status === "pending" && p.checkoutRequestId) {
-          add(
-            card,
-            "p",
-            "M-Pesa request recorded. Payment and minutes still require verification."
-          );
-        } else if (status === "pending" && !p.checkoutRequestId) {
-          add(
-            card,
-            "p",
-            "No payment prompt is recorded for this purchase. Check its status before creating another purchase."
-          );
-        } else if (status === "verified") {
-          add(card, "p", "Payment verified by the backend reconciliation process.");
-        }
-
-        history.appendChild(card);
-      }
-    } catch (error) {
-      history.textContent = error.message;
-    }
-  }
-
-  select.addEventListener("change", updateSummary);
-
-  form.addEventListener("submit", async event => {
-    event.preventDefault();
-
-    if (!select.value || !phone.value.trim()) {
-      message("Choose a package and enter your M-Pesa phone number.", true);
+    if (!packages.length) {
+      add(root, "p", "No active minute packages are available.");
       return;
     }
 
-    button.disabled = true;
-    button.textContent = "Requesting M-Pesa prompt…";
-    message("Recording the purchase and requesting the payment prompt. Do not submit again.");
+    for (const pkg of packages) {
+      const card = document.createElement("article");
+      card.className = "card minute-package-card";
+
+      add(card, "h3", pkg.name);
+      add(card, "p", `${Number(pkg.minutes).toLocaleString("en-US")} minutes`);
+
+      const price = add(card, "div", usd(pkg.price));
+      price.className = "minute-package-price";
+
+      const mpesa = add(
+        card,
+        "p",
+        `M-Pesa amount: KSh ${Number(pkg.priceKes).toLocaleString("en-KE")}`
+      );
+      mpesa.className = "minute-package-mpesa";
+
+      const purchase = add(card, "button", "Purchase package");
+      purchase.type = "button";
+      purchase.className = "btn orange minute-package-button";
+      purchase.disabled = purchaseInProgress;
+      purchase.addEventListener("click", () => purchasePackage(pkg, purchase));
+
+      root.appendChild(card);
+    }
+  }
+
+  async function loadPackages() {
+    root.textContent = "Loading available packages…";
+
+    try {
+      const data = await api("/transcription/minute-purchases/packages");
+      packages = Array.isArray(data.packages) ? data.packages : [];
+      renderPackages();
+      message(packages.length
+        ? ""
+        : "No active minute packages are available.", !packages.length);
+    } catch (error) {
+      packages = [];
+      root.textContent = "Could not load packages.";
+      message(error.message, true);
+    }
+  }
+
+  async function purchasePackage(pkg, clickedButton) {
+    if (purchaseInProgress) return;
+
+    const phoneNumber = phone.value.trim();
+    if (!phoneNumber) {
+      phone.reportValidity();
+      phone.focus();
+      message("Enter your M-Pesa phone number before purchasing.", true);
+      return;
+    }
+
+    purchaseInProgress = true;
+    const buttons = [...root.querySelectorAll(".minute-package-button")];
+    buttons.forEach(button => {
+      button.disabled = true;
+    });
+
+    const originalText = clickedButton.textContent;
+    clickedButton.textContent = "Requesting prompt…";
+    message(`Requesting purchase for ${pkg.name}.`);
 
     try {
       const key = `minute-${crypto.randomUUID
@@ -184,29 +154,27 @@
       const data = await api("/transcription/minute-purchases", {
         method: "POST",
         body: JSON.stringify({
-          packageId: select.value,
-          phoneNumber: phone.value.trim(),
+          packageId: pkg.id,
+          phoneNumber,
           idempotencyKey: key
         })
       });
 
       message(
-        `${data.message || "M-Pesa request accepted."} Payment is not confirmed until verified.`
+        data.message || "Purchase request submitted. Minutes are credited after backend payment verification."
       );
     } catch (error) {
       message(
-        `${error.message} Check purchase history before taking any further payment action.`,
+        `${error.message} Check your purchase status before trying again.`,
         true
       );
     } finally {
-      await loadHistory();
-      button.disabled = packages.length === 0;
-      button.textContent = "Purchase minutes";
+      await loadMinutesBalance();
+      purchaseInProgress = false;
+      renderPackages();
     }
-  });
-
-  document.getElementById("refreshMinutePurchases")?.addEventListener("click", loadHistory);
+  }
 
   loadPackages();
-  loadHistory();
+  loadMinutesBalance();
 })();

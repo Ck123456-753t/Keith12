@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Data Entry Jobs | PrimeTask Admin</title>
+<script src="../../../../assets/js/config.js"></script>
+<style>
+:root{--bg:#101b22;--panel:#192a32;--line:#30464d;--text:#edf7f4;--muted:#9bb4b0;--accent:#39d6ae;--orange:#ffad66;--danger:#ff7373}
+*{box-sizing:border-box}
+body{margin:0;background:linear-gradient(135deg,rgba(8,24,30,.94),rgba(13,35,39,.91)),url('https://images.unsplash.com/photo-1455390582262-044cdead277a?auto=format&fit=crop&w=1800&q=85') center/cover fixed;color:var(--text);font:15px Arial,sans-serif;min-height:100vh}
+button,input,select,textarea{font:inherit}
+button{cursor:pointer;border:0;border-radius:9px;padding:11px 15px;font-weight:700}
+.top{padding:19px 5%;background:#101b22eF;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.brand{font-weight:900;font-size:19px}.brand span{color:var(--accent)}
+.top a,.nav a{color:var(--muted);text-decoration:none}
+.nav{display:flex;gap:17px;flex-wrap:wrap;font-size:13px}
+.nav a.active{color:var(--accent)}
+main{max-width:1450px;margin:auto;padding:28px 4% 60px}
+.heading{display:flex;justify-content:space-between;align-items:center;gap:15px;flex-wrap:wrap;margin-bottom:22px}
+h1{font-size:28px;margin:0 0 7px}.sub{color:var(--muted);margin:0}
+.layout{display:grid;grid-template-columns:minmax(280px,370px) minmax(0,1fr);gap:20px;align-items:start}
+.panel{background:#192a32f2;border:1px solid var(--line);border-radius:16px;padding:20px;box-shadow:0 15px 45px #0003}
+.panel h2{font-size:18px;margin:0 0 18px}
+.field{margin-bottom:13px}
+label{display:block;color:#b8cfca;font-size:12px;font-weight:700;margin-bottom:7px}
+input,select,textarea{width:100%;background:#102027;border:1px solid #3b555b;border-radius:8px;padding:11px;color:var(--text);outline:none}
+input:focus,select:focus,textarea:focus{border-color:var(--accent)}
+textarea{resize:vertical;min-height:85px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.primary{background:var(--accent);color:#09251e}.secondary{background:#30464d;color:white}.orange{background:var(--orange);color:#291708}.danger{background:#613238;color:#ffd8d8}
+.actions{display:flex;gap:7px;flex-wrap:wrap}
+.actions button{font-size:12px;padding:8px 10px}
+.form-actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:17px}
+.notice{padding:12px;border-radius:9px;margin:0 0 15px;display:none;font-size:13px}
+.notice.error{display:block;background:#542d32;color:#ffd9dc}
+.notice.success{display:block;background:#174b3d;color:#c7ffeb}
+.toolbar{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:15px}
+.toolbar input{flex:1;min-width:150px}
+.table-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;min-width:760px}
+th,td{text-align:left;padding:13px 10px;border-bottom:1px solid var(--line);font-size:13px;vertical-align:middle}
+th{color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.06em}
+td strong{display:block;margin-bottom:4px}
+small{color:var(--muted)}
+.status{display:inline-block;padding:5px 8px;border-radius:20px;background:#30464d;color:#cce4dd;font-size:11px;text-transform:capitalize}
+.status.published,.status.completed{background:#174b3d;color:#baffdf}
+.status.draft{background:#51452b;color:#ffe4a7}
+.status.cancelled,.status.rejected{background:#542d32;color:#ffd0d0}
+.status.submitted,.status.revision_requested{background:#493b60;color:#e3d1ff}
+.empty{padding:35px;text-align:center;color:var(--muted)}
+#app{display:none}
+#denied{max-width:500px;margin:15vh auto;text-align:center;padding:30px;background:var(--panel);border-radius:16px}
+@media(max-width:900px){.layout{grid-template-columns:1fr}.nav{width:100%;overflow-x:auto;padding:5px 0}}
+@media(max-width:520px){main{padding:20px 12px 40px}.panel{padding:15px}h1{font-size:23px}.two{grid-template-columns:1fr}.top{padding:15px}}
+</style>
+<link rel="icon" type="image/svg+xml" href="/assets/primetask-logo.svg">
+</head>
+<body>
+<div id="denied" style="display:none">
+<h2>Admin access required</h2>
+<p class="sub">This area is restricted to PrimeTask administrators.</p>
+<a href="/auth/login">Sign in</a>
+</div>
+
+<div id="app">
+<header class="top">
+<div class="brand">PRIMETASK <span>DATA ENTRY</span></div>
+<nav class="nav">
+<a href="index">Overview</a>
+<a class="active" href="jobs">Jobs</a>
+<a href="in-progress">In progress</a>
+<a href="submissions">Submissions</a>
+<a href="withdrawals">Withdrawals</a>
+<a href="bid-purchases">Bid purchases</a>
+<a href="bid-packages">Bid packages</a>
+<a href="earnings">Earnings</a>
+<a href="transactions">Transactions</a>
+<a href="reports">Reports</a>
+</nav>
+</header>
+
+<main>
+<div class="heading">
+<div>
+<h1>Job management</h1>
+<p class="sub">Create, publish, edit and manage Data Entry jobs.</p>
+</div>
+<button class="secondary" id="refresh">Refresh jobs</button>
+</div>
+
+<div id="notice" class="notice"></div>
+
+<div class="layout">
+<section class="panel">
+<h2 id="formTitle">Create a job</h2>
+<form id="jobForm">
+<div class="field">
+<label for="title">Job title *</label>
+<input id="title" maxlength="180" required placeholder="e.g. Spreadsheet data cleanup">
+</div>
+<div class="field">
+<label for="description">Short description</label>
+<textarea id="description" maxlength="10000" placeholder="Describe the work briefly"></textarea>
+</div>
+<div class="field">
+<label for="category">Category *</label>
+<select id="category" required>
+<option value="spreadsheet">Spreadsheet</option>
+<option value="document">Document</option>
+<option value="research">Research</option>
+<option value="other">Other</option>
+</select>
+</div>
+<div class="field">
+<label for="instructions">Worker instructions</label>
+<textarea id="instructions" maxlength="15000" placeholder="Explain the task requirements and expected output"></textarea>
+</div>
+<div class="two">
+<div class="field">
+<label for="reward">Worker reward (USD) *</label>
+<input id="reward" type="number" min="0.01" step="0.01" required placeholder="3.00">
+</div>
+<div class="field">
+<label for="bids">Required bids *</label>
+<input id="bids" type="number" min="1" step="1" required placeholder="2">
+</div>
+</div>
+<div class="two">
+<div class="field">
+<label for="timeLimit">Time limit (minutes) *</label>
+<input id="timeLimit" type="number" min="1" step="1" required placeholder="120">
+</div>
+<div class="field">
+<label for="formats">Accepted formats</label>
+<input id="formats" placeholder="xlsx, csv">
+</div>
+</div>
+<small>Enter USD amounts. The backend stores rewards as cents. Separate file formats with commas.</small>
+<div class="form-actions">
+<button class="primary" type="submit" id="saveBtn">Create draft</button>
+<button class="secondary" type="button" id="resetBtn">Clear form</button>
+</div>
+</form>
+</section>
+
+<section class="panel">
+<h2>All jobs</h2>
+<div class="toolbar">
+<input id="search" placeholder="Search job title or worker...">
+<select id="statusFilter" style="max-width:180px">
+<option value="">All statuses</option>
+<option value="draft">Draft</option>
+<option value="published">Published</option>
+<option value="assigned">Assigned</option>
+<option value="submitted">Submitted</option>
+<option value="revision_requested">Revision requested</option>
+<option value="completed">Completed</option>
+<option value="cancelled">Cancelled</option>
+</select>
+</div>
+<div class="table-wrap">
+<table>
+<thead>
+<tr><th>Job</th><th>Reward</th><th>Bids</th><th>Worker</th><th>Status</th><th>Actions</th></tr>
+</thead>
+<tbody id="jobRows">
+<tr><td colspan="6" class="empty">Loading jobs...</td></tr>
+</tbody>
+</table>
+</div>
+</section>
+</div>
+</main>
+</div>
+
+<script>
+(() => {
+"use strict";
+
+const API = window.PTW_API_BASE;
+const $ = id => document.getElementById(id);
+let jobs = [];
+let editingId = null;
+
+function notice(message, type = "error") {
+  const box = $("notice");
+  box.textContent = message;
+  box.className = "notice " + type;
+  box.style.display = "block";
+  window.scrollTo({top: 0, behavior: "smooth"});
+}
+
+function clearNotice() {
+  $("notice").style.display = "none";
+}
+
+async function request(path, options = {}) {
+  const response = await fetch(API + path, {
+    credentials: "include",
+    ...options,
+    headers: {
+      Accept: "application/json",
+      ...(options.body ? {"Content-Type": "application/json"} : {}),
+      ...(options.headers || {})
+    }
+  });
+
+  const data = await response.json().catch(() => ({}));
+  if (!response.ok || data.success === false) {
+    throw new Error(data.message || `Request failed (${response.status})`);
+  }
+  return data;
+}
+
+async function protectPage() {
+  try {
+    if (typeof window.PTW_AUTH_API_ME !== "string") throw new Error("Authentication unavailable.");
+    const response = await fetch(window.PTW_AUTH_API_ME, {
+      credentials: "include",
+      headers: {Accept: "application/json"}
+    });
+    if (!response.ok) throw new Error("Authentication required.");
+    const result = await response.json();
+    const user = result.user || result.data?.user || result;
+
+    if (!["admin", "founder"].includes(user.role)) {
+      $("denied").style.display = "block";
+      return;
+    }
+
+    $("app").style.display = "block";
+    await loadJobs();
+  } catch (error) {
+    $("denied").style.display = "block";
+    $("denied").querySelector("p").textContent = error.message;
+  }
+}
+
+function addCell(row, content, isHtml = false) {
+  const cell = document.createElement("td");
+  if (isHtml) cell.innerHTML = content;
+  else cell.textContent = content;
+  row.appendChild(cell);
+  return cell;
+}
+
+function actionButton(label, className, callback) {
+  const button = document.createElement("button");
+  button.type = "button";
+  button.textContent = label;
+  button.className = className;
+  button.addEventListener("click", callback);
+  return button;
+}
+
+function renderJobs() {
+  const body = $("jobRows");
+  body.replaceChildren();
+
+  const search = $("search").value.trim().toLowerCase();
+  const status = $("statusFilter").value;
+
+  const filtered = jobs.filter(job => {
+    const worker = job.assignedUserId;
+    const workerText = `${worker?.name || ""} ${worker?.email || ""}`.toLowerCase();
+    const matchesSearch = !search ||
+      `${job.title || ""} ${workerText}`.toLowerCase().includes(search);
+    return matchesSearch && (!status || job.status === status);
+  });
+
+  if (!filtered.length) {
+    const row = document.createElement("tr");
+    const cell = addCell(row, "No matching jobs found.");
+    cell.colSpan = 6;
+    cell.className = "empty";
+    body.appendChild(row);
+    return;
+  }
+
+  filtered.forEach(job => {
+    const row = document.createElement("tr");
+    const titleCell = addCell(row, "");
+    const title = document.createElement("strong");
+    title.textContent = job.title || "Untitled job";
+    const detail = document.createElement("small");
+    detail.textContent = job.category || "Uncategorised";
+    titleCell.append(title, detail);
+
+    addCell(row, `$${(Number(job.rewardCents || 0) / 100).toFixed(2)}`);
+    addCell(row, String(job.requiredBids ?? "—"));
+
+    const worker = job.assignedUserId;
+    addCell(row, worker ? `${worker.name || "Worker"}\n${worker.email || ""}` : "Unassigned");
+
+    const statusCell = addCell(row, "");
+    const badge = document.createElement("span");
+    badge.className = "status " + (job.status || "");
+    badge.textContent = (job.status || "unknown").replaceAll("_", " ");
+    statusCell.appendChild(badge);
+
+    const actions = addCell(row, "");
+    const group = document.createElement("div");
+    group.className = "actions";
+
+    if (["draft", "published"].includes(job.status)) {
+      group.appendChild(actionButton("Edit", "secondary", () => editJob(job)));
+    }
+    if (job.status === "draft") {
+      group.appendChild(actionButton("Publish", "primary", () => publishJob(job)));
+    }
+    if (["draft", "published", "assigned", "revision_requested"].includes(job.status)) {
+      group.appendChild(actionButton("Cancel", "danger", () => cancelJob(job)));
+    }
+    if (["draft", "published"].includes(job.status) && !job.assignedUserId) {
+      group.appendChild(actionButton("Delete", "danger", () => deleteJob(job)));
+    }
+
+    actions.appendChild(group);
+    body.appendChild(row);
+  });
+}
+
+async function loadJobs() {
+  $("jobRows").innerHTML = '<tr><td colspan="6" class="empty">Loading jobs...</td></tr>';
+  try {
+    const data = await request("/admin/data-entry/jobs");
+    jobs = Array.isArray(data.jobs) ? data.jobs : [];
+    renderJobs();
+  } catch (error) {
+    $("jobRows").innerHTML = "";
+    const row = document.createElement("tr");
+    const cell = addCell(row, error.message);
+    cell.colSpan = 6;
+    cell.className = "empty";
+    $("jobRows").appendChild(row);
+    notice(error.message);
+  }
+}
+
+function resetForm() {
+  editingId = null;
+  $("jobForm").reset();
+  $("formTitle").textContent = "Create a job";
+  $("saveBtn").textContent = "Create draft";
+  clearNotice();
+}
+
+function editJob(job) {
+  editingId = job._id;
+  $("title").value = job.title || "";
+  $("description").value = job.description || "";
+  $("category").value = job.category || "other";
+  $("instructions").value = job.instructions || "";
+  $("reward").value = (Number(job.rewardCents || 0) / 100).toFixed(2);
+  $("bids").value = job.requiredBids || 1;
+  $("timeLimit").value = job.timeLimitMinutes || 60;
+  $("formats").value = Array.isArray(job.acceptedFileFormats) ? job.acceptedFileFormats.join(", ") : "";
+  $("formTitle").textContent = "Edit job";
+  $("saveBtn").textContent = "Save changes";
+  clearNotice();
+  window.scrollTo({top: 0, behavior: "smooth"});
+}
+
+function formPayload() {
+  const reward = Number($("reward").value);
+  const bids = Number($("bids").value);
+  const timeLimit = Number($("timeLimit").value);
+
+  if (!Number.isFinite(reward) || reward <= 0 || !Number.isSafeInteger(Math.round(reward * 100))) {
+    throw new Error("Enter a valid USD reward.");
+  }
+  if (!Number.isSafeInteger(bids) || bids < 1) throw new Error("Required bids must be a positive whole number.");
+  if (!Number.isSafeInteger(timeLimit) || timeLimit < 1) throw new Error("Time limit must be a positive whole number.");
+
+  return {
+    title: $("title").value.trim(),
+    description: $("description").value,
+    category: $("category").value,
+    instructions: $("instructions").value,
+    rewardCents: Math.round(reward * 100),
+    requiredBids: bids,
+    timeLimitMinutes: timeLimit,
+    acceptedFileFormats: $("formats").value.split(",").map(x => x.trim().toLowerCase()).filter(Boolean)
+  };
+}
+
+$("jobForm").addEventListener("submit", async event => {
+  event.preventDefault();
+  clearNotice();
+
+  try {
+    const payload = formPayload();
+    const path = editingId
+      ? `/admin/data-entry/jobs/${encodeURIComponent(editingId)}`
+      : "/admin/data-entry/jobs";
+
+    const data = await request(path, {
+      method: editingId ? "PATCH" : "POST",
+      body: JSON.stringify(payload)
+    });
+
+    notice(data.message || (editingId ? "Job updated." : "Draft created."), "success");
+    resetForm();
+    await loadJobs();
+  } catch (error) {
+    notice(error.message);
+  }
+});
+
+async function publishJob(job) {
+  if (!confirm(`Publish "${job.title}"? Workers will be able to see it.`)) return;
+  try {
+    await request(`/admin/data-entry/jobs/${encodeURIComponent(job._id)}/publish`, {method: "POST"});
+    notice("Job published.", "success");
+    await loadJobs();
+  } catch (error) { notice(error.message); }
+}
+
+async function cancelJob(job) {
+  if (!confirm(`Cancel "${job.title}"? This action cannot be reversed here.`)) return;
+  try {
+    await request(`/admin/data-entry/jobs/${encodeURIComponent(job._id)}/cancel`, {method: "POST"});
+    notice("Job cancelled.", "success");
+    await loadJobs();
+  } catch (error) { notice(error.message); }
+}
+
+async function deleteJob(job) {
+  if (!confirm(`Permanently delete "${job.title}"?`)) return;
+  try {
+    await request(`/admin/data-entry/jobs/${encodeURIComponent(job._id)}`, {method: "DELETE"});
+    notice("Job deleted.", "success");
+    await loadJobs();
+  } catch (error) { notice(error.message); }
+}
+
+$("refresh").addEventListener("click", loadJobs);
+$("resetBtn").addEventListener("click", resetForm);
+$("search").addEventListener("input", renderJobs);
+$("statusFilter").addEventListener("change", renderJobs);
+
+protectPage();
+})();
+</script>
+</body>
+</html>

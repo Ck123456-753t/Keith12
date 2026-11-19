@@ -9,6 +9,8 @@ const express = require("express");
 const cookieParser = require("cookie-parser");
 const jwt = require("jsonwebtoken");
 const mongoose = require("mongoose");
+const deviceAccessService = require("../src/services/deviceAccessService");
+const originalAuthorizeRequestDevice = deviceAccessService.authorizeRequestDevice;
 
 const User = require("../src/models/User");
 const NotesPointsTransaction = require("../src/models/NotesPointsTransaction");
@@ -91,6 +93,10 @@ async function createTransaction(userId, {
 }
 
 before(async () => {
+  deviceAccessService.authorizeRequestDevice = async () => ({
+    allowed: true,
+    deviceId: "507f1f77bcf86cd799439012"
+  });
   if (!uri) {
     throw new Error("PTW_TEST_MONGODB_URI is not configured.");
   }
@@ -134,6 +140,7 @@ before(async () => {
 });
 
 after(async () => {
+  deviceAccessService.authorizeRequestDevice = originalAuthorizeRequestDevice;
   try {
     if (server) {
       await new Promise((resolve, reject) => {

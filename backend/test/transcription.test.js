@@ -12,6 +12,8 @@ process.env.JWT_SECRET =
 
 const mongoose = require("mongoose");
 const User = require("../src/models/User");
+const deviceAccessService = require("../src/services/deviceAccessService");
+const originalAuthorizeRequestDevice = deviceAccessService.authorizeRequestDevice;
 const TranscriptionWallet = require("../src/models/TranscriptionWallet");
 const TranscriptionWalletTransaction =
   require("../src/models/TranscriptionWalletTransaction");
@@ -88,6 +90,10 @@ async function request(path, options = {}) {
 }
 
 before(async () => {
+  deviceAccessService.authorizeRequestDevice = async () => ({
+    allowed: true,
+    deviceId: "507f1f77bcf86cd799439012"
+  });
   User.findById = () => ({
     select: async () => ({
       _id: testUserId,
@@ -124,6 +130,7 @@ afterEach(() => {
 });
 
 after(async () => {
+  deviceAccessService.authorizeRequestDevice = originalAuthorizeRequestDevice;
   User.findById = originalFindById;
   TranscriptionJob.findOne = originalJobFindOne;
   TranscriptionJob.create = originalJobCreate;

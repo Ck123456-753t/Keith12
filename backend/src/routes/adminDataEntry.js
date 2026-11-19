@@ -216,7 +216,7 @@ router.patch("/jobs/:id", async (req, res) => {
     const job = await Order.findOneAndUpdate(
       { _id: req.params.id, status: { $in: ["draft", "published"] } },
       { $set: input },
-      { new: true, runValidators: true }
+      { returnDocument: 'after', runValidators: true }
     );
 
     if (!job) {
@@ -242,7 +242,7 @@ router.post("/jobs/:id/publish", async (req, res) => {
     const job = await Order.findOneAndUpdate(
       { _id: req.params.id, status: "draft" },
       { $set: { status: "published", publishedAt: new Date() } },
-      { new: true, runValidators: true }
+      { returnDocument: 'after', runValidators: true }
     );
 
     if (!job) {
@@ -277,7 +277,7 @@ router.post("/jobs/:id/cancel", async (req, res) => {
           assignmentExpiresAt: null
         }
       },
-      { new: true, runValidators: true }
+      { returnDocument: 'after', runValidators: true }
     );
 
     if (!job) {
@@ -443,7 +443,7 @@ router.patch("/submissions/:id/review", async (req, res) => {
               totalEarningsCents: submission.rewardCents
             }
           },
-          { new: true, upsert: true, runValidators: true, session }
+          { returnDocument: 'after', upsert: true, runValidators: true, session }
         );
 
         const [earningTransaction] = await Transaction.create([{
@@ -786,7 +786,7 @@ router.post("/withdrawals/:requestId/reject", async (req, res) => {
             availableBalanceCents: withdrawal.amountCents
           }
         },
-        { new: true, runValidators: true, session }
+        { returnDocument: 'after', runValidators: true, session }
       );
 
       if (!wallet) {
@@ -871,7 +871,7 @@ router.post("/withdrawals/:requestId/mark-paid", async (req, res) => {
             totalWithdrawalsCents: withdrawal.amountCents
           }
         },
-        { new: true, runValidators: true, session }
+        { returnDocument: 'after', runValidators: true, session }
       );
 
       if (!wallet) {

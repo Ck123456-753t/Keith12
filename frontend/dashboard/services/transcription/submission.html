@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  
+  
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#071426">
+  <meta name="description" content="PrimeTask Workspace submission portal">
+  <title>Submit Assignment | PrimeTask Workspace</title>
+<link rel="stylesheet" href="/dashboard/services/transcription/assets/style.css">
+  <link rel="stylesheet" href="/dashboard/services/transcription/assets/submission.css">
+<link rel="icon" type="image/svg+xml" href="/assets/primetask-logo.svg">
+</head>
+<body class="submission-page">
+<div class="shell">
+  <header class="topbar">
+    <a class="brand" href="/dashboard/services/transcription">
+      <span>
+        <span class="brand-name">PrimeTask Workspace</span>
+        <span class="brand-sub">Submission portal</span>
+      </span>
+    </a>
+    <a class="back-link" href="/dashboard/services/transcription/my-jobs">← My Jobs</a>
+  </header>
+
+  <main class="submission-main">
+    <div id="portalMessage" class="portal-message" role="status">
+      Loading assignment…
+    </div>
+
+    <section id="jobPickerPanel" class="job-picker hidden">
+      <label for="jobPicker">Assignment</label>
+      <select id="jobPicker">
+        <option value="">Loading assignments…</option>
+      </select>
+    </section>
+
+    <section id="studio" class="studio hidden">
+      <div class="assignment-heading">
+        <div>
+          <p class="eyebrow">YOUR ASSIGNMENT</p>
+          <h1 id="jobTitle">Assignment</h1>
+          <p class="eyebrow">REQUIRED TRANSCRIPT</p>
+          <p id="jobDescription" class="job-description"></p>
+        </div>
+        <span id="jobStatus" class="status-pill">Assigned</span>
+      </div>
+
+      <section class="audio-card" aria-label="Audio player">
+        <div class="audio-title">
+          <span class="audio-icon">♫</span>
+          <div>
+            <strong id="audioFileName">Assignment audio</strong>
+            <span id="audioStatus">Loading audio…</span>
+          </div>
+        </div>
+
+        <audio id="audio" preload="metadata"></audio>
+
+        <div class="audio-visualizer" id="waveform"
+          role="slider" tabindex="0" aria-label="Audio position"
+          aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+          <div class="wave-bars" id="waveBars"></div>
+          <div class="wave-progress" id="waveProgress"></div>
+        </div>
+
+        <div class="audio-controls">
+          <span id="currentTime">00:00</span>
+          <div class="audio-buttons">
+            <button type="button" id="backAudio" class="audio-control"
+              aria-label="Go back 10 seconds">−10</button>
+            <button type="button" id="playAudio" class="play-button"
+              aria-label="Play audio">▶</button>
+            <button type="button" id="forwardAudio" class="audio-control"
+              aria-label="Forward 10 seconds">+10</button>
+          </div>
+          <span id="durationTime">00:00</span>
+        </div>
+      </section>
+
+      <div class="assignment-meta">
+        <span>Reward <strong id="jobReward">—</strong></span>
+        <span>Length <strong id="jobDuration">—</strong></span>
+      </div>
+
+      <section id="deadlinePanel" class="deadline-panel hidden">
+        <span>TIME REMAINING</span>
+        <strong id="countdown">Checking…</strong>
+        <p id="deadlineHint">Assignment deadline</p>
+      </section>
+
+      <section class="editor-card">
+        <div class="editor-heading">
+          <h2>Your transcript</h2>
+          <span id="validationStatus" class="status-pill">Not submitted</span>
+        </div>
+
+        <div class="submission-tabs" role="group" aria-label="Submission method">
+          <button type="button" class="format-tab active" data-format="text">
+            Write transcript
+          </button>
+          <button type="button" class="format-tab" data-format="docx" disabled aria-disabled="true">DOCX upload (coming later)</button>
+        </div>
+
+        <div id="textWorkspace">
+          <div class="editor-toolbar" role="toolbar" aria-label="Text formatting">
+            <button type="button" data-command="bold" aria-label="Bold"><b>B</b></button>
+            <button type="button" data-command="italic" aria-label="Italic"><i>I</i></button>
+            <button type="button" data-command="underline" aria-label="Underline"><u>U</u></button>
+          </div>
+          <div id="transcriptEditor" class="transcript-editor"
+            contenteditable="true" role="textbox" aria-multiline="true"
+            aria-label="Transcript text"
+            data-placeholder="Write your transcript here…"></div>
+          <div class="editor-footer">
+            <span id="wordCount">0 words</span>
+            <span id="characterCount">0 characters</span>
+          </div>
+        </div>
+
+        <div id="docxWorkspace" class="hidden">
+          <label for="docxFile" class="upload-drop">
+            <span class="upload-icon">↑</span>
+            <strong>Choose a DOCX file</strong>
+            <span>Word document · Maximum 10 MB</span>
+            <span id="fileName" class="selected-file">No file selected</span>
+          </label>
+          <input type="file" id="docxFile"
+            accept=".docx,application/vnd.openxmlformats-officedocument.wordprocessingml.document" disabled>
+        </div>
+
+        <div class="link-section">
+          <label for="submissionLink">Documentation link <span>Required</span></label>
+          <input id="submissionLink" type="url" inputmode="url"
+            placeholder="Paste your shareable link"
+            autocomplete="url" required>
+          <button id="openLink" type="button" class="secondary-button">
+            Open link ↗
+          </button>
+        </div>
+
+        <div id="submitMessage" class="submit-message" role="status"></div>
+
+        <button id="submitWork" type="button" class="submit-button">
+          Submit Assignment <span>→</span>
+        </button>
+      </section>
+    </section>
+
+    <footer>© <span data-year></span> PrimeTask Workspace</footer>
+  </main>
+</div>
+
+<script src="/assets/js/config.js"></script>
+<script src="/dashboard/services/transcription/assets/app.js"></script>
+<script src="/dashboard/services/transcription/assets/submission.js"></script>
+</body>
+</html>

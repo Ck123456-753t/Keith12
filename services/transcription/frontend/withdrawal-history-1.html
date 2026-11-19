@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#071426"><title>PrimeTask Workspace | Withdrawal History</title>
+<style>
+:root{--green:#16a34a;--white:#fff;--black:#090d12;--orange:#ff8a24;--red:#e53935;--muted:#d8e0e9;--line:#ffffff28}
+*{box-sizing:border-box}body{margin:0;min-height:100vh;color:var(--white);font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif;background:linear-gradient(135deg,rgba(3,9,16,.93),rgba(4,17,28,.78),rgba(5,20,14,.83)),url("https://images.unsplash.com/photo-1554224155-6726b3ff858f?auto=format&fit=crop&w=2200&q=85") center/cover fixed}
+a{color:inherit;text-decoration:none}button{font:inherit}
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:15px;flex-wrap:wrap;padding:15px clamp(16px,4vw,44px);background:rgba(0,0,0,.72);border-bottom:3px solid var(--orange);backdrop-filter:blur(14px)}
+.brand{display:flex;align-items:center;gap:11px;font-weight:900}.logo{width:42px;height:42px;border-radius:12px;background:var(--orange);display:grid;place-items:center;color:#171717;font-weight:950}.brand small{display:block;color:#cbd5df;font-size:10px;letter-spacing:2px;margin-top:2px}
+nav{display:flex;gap:8px;flex-wrap:wrap}nav a,.btn{border:1px solid #ffffff35;border-radius:10px;padding:10px 13px;background:#ffffff0b;color:white;font-size:12px;font-weight:800;cursor:pointer}nav a.active{background:var(--green);border-color:var(--green);color:white}.btn.orange{background:var(--orange);border-color:var(--orange);color:#171717}.btn:disabled{opacity:.5;cursor:not-allowed}
+main{width:min(1240px,100%);margin:auto;padding:35px clamp(14px,3vw,30px) 50px}.hero{display:flex;align-items:flex-end;justify-content:space-between;gap:18px;flex-wrap:wrap;margin-bottom:22px}.eyebrow{font-size:11px;letter-spacing:2.5px;text-transform:uppercase;color:var(--orange);font-weight:900}.hero h1{font-size:clamp(31px,5vw,46px);margin:8px 0}.hero p{color:#e1e8ef;line-height:1.6;margin:0;max-width:700px}
+.status{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line);background:#0008;border-radius:999px;padding:9px 12px;font-size:11px;font-weight:850;color:#e6edf4}.dot{width:8px;height:8px;border-radius:50%;background:#b5c0cb}.dot.good{background:var(--green)}.dot.bad{background:var(--red)}.dot.wait{background:var(--orange)}
+.panel{border:1px solid #ffffff30;background:rgba(0,0,0,.68);backdrop-filter:blur(13px);border-radius:17px;overflow:hidden;box-shadow:0 18px 48px #0005}
+.toolbar{padding:17px 18px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;border-bottom:1px solid var(--line)}.toolbar h2{margin:0 0 5px;font-size:18px}.sub{font-size:12px;color:#d0d9e3;line-height:1.5}
+.summary{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-bottom:18px}.metric{border:1px solid #ffffff26;border-radius:14px;padding:17px;background:rgba(0,0,0,.57)}.metric:nth-child(1){border-top:3px solid var(--green)}.metric:nth-child(2){border-top:3px solid var(--orange)}.metric:nth-child(3){border-top:3px solid var(--red)}.metric span{font-size:10px;font-weight:850;letter-spacing:1.2px;color:#d7e0e9}.metric strong{display:block;font-size:clamp(22px,3vw,30px);margin-top:9px;letter-spacing:-.6px}.metric small{font-size:11px;color:#c1cbd6}
+.table-wrap{overflow:auto}table{width:100%;border-collapse:collapse;min-width:780px}th,td{text-align:left;padding:15px 16px;border-bottom:1px solid #ffffff1d;font-size:12px}th{font-size:10px;text-transform:uppercase;letter-spacing:1px;color:#fff;background:#101820}tbody tr:nth-child(even){background:#ffffff08}tbody tr:hover{background:#16a34a19}tbody tr:last-child td{border-bottom:0}.amount{font-weight:900;white-space:nowrap}.amount.positive{color:#71e69a}.ref{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;color:#d4dce5;font-size:11px}.pill{display:inline-block;padding:6px 9px;border-radius:999px;font-size:10px;font-weight:900;white-space:nowrap}.pill.completed{background:#16a34a26;color:#86f2a8;border:1px solid #16a34a88}.pill.pending{background:#ff8a2424;color:#ffc17f;border:1px solid #ff8a2477}.pill.failed{background:#e5393524;color:#ff8f8b;border:1px solid #e5393577}.pill.other{background:#ffffff16;color:#e0e6ec;border:1px solid #ffffff25}
+.empty{padding:38px 18px;text-align:center;color:#d2dbe5;line-height:1.7}.empty-icon{font-size:30px;display:block;margin-bottom:9px}.message{padding:0 18px 16px;color:#d1dbe5;font-size:12px;line-height:1.6}.legend{display:flex;gap:9px;flex-wrap:wrap;padding:15px 18px;border-top:1px solid var(--line);background:#0005}.legend span{display:inline-flex;align-items:center;gap:6px;font-size:10px;color:#e0e7ee}.swatch{width:8px;height:8px;border-radius:50%}.footer{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;color:#d0dae4;font-size:11px;margin-top:19px}
+@media(max-width:650px){.summary{grid-template-columns:1fr}.topbar{align-items:flex-start}.hero{align-items:flex-start}}
+</style></head>
+<body>
+<header class="topbar">
+<a class="brand" href="dashboard.html"><span class="logo">PT</span><span>PrimeTask Workspace<small>TRANSCRIPTION SERVICES</small></span></a>
+<nav aria-label="Main navigation"><a href="dashboard.html">Dashboard</a><a href="jobs.html">Jobs</a><a href="wallet.html">Wallet</a><a class="active" href="withdrawal-history.html">Withdrawal History</a></nav>
+</header>
+<main>
+<section class="hero"><div><div class="eyebrow">Money out · Clear records</div><h1>Withdrawal History 💵</h1><p>Review withdrawal requests, payment references, amounts, and their latest confirmed status. Records shown here come from the Workspace backend.</p></div><div class="status"><span class="dot" id="statusDot"></span><span id="statusText">Connecting…</span></div></section>
+<section class="summary" aria-label="Withdrawal totals">
+<div class="metric"><span>COMPLETED WITHDRAWALS</span><strong id="completedTotal">—</strong><small>Successfully paid, USD</small></div>
+<div class="metric"><span>PROCESSING REQUESTS</span><strong id="processingCount">—</strong><small>Awaiting final status</small></div>
+<div class="metric"><span>FAILED / REJECTED</span><strong id="failedCount">—</strong><small>Not counted as paid</small></div>
+</section>
+<section class="panel">
+<div class="toolbar"><div><h2>All Withdrawal Records</h2><div class="sub">Newest records first · USD amounts · no estimated transactions</div></div><button class="btn orange" id="refreshBtn" type="button">↻ Refresh records</button></div>
+<div class="table-wrap"><table><thead><tr><th>Date &amp; time</th><th>Reference</th><th>Method</th><th>Amount (USD)</th><th>Status</th><th>Payment reference</th></tr></thead><tbody id="rows"><tr><td colspan="6" class="empty"><span class="empty-icon">💵</span>Loading withdrawal records from the server…</td></tr></tbody></table></div>
+<div class="message" id="message" role="status" aria-live="polite"></div>
+<div class="legend"><span><i class="swatch" style="background:var(--green)"></i>Completed</span><span><i class="swatch" style="background:var(--orange)"></i>Processing</span><span><i class="swatch" style="background:var(--red)"></i>Failed or rejected</span><span><i class="swatch" style="background:#d7e0e9"></i>Other status</span></div>
+</section>
+<div class="footer"><span>PrimeTask Workspace · Transcription Services</span><span>Only backend-confirmed records are displayed.</span></div>
+</main>
+<script>
+(() => {
+'use strict';
+const API_BASE='';
+const ENDPOINT='/api/transcription/withdrawals';
+const $=id=>document.getElementById(id);
+const first=(o,keys)=>{for(const k of keys){let v=o;for(const p of k.split('.'))v=v&&typeof v==='object'?v[p]:undefined;if(v!==undefined&&v!==null&&v!=='')return v;}};
+const unwrap=p=>p&&(p.data||p.result||p);
+const safe=s=>String(s??'—').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const usd=v=>{if(v===undefined||v===null||v==='')return '—';const n=Number(v);return Number.isFinite(n)?new Intl.NumberFormat('en-US',{style:'currency',currency:'USD'}).format(n):'—';};
+const date=v=>{if(!v)return '—';const d=new Date(v);return Number.isNaN(d.getTime())?String(v):d.toLocaleString();};
+function statusClass(s){const v=String(s||'').toLowerCase();if(/complete|success|paid|processed/.test(v))return 'completed';if(/pending|processing|initiated|queued|review/.test(v))return 'pending';if(/fail|reject|cancel|declined/.test(v))return 'failed';return 'other';}
+function setStatus(text,type=''){ $('statusText').textContent=text;$('statusDot').className='dot'+(type?' '+type:'');}
+async function load(){
+$('refreshBtn').disabled=true;setStatus('Loading records','wait');$('message').textContent='';
+try{
+const r=await fetch(API_BASE+ENDPOINT,{method:'GET',credentials:'include',headers:{Accept:'application/json'}});
+const p=await r.json().catch(()=>null);
+if(!r.ok)throw Error(r.status===401||r.status===403?'Workspace session is not authorized. Sign in through the main Workspace.':`Withdrawal API returned HTTP ${r.status}.`);
+if(!p||typeof p!=='object')throw Error('The withdrawal API returned an unreadable response.');
+const d=unwrap(p);const records=Array.isArray(d)?d:first(d,['withdrawals','records','items','transactions'])||[];
+if(!Array.isArray(records))throw Error('The API response did not include a withdrawal record list.');
+let completed=0,processing=0,failed=0,total=0;
+records.forEach(x=>{const s=statusClass(first(x,['status','paymentStatus','state']));const amount=Number(first(x,['amountUsd','amountUSD','amount','amountDollars','value']));if(s==='completed'&&Number.isFinite(amount))total+=amount;if(s==='completed')completed++;else if(s==='pending')processing++;else if(s==='failed')failed++;});
+$('completedTotal').textContent=usd(total);$('processingCount').textContent=String(processing);$('failedCount').textContent=String(failed);
+if(!records.length){$('rows').innerHTML='<tr><td colspan="6" class="empty"><span class="empty-icon">💵</span>No withdrawal records were returned for this account.</td></tr>';}
+else $('rows').innerHTML=records.slice().sort((a,b)=>new Date(first(b,['createdAt','requestedAt','date'])||0)-new Date(first(a,['createdAt','requestedAt','date'])||0)).map(x=>{const s=first(x,['status','paymentStatus','state'])||'Recorded';const cls=statusClass(s);return `<tr><td>${safe(date(first(x,['createdAt','requestedAt','date','updatedAt'])))}</td><td class="ref">${safe(first(x,['reference','requestId','_id','id']))}</td><td>${safe(first(x,['method','paymentMethod','channel'])||'—')}</td><td class="amount ${cls==='completed'?'positive':''}">${usd(first(x,['amountUsd','amountUSD','amount','amountDollars','value']))}</td><td><span class="pill ${cls}">${safe(s)}</span></td><td class="ref">${safe(first(x,['paymentReference','mpesaReceiptNumber','transactionReference','receiptNumber']))}</td></tr>`;}).join('');
+setStatus('Records loaded','good');$('message').textContent=`Showing ${records.length} withdrawal record${records.length===1?'':'s'} returned by the backend.`;
+}catch(e){$('completedTotal').textContent='—';$('processingCount').textContent='—';$('failedCount').textContent='—';$('rows').innerHTML='<tr><td colspan="6" class="empty"><span class="empty-icon">💵</span>Withdrawal records are unavailable until the configured backend API responds.</td></tr>';setStatus('Connection unavailable','bad');$('message').textContent=(e.message||'Unable to load withdrawal history.')+' Check the actual withdrawal-history API route before deploying.';}
+finally{$('refreshBtn').disabled=false;}
+}
+$('refreshBtn').addEventListener('click',load);load();
+})();
+</script></body></html>

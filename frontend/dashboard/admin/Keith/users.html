@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  
+  
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#061225">
@@ -89,7 +91,7 @@ tbody tr:hover{background:#0d1c30}
 @media(max-width:520px){.grid{grid-template-columns:1fr}.field.full{grid-column:auto}.metrics{grid-template-columns:1fr}.stats .value{font-size:23px}.modal{padding:8px}.controls input{min-width:100%}}
 </style>
   <link rel="stylesheet" href="/dashboard/admin/Keith/assets/admin-navigation.css">
-  <link rel="icon" type="image/jpeg" href="../../../assets/primetask.jpg">
+<link rel="icon" type="image/svg+xml" href="/assets/primetask-logo.svg">
 </head>
 <body>
 <div class="layout">
@@ -99,17 +101,17 @@ tbody tr:hover{background:#0d1c30}
     <details class="admin-menu">
       <summary class="btn">☰ Admin navigation</summary>
       <nav class="navs" aria-label="Admin navigation">
-        <a class="nav" href="./keith.html">Overview</a>
-        <a class="nav active" href="./users.html" aria-current="page">Users / Members</a>
-        <a class="nav" href="./memberships.html">Membership management</a>
-        <a class="nav" href="./transactions.html">Transactions</a>
-        <a class="nav" href="./deposits.html">Deposits</a>
-        <a class="nav" href="./withdrawals.html">Withdrawals</a>
-        <a class="nav" href="./platform-revenue.html">Platform revenue</a>
-        <a class="nav" href="./commissions.html">Commissions</a>
-        <a class="nav" href="./referrals.html">Referrals</a>
-        <a class="nav" href="./audit-logs.html">Audit logs</a>
-        <a class="nav" href="./settings.html">Settings</a>
+        <a class="nav" href="./keith">Overview</a>
+        <a class="nav active" href="./users" aria-current="page">Users / Members</a>
+        <a class="nav" href="./memberships">Membership management</a>
+        <a class="nav" href="./transactions">Transactions</a>
+        <a class="nav" href="./deposits">Deposits</a>
+        <a class="nav" href="./withdrawals">Withdrawals</a>
+        <a class="nav" href="./platform-revenue">Platform revenue</a>
+        <a class="nav" href="./commissions">Commissions</a>
+        <a class="nav" href="./referral-management">Referrals</a>
+        <a class="nav" href="./audit-logs">Audit logs</a>
+        <a class="nav" href="./settings">Settings</a>
       </nav>
     </details>
   </aside>
@@ -204,8 +206,7 @@ tbody tr:hover{background:#0d1c30}
         <input type="hidden" id="walletUserId">
         <label class="field">Adjustment type<select id="walletDirection"><option value="credit">Credit wallet</option><option value="debit">Debit wallet</option></select></label>
         <label class="field">Amount (USD)<input id="walletAmount" type="number" min="0.01" max="10000000" step="0.01" required></label>
-        <label class="field full">Reason<textarea id="walletReason" rows="3" required maxlength="500" placeholder="Required audit reason"></textarea></label>
-        <div class="field full"><button class="btn primary" type="submit">Submit audited adjustment</button></div>
+        <div class="field full"><button class="btn primary" type="submit">Submit wallet adjustment</button></div>
       </form>
     </div>
   </div>
@@ -220,7 +221,6 @@ tbody tr:hover{background:#0d1c30}
         <input type="hidden" id="earningsUserId">
         <label class="field">Action<select id="earningsDirection"><option value="credit">Increase earnings</option><option value="debit">Decrease earnings</option></select></label>
         <label class="field">Amount (USD)<input id="earningsAmount" type="number" min="0.01" max="10000000" step="0.01" required></label>
-        <label class="field full">Audit reason<textarea id="earningsReason" rows="3" minlength="5" maxlength="500" required></textarea></label>
         <div class="field full"><button class="btn primary" type="submit">Submit earnings adjustment</button></div>
       </form>
     </div>
@@ -235,7 +235,6 @@ tbody tr:hover{background:#0d1c30}
       <form id="awardForm" class="grid">
         <input type="hidden" id="awardUserId">
         <label class="field full">Active membership plan<select id="awardPlan" required><option value="">Load plans</option></select></label>
-        <label class="field full">Audit reason<textarea id="awardReason" rows="3" minlength="5" maxlength="500" required></textarea></label>
         <div class="field full"><button class="btn primary" type="submit">Award membership</button></div>
       </form>
     </div>
@@ -426,12 +425,57 @@ tbody tr:hover{background:#0d1c30}
       };
 
       $("profileTitle").textContent = fullName(u);
+      const transcriptionWallet = payload.transcriptionWallet || {};
+      const minuteWallet = payload.transcriptionMinutes || {};
+      const transcriptionTransactions = payload.transcriptionTransactions || [];
+      const transcriptionWithdrawals = payload.transcriptionWithdrawals || [];
+      const minuteTransactions = payload.minuteTransactions || [];
+      const minutePurchases = payload.minutePurchases || [];
+      const transcriptionJobs = payload.transcriptionJobs || [];
+      const transcriptionSubmissions = payload.transcriptionSubmissions || [];
+      const membershipPurchases = payload.membershipPurchases || [];
+
+      const section = (title, itemsHtml, count) =>
+        '<h3 class="section">' + escapeHtml(title) +
+        ' <span class="sub">(' + Number(count || 0) + ')</span></h3>' +
+        '<div class="list">' + itemsHtml + '</div>';
+
+      const item = (title, details) =>
+        '<div class="list-item"><strong>' + escapeHtml(title) +
+        '</strong><div class="sub">' + details + '</div></div>';
+
+      const usdValue = value => money(Number.isFinite(Number(value)) ? Number(value) : 0);
+      const txAmount = t => t.amount != null
+        ? Number(t.amount)
+        : t.amountCents != null ? Number(t.amountCents) / 100
+        : Number(t.amountUsd || 0);
+
+      const reviewedBy = person => {
+        if (!person) return "Not recorded";
+        if (typeof person === "string") return person;
+        return [person.firstName, person.lastName].filter(Boolean).join(" ") ||
+          person.username || person._id || "Not recorded";
+      };
+
+      const minuteDetails = minuteTransactions.map(t => item(
+        String(t.type || "Minute transaction") + " · " +
+          Number(t.minutes || 0) + " min",
+        escapeHtml(t.description || t.reference || "No description") +
+          ' · ' + escapeHtml(date(t.createdAt)) +
+          (t.jobId ? ' · Job: ' + escapeHtml(
+            typeof t.jobId === "object" ? (t.jobId.title || t.jobId._id || "") : t.jobId
+          ) : "")
+      )).join("");
+
+      $("profileTitle").textContent = fullName(u);
       $("profileContent").innerHTML =
         '<div class="metrics">' +
-          '<div class="metric"><span class="label">Available balance</span><strong>' + money(balance) + '</strong></div>' +
-          '<div class="metric"><span class="label">Total earnings</span><strong>' + money(earnings) + '</strong></div>' +
-          '<div class="metric"><span class="label">Total withdrawals</span><strong>' + money(withdrawn) + '</strong></div>' +
+          '<div class="metric"><span class="label">Marketing balance</span><strong>' + usdValue(wallet.availableBalance) + '</strong></div>' +
+          '<div class="metric"><span class="label">Marketing total earnings</span><strong>' + usdValue(wallet.totalEarnings) + '</strong></div>' +
+          '<div class="metric"><span class="label">Marketing pending earnings</span><strong>' + usdValue(wallet.pendingEarnings) + '</strong></div>' +
+          '<div class="metric"><span class="label">Marketing withdrawals</span><strong>' + usdValue(wallet.totalWithdrawals) + '</strong></div>' +
         '</div>' +
+
         '<h3 class="section">Account details</h3><div class="grid">' +
           '<div><div class="label">Full name</div><p>' + escapeHtml(fullName(u)) + '</p></div>' +
           '<div><div class="label">Username</div><p>' + escapeHtml(u.username || "—") + '</p></div>' +
@@ -439,23 +483,194 @@ tbody tr:hover{background:#0d1c30}
           '<div><div class="label">Phone</div><p>' + escapeHtml(u.phone || "—") + '</p></div>' +
           '<div><div class="label">Sponsor / upline</div><p>' + sponsorLabel(u) + '</p></div>' +
           '<div><div class="label">Account status</div><p>' + escapeHtml(u.status || "—") + '</p></div>' +
-          '<div><div class="label">Joined</div><p>' + date(u.createdAt || u.joinedAt) + '</p></div>' +
+          '<div><div class="label">Joined</div><p>' + escapeHtml(date(u.createdAt || u.joinedAt)) + '</p></div>' +
           '<div><div class="label">Last recorded login</div><p>' + (u.lastLoginAt ? escapeHtml(new Date(u.lastLoginAt).toLocaleString()) : "No recorded login") + '</p></div>' +
+          '<div><div class="label">User ID</div><p>' + escapeHtml(getId(u) || "—") + '</p></div>' +
         '</div>' +
-        '<h3 class="section">Membership history</h3><div class="list">' +
-          list(memberships, m => '<div class="list-item"><strong>' + escapeHtml(m.planKey || m.planName || m.name || "Membership") + '</strong><div class="sub">Status: ' + escapeHtml(m.status || "unknown") + ' · Price: ' + money(m.priceCents != null ? Number(m.priceCents)/100 : m.priceUsd || 0) + '</div><div class="sub">Started: ' + date(m.startsAt || m.createdAt) + ' · Expires: ' + date(m.expiresAt) + '</div></div>', "No membership records returned.") +
-        '</div>' +
-        '<h3 class="section">Wallet transactions</h3><div class="list">' +
-          list(transactions, t => '<div class="list-item"><strong>' + escapeHtml(t.type || "Transaction") + ' · ' + money(t.amountCents != null ? Number(t.amountCents)/100 : t.amountUsd || t.amount || 0) + '</strong><div class="sub">' + escapeHtml(t.status || "unknown") + ' · ' + escapeHtml(t.description || t.reference || "") + ' · ' + date(t.createdAt) + '</div></div>', "No wallet transactions returned.") +
-        '</div>' +
-        '<h3 class="section">Withdrawals</h3><div class="list">' +
-          list(withdrawals, w => '<div class="list-item"><strong>' + money(w.amountCents != null ? Number(w.amountCents)/100 : w.amountUsd || w.amount || 0) + '</strong><div class="sub">' + escapeHtml(w.status || "unknown") + ' · ' + date(w.createdAt) + '</div></div>', "No withdrawals returned.") +
-        '</div>' +
-        '<h3 class="section">Administrative audit history</h3><div class="list">' +
-          list(audit, a => '<div class="list-item"><strong>' + escapeHtml(a.action || "Admin activity") + '</strong><div class="sub">' + escapeHtml(a.reason || "") + ' · ' + date(a.createdAt) + '</div></div>', "No audit records returned.") +
-        '</div>' +
-        '<div class="dialog-actions"><button class="btn primary" id="profileEditBtn">Edit account</button><button class="btn" id="profileStatusBtn">' + (String(u.status).toLowerCase() === "suspended" ? "Reactivate account" : "Suspend account") + '</button><button class="btn" id="profileWalletBtn">Adjust wallet</button><button class="btn" id="profileEarningsBtn">Adjust earnings</button><button class="btn" id="profileAwardBtn">Award membership</button></div>';
 
+        '<h3 class="section">Transcription wallet · USD</h3>' +
+        '<div class="metrics">' +
+          '<div class="metric"><span class="label">Available balance</span><strong>' + usdValue(transcriptionWallet.availableBalance) + '</strong></div>' +
+          '<div class="metric"><span class="label">Total earnings</span><strong>' + usdValue(transcriptionWallet.totalEarnings) + '</strong></div>' +
+          '<div class="metric"><span class="label">Pending earnings</span><strong>' + usdValue(transcriptionWallet.pendingEarnings) + '</strong></div>' +
+          '<div class="metric"><span class="label">Total withdrawals</span><strong>' + usdValue(transcriptionWallet.totalWithdrawals) + '</strong></div>' +
+        '</div>' +
+
+        '<h3 class="section">Transcription minute wallet</h3>' +
+        '<div class="metrics">' +
+          '<div class="metric"><span class="label">Available minutes</span><strong>' + Number(minuteWallet.availableMinutes || 0).toLocaleString() + '</strong></div>' +
+          '<div class="metric"><span class="label">Reserved minutes</span><strong>' + Number(minuteWallet.reservedMinutes || 0).toLocaleString() + '</strong></div>' +
+          '<div class="metric"><span class="label">Purchased minutes</span><strong>' + Number(minuteWallet.totalPurchasedMinutes || 0).toLocaleString() + '</strong></div>' +
+          '<div class="metric"><span class="label">Spent minutes</span><strong>' + Number(minuteWallet.totalSpentMinutes || 0).toLocaleString() + '</strong></div>' +
+          '<div class="metric"><span class="label">Refunded minutes</span><strong>' + Number(minuteWallet.totalRefundedMinutes || 0).toLocaleString() + '</strong></div>' +
+        '</div>' +
+
+        section("Membership history", list(
+          memberships,
+          m => item(
+            m.planKey || m.planName || m.name || "Membership",
+            'Status: ' + escapeHtml(m.status || "unknown") +
+            ' · Price: ' + usdValue(m.priceCents != null ? Number(m.priceCents) / 100 : m.priceUsd || 0) +
+            ' · Started: ' + escapeHtml(date(m.startsAt || m.createdAt)) +
+            ' · Expires: ' + escapeHtml(date(m.expiresAt))
+          ),
+          "No membership records returned."
+        ), memberships.length) +
+
+        section("Marketing wallet transactions", list(
+          transactions,
+          t => item(
+            String(t.type || "Transaction") + " · " + usdValue(txAmount(t)),
+            escapeHtml(t.status || "unknown") + ' · ' +
+            escapeHtml(t.description || t.reference || "No description") +
+            ' · ' + escapeHtml(date(t.createdAt))
+          ),
+          "No marketing wallet transactions returned."
+        ), transactions.length) +
+
+        section("Marketing withdrawals", list(
+          withdrawals,
+          w => item(
+            usdValue(w.amount != null ? w.amount :
+              w.amountCents != null ? Number(w.amountCents) / 100 : w.amountUsd || 0),
+            'Status: ' + escapeHtml(w.status || "unknown") +
+            ' · Reference: ' + escapeHtml(w.reference || w.mpesaReceipt || "—") +
+            ' · ' + escapeHtml(date(w.createdAt))
+          ),
+          "No marketing withdrawals returned."
+        ), withdrawals.length) +
+
+        section("Transcription wallet transactions", list(
+          transcriptionTransactions,
+          t => item(
+            String(t.type || "Transaction") + " · " + usdValue(txAmount(t)),
+            'Status: ' + escapeHtml(t.status || "unknown") +
+            ' · ' + escapeHtml(t.description || t.reference || "No description") +
+            ' · ' + escapeHtml(date(t.createdAt))
+          ),
+          "No transcription wallet transactions returned."
+        ), transcriptionTransactions.length) +
+
+        section("Transcription withdrawals", list(
+          transcriptionWithdrawals,
+          w => item(
+            usdValue(w.amount != null ? w.amount :
+              w.amountCents != null ? Number(w.amountCents) / 100 : 0),
+            'Status: ' + escapeHtml(w.status || "unknown") +
+            ' · Phone: ' + escapeHtml(w.phoneNumber || "—") +
+            ' · Receipt: ' + escapeHtml(w.mpesaReceipt || "—") +
+            ' · Reviewed: ' + escapeHtml(date(w.reviewedAt)) +
+            ' · ' + escapeHtml(date(w.createdAt)) +
+            (w.reviewNote ? ' · Note: ' + escapeHtml(w.reviewNote) : "")
+          ),
+          "No transcription withdrawals returned."
+        ), transcriptionWithdrawals.length) +
+
+        section("Minute transaction ledger", list(
+          minuteTransactions,
+          t => item(
+            String(t.type || "Minute transaction") + " · " +
+              Number(t.minutes || 0) + " minutes",
+            escapeHtml(t.description || t.reference || "No description") +
+            ' · ' + escapeHtml(date(t.createdAt)) +
+            (t.reference ? ' · Ref: ' + escapeHtml(t.reference) : "") +
+            (t.jobId ? ' · Job ID: ' + escapeHtml(
+              typeof t.jobId === "object" ? (t.jobId.title || t.jobId._id || "") : t.jobId
+            ) : "")
+          ),
+          "No minute transactions returned."
+        ), minuteTransactions.length) +
+
+        section("Minute purchases", list(
+          minutePurchases,
+          p => item(
+            (p.packageName || "Minute package") + " · " +
+              Number(p.minutes || 0) + " minutes",
+            'Price: ' + usdValue(p.price != null ? p.price :
+              p.priceCents != null ? Number(p.priceCents) / 100 : 0) +
+            ' · Payment: ' + escapeHtml(p.paymentStatus || "unknown") +
+            ' · Phone: ' + escapeHtml(p.phoneNumber || "—") +
+            ' · M-Pesa receipt: ' + escapeHtml(p.mpesaReceipt || "—") +
+            ' · Purchase ref: ' + escapeHtml(p.purchaseReference || "—") +
+            ' · ' + escapeHtml(date(p.createdAt))
+          ),
+          "No minute purchases returned."
+        ), minutePurchases.length) +
+
+        section("Assigned transcription jobs", list(
+          transcriptionJobs,
+          j => item(
+            j.title || "Transcription job",
+            'Status: ' + escapeHtml(j.status || "unknown") +
+            ' · Audio length: ' + Number(j.durationMinutes || 0) + ' minutes' +
+            ' · Reward: ' + usdValue(j.reward != null ? j.reward :
+              j.rewardCents != null ? Number(j.rewardCents) / 100 : 0) +
+            ' · Claimed: ' + escapeHtml(date(j.claimedAt)) +
+            ' · Assignment deadline: ' + escapeHtml(date(j.assignmentExpiresAt)) +
+            ' · Due: ' + escapeHtml(date(j.dueAt)) +
+            ' · Completed: ' + escapeHtml(date(j.completedAt)) +
+            ' · Job ID: ' + escapeHtml(j._id || j.id || "—")
+          ),
+          "No assigned transcription jobs returned."
+        ), transcriptionJobs.length) +
+
+        section("Transcription submissions and reviews", list(
+          transcriptionSubmissions,
+          s => {
+            const job = s.jobId && typeof s.jobId === "object" ? s.jobId : null;
+            return item(
+              (job?.title || "Transcription submission") + " · " +
+                String(s.status || "unknown"),
+              'Audio length: ' + Number(job?.durationMinutes || 0) + ' minutes' +
+              ' · Reward: ' + usdValue(s.reward != null ? s.reward :
+                s.rewardCents != null ? Number(s.rewardCents) / 100 : 0) +
+              ' · Submitted: ' + escapeHtml(date(s.createdAt)) +
+              ' · Reviewed: ' + escapeHtml(date(s.reviewedAt)) +
+              ' · Reviewer: ' + escapeHtml(reviewedBy(s.reviewedBy)) +
+              ' · Revisions: ' + Number(s.revisionCount || 0) +
+              (s.reviewNote ? ' · Review note: ' + escapeHtml(s.reviewNote) : "") +
+              (s.submissionLink ? ' · Link: <a href="' + escapeHtml(s.submissionLink) +
+                '" target="_blank" rel="noopener noreferrer">Open submission</a>' : "") +
+              (s.documentOriginalName ? ' · DOCX: ' + escapeHtml(s.documentOriginalName) : "") +
+              (s.transcriptText ? ' · Transcript text saved' : "") +
+              ' · Submission ID: ' + escapeHtml(s._id || s.id || "—")
+            );
+          },
+          "No transcription submissions returned."
+        ), transcriptionSubmissions.length) +
+
+        section("Membership purchases", list(
+          membershipPurchases,
+          p => item(
+            p.planName || p.planKey || p.packageName || "Membership purchase",
+            'Status: ' + escapeHtml(p.status || p.paymentStatus || "unknown") +
+            ' · Price: ' + usdValue(p.price != null ? p.price :
+              p.priceCents != null ? Number(p.priceCents) / 100 : 0) +
+            ' · Reference: ' + escapeHtml(p.reference || p.purchaseReference || "—") +
+            ' · ' + escapeHtml(date(p.createdAt))
+          ),
+          "No membership purchases returned."
+        ), membershipPurchases.length) +
+
+        section("Administrative audit history", list(
+          audit,
+          a => item(
+            a.action || "Admin activity",
+            escapeHtml(a.reason || "No reason recorded") +
+            ' · Admin: ' + escapeHtml(a.adminUsername || a.adminId || "—") +
+            ' · ' + escapeHtml(date(a.createdAt))
+          ),
+          "No audit records returned."
+        ), audit.length) +
+
+        '<div class="dialog-actions"><button class="btn primary" id="profileEditBtn">Edit account</button><button class="btn" id="profileStatusBtn">' +
+          (String(u.status).toLowerCase() === "suspended" ? "Reactivate account" : "Suspend account") +
+        '</button><button class="btn" id="profileWalletBtn">Adjust wallet</button><button class="btn" id="profileEarningsBtn">Adjust earnings</button><button class="btn" id="profileAwardBtn">Award membership</button><button class="btn" id="profileMinuteBalanceBtn">Adjust minute balance</button></div>';
+
+      $("profileMinuteBalanceBtn").addEventListener(
+        "click",
+        () => adjustMinuteBalance(u, Number(minuteWallet.availableMinutes || 0))
+      );
       $("profileEditBtn").addEventListener("click", () => { closeModal("profileModal"); openEdit(u); });
       $("profileStatusBtn").addEventListener("click", () => changeAccountStatus(u));
       $("profileWalletBtn").addEventListener("click", () => { closeModal("profileModal"); openWallet(u); });
@@ -463,6 +678,66 @@ tbody tr:hover{background:#0d1c30}
       $("profileAwardBtn").addEventListener("click", () => { closeModal("profileModal"); openAward(u); });
     } catch (error) {
       $("profileContent").innerHTML = '<div class="notice error">' + escapeHtml(error.message) + '</div>';
+    }
+  }
+
+  async function adjustMinuteBalance(u, currentAvailableMinutes) {
+    const id = getId(u);
+    if (!id) {
+      showNotice("Cannot identify this user.", "error");
+      return;
+    }
+
+    const current = Number.isSafeInteger(currentAvailableMinutes)
+      && currentAvailableMinutes >= 0
+      ? currentAvailableMinutes
+      : 0;
+
+    const entered = window.prompt(
+      "Enter the new available transcription minute balance (whole number, 0 or more):",
+      String(Number.isSafeInteger(current) ? current : 0)
+    );
+
+    if (entered === null) return;
+
+    const trimmed = entered.trim();
+    if (!/^\d+$/.test(trimmed)) {
+      window.alert("Enter a whole number of zero or more.");
+      return;
+    }
+
+    const availableMinutes = Number(trimmed);
+    if (!Number.isSafeInteger(availableMinutes) || availableMinutes > 1000000000) {
+      window.alert("The balance must be between 0 and 1,000,000,000 whole minutes.");
+      return;
+    }
+
+    if (!window.confirm(
+      "Set this user's available transcription minutes to " +
+      availableMinutes.toLocaleString() + "?"
+    )) {
+      return;
+    }
+
+    const button = $("profileMinuteBalanceBtn");
+    if (button) button.disabled = true;
+
+    try {
+      const response = await request(
+        "/admin/users/" + encodeURIComponent(id) + "/transcription-minutes",
+        {
+          method: "PUT",
+          body: JSON.stringify({ availableMinutes })
+        }
+      );
+
+      showNotice(response.message || "Minute balance updated.", "success");
+      await viewProfile(id);
+    } catch (error) {
+      window.alert(error.message || "Unable to update minute balance.");
+    } finally {
+      const refreshedButton = $("profileMinuteBalanceBtn");
+      if (refreshedButton) refreshedButton.disabled = false;
     }
   }
 
@@ -534,7 +809,6 @@ tbody tr:hover{background:#0d1c30}
   function openWallet(u) {
     $("walletUserId").value = getId(u);
     $("walletAmount").value = "";
-    $("walletReason").value = "";
     openModal("walletModal");
   }
 
@@ -585,8 +859,7 @@ tbody tr:hover{background:#0d1c30}
 
     const payload = {
       direction: $("walletDirection").value,
-      amount: Number($("walletAmount").value),
-      reason: $("walletReason").value.trim()
+      amount: Number($("walletAmount").value)
     };
     const userId = $("walletUserId").value;
     const fingerprint = JSON.stringify({ userId, ...payload });
@@ -648,13 +921,11 @@ tbody tr:hover{background:#0d1c30}
   function openEarnings(u) {
     $("earningsUserId").value = getId(u);
     $("earningsAmount").value = "";
-    $("earningsReason").value = "";
     openModal("earningsModal");
   }
 
   async function openAward(u) {
     $("awardUserId").value = getId(u);
-    $("awardReason").value = "";
     const select = $("awardPlan");
     select.replaceChildren(new Option("Loading active plans…", ""));
     openModal("awardModal");
@@ -688,12 +959,10 @@ tbody tr:hover{background:#0d1c30}
     const userId = $("earningsUserId").value;
     const payload = {
       direction: $("earningsDirection").value,
-      amount: Number($("earningsAmount").value),
-      reason: $("earningsReason").value.trim()
+      amount: Number($("earningsAmount").value)
     };
-    if (!userId || !Number.isFinite(payload.amount) || payload.amount <= 0 ||
-        payload.reason.length < 5) {
-      showNotice("Enter a valid amount and an audit reason of at least 5 characters.", "error");
+    if (!userId || !Number.isFinite(payload.amount) || payload.amount <= 0) {
+      showNotice("Enter a valid positive amount.", "error");
       return;
     }
     const fingerprint = JSON.stringify({userId, ...payload});
@@ -723,11 +992,10 @@ tbody tr:hover{background:#0d1c30}
     const button = event.submitter;
     const userId = $("awardUserId").value;
     const payload = {
-      planId: $("awardPlan").value,
-      reason: $("awardReason").value.trim()
+      planId: $("awardPlan").value
     };
-    if (!userId || !payload.planId || payload.reason.length < 5) {
-      showNotice("Select a plan and enter an audit reason of at least 5 characters.", "error");
+    if (!userId || !payload.planId) {
+      showNotice("Select a membership plan.", "error");
       return;
     }
     const fingerprint = JSON.stringify({userId, ...payload});

@@ -12,17 +12,25 @@
     ["withdrawals.html", "Withdrawals", "↗"],
     ["transactions.html", "Transactions", "⇄"],
     ["commissions.html", "Commissions", "◇"],
-    ["referrals.html", "Referrals", "♧"],
+    ["referral-management.html", "Referrals", "♧"],
     ["platform-revenue.html", "Platform Revenue", "$"],
     ["audit-logs.html", "Audit Logs", "≡"],
+    ["security.html", "Security Center", "⛨"],
+    ["world/", "Admin World", "◈"],
     ["settings.html", "Settings", "⚙"],
     ["transcription-overview.html", "Transcription Overview", "▦"],
     ["transcription.html", "Transcription Admin", "▤"],
     ["transcription-job-posting.html", "Post Transcription Jobs", "+"],
     ["transcription-jobs.html", "Transcription Jobs", "▦"],
     ["transcription-audio-library.html", "Audio Library", "♫"],
-    ["transcription-document-review.html", "Document Review", "✓"],
+    ["transcription-learning.html", "Transcription Learning Centre", "▤"],
+    ["transcription-document-review.html", "Submission Review", "✓"],
+    ["transcription-withdrawals.html", "Transcription Withdrawals", "↗"],
+    ["notes-submission-review.html", "Notes Submission Review", "✓"],
     ["transcription-reports.html", "Transcription Reports", "▥"],
+    ["testimonials.html", "Testimonials", "✦"],
+    ["announcements.html", "Announcements", "▤"],
+    ["bulk-email.html", "Bulk Email Sender", "✉"],
   ];
 
   const currentPath = window.location.pathname.replace(/\/+$/, "");
@@ -66,7 +74,7 @@
 
   items.forEach(([file, label, symbol]) => {
     const link = document.createElement("a");
-    link.href = base + file;
+    link.href = base + file.replace(/\.html$/, "");
 
     const icon = document.createElement("span");
     icon.className = "ptw-nav-icon";
@@ -78,7 +86,8 @@
 
     link.append(icon, text);
 
-    if (file === currentFile) {
+    const linkPath = new URL(link.href, window.location.origin).pathname.replace(/\/+$/, "");
+    if (linkPath === currentPath) {
       link.setAttribute("aria-current", "page");
     }
 

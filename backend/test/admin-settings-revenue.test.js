@@ -19,6 +19,10 @@ const Commission = require("../src/models/Commission");
 const authRoutes = require("../src/routes/auth");
 const settingsRoutes = require("../src/routes/adminSettings");
 const revenueRoutes = require("../src/routes/adminRevenue");
+const deviceAccessService = require("../src/services/deviceAccessService");
+
+const originalAuthorizeRequestDevice =
+  deviceAccessService.authorizeRequestDevice;
 
 const originals = {
   findById: User.findById,
@@ -133,8 +137,15 @@ beforeEach(() => {
     select: async () => ({
       _id: adminId,
       role: "admin",
-      status: "active"
+      status: "active",
+      sessionVersion: 0
     })
+  });
+
+  // This suite tests settings and revenue routes, not device authorization.
+  deviceAccessService.authorizeRequestDevice = async () => ({
+    allowed: true,
+    deviceId: "507f1f77bcf86cd799439012"
   });
 
   PlatformSetting.findOneAndUpdate = async () => makeSettingsDocument();
@@ -154,6 +165,8 @@ beforeEach(() => {
 
 afterEach(() => {
   User.findById = originals.findById;
+  deviceAccessService.authorizeRequestDevice =
+    originalAuthorizeRequestDevice;
   PlatformSetting.findOne = originals.findOne;
   PlatformSetting.findOneAndUpdate = originals.findOneAndUpdate;
   AdminAuditLog.create = originals.auditCreate;

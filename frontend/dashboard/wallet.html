@@ -1,6 +1,8 @@
 <!doctype html>
 <html lang="en">
 <head>
+  
+  
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#061225">
@@ -623,6 +625,12 @@
 .withdrawal-row p{margin:5px 0;overflow-wrap:anywhere}
 .withdrawal-meta{color:#94a3b8;font-size:.82rem}
 .withdrawal-status{align-self:flex-start;padding:5px 8px;border-radius:20px;background:#17243a;color:#cbd5e1;font-size:.75rem}
+.withdrawal-schedule{margin:0 0 18px;border:1px solid #29476b;background:#0b1b31}
+.withdrawal-schedule h2{margin:0 0 8px;font-size:1.05rem}
+.withdrawal-schedule p{margin:6px 0;color:#b8c9df;line-height:1.5}
+.withdrawal-countdown{display:flex;gap:9px;flex-wrap:wrap;margin-top:12px}
+.withdrawal-countdown span{padding:9px 12px;border-radius:9px;background:#132b49;color:#fff;font-weight:800;font-variant-numeric:tabular-nums}
+.withdrawal-schedule-state{color:#93c5fd!important;font-weight:700}
 
 
 
@@ -856,7 +864,7 @@
   .wallet-main .withdrawal-row {flex-direction:column}
 }
 </style>
-  <link rel="icon" type="image/jpeg" href="../assets/primetask.jpg">
+<link rel="icon" type="image/svg+xml" href="/assets/primetask-logo.svg">
 </head>
 <body>
 <div class="wallet-layout">
@@ -878,19 +886,19 @@
         <nav class="ptw-menu-panel" id="menuPanel"
           aria-label="Workspace menu" hidden>
           <div class="ptw-menu-label">Workspace</div>
-          <a class="ptw-menu-link" href="index.html"><span class="nav-icon">⌂</span>Dashboard</a>
-          <a class="ptw-menu-link" href="services.html"><span class="nav-icon">▦</span>Services</a>
-          <a class="ptw-menu-link" href="wallet.html" aria-current="page"><span class="nav-icon">◈</span>My Wallet</a>
-          <a class="ptw-menu-link" href="membership.html"><span class="nav-icon">▣</span>Membership</a>
-          <a class="ptw-menu-link" href="transactions.html"><span class="nav-icon">↕</span>Transactions</a>
-          <a class="ptw-menu-link" href="referrals.html"><span class="nav-icon">♧</span>My Referrals</a>
-          <a class="ptw-menu-link" href="profile.html"><span class="nav-icon">◉</span>My Profile</a>
+          <a class="ptw-menu-link" href="/dashboard"><span class="nav-icon">⌂</span>Dashboard</a>
+          <a class="ptw-menu-link" href="/dashboard/services"><span class="nav-icon">▦</span>Services</a>
+          <a class="ptw-menu-link" href="/dashboard/wallet" aria-current="page"><span class="nav-icon">◈</span>My Wallet</a>
+          <a class="ptw-menu-link" href="/dashboard/membership"><span class="nav-icon">▣</span>Membership</a>
+          <a class="ptw-menu-link" href="/dashboard/transactions"><span class="nav-icon">↕</span>Transactions</a>
+          <a class="ptw-menu-link" href="/dashboard/my-referrals"><span class="nav-icon">♧</span>My Referrals</a>
+          <a class="ptw-menu-link" href="/dashboard/profile"><span class="nav-icon">◉</span>My Profile</a>
           <div class="ptw-menu-divider"></div>
           <div class="ptw-menu-label">Account</div>
-          <a class="ptw-menu-link" href="../contact.html"><span class="nav-icon">✉</span>Support</a>
-          <a class="ptw-menu-link" href="../faq.html"><span class="nav-icon">?</span>Help Centre</a>
-          <a class="ptw-menu-link" href="../privacy.html"><span class="nav-icon">◇</span>Privacy</a>
-          <a class="ptw-menu-link" href="../terms.html"><span class="nav-icon">▤</span>Terms</a>
+          <a class="ptw-menu-link" href="../contact"><span class="nav-icon">✉</span>Support</a>
+          <a class="ptw-menu-link" href="../faq"><span class="nav-icon">?</span>Help Centre</a>
+          <a class="ptw-menu-link" href="../privacy"><span class="nav-icon">◇</span>Privacy</a>
+          <a class="ptw-menu-link" href="../terms"><span class="nav-icon">▤</span>Terms</a>
           <button class="ptw-menu-link menu-signout" id="logoutBtn" type="button"><span class="nav-icon">↪</span>Sign Out</button>
         </nav>
       </div>
@@ -907,6 +915,18 @@
         </div>
 
       </div>
+
+      <section class="card withdrawal-schedule" aria-labelledby="withdrawalScheduleHeading">
+        <h2 id="withdrawalScheduleHeading">Weekly withdrawal schedule</h2>
+        <p class="withdrawal-schedule-state" id="withdrawalScheduleState" aria-live="polite">Checking withdrawal schedule...</p>
+        <p id="withdrawalScheduleDescription">Withdrawals are available every Thursday, Kenya time.</p>
+        <div class="withdrawal-countdown" id="withdrawalCountdown" aria-label="Time until withdrawal schedule changes">
+          <span id="withdrawalDays">--d</span>
+          <span id="withdrawalHours">--h</span>
+          <span id="withdrawalMinutes">--m</span>
+          <span id="withdrawalSeconds">--s</span>
+        </div>
+      </section>
 
       <section class="stats" id="wallet">
         <article class="card wallet-pocket">
@@ -926,15 +946,6 @@
           </div>
           <p class="pocket-note" id="withdrawalEligibilityNotice" role="status" aria-live="polite">Checking membership eligibility...</p>
           <p class="pocket-note">Payment and withdrawal features are being connected.</p>
-        </article>
-
-        <article class="card">
-          <div class="stat-top">
-            <span class="stat-label">Pending earnings</span>
-            <span class="stat-icon">◷</span>
-          </div>
-          <div class="stat-value" id="pendingEarnings">Loading...</div>
-          <div class="stat-foot">Earnings awaiting completion</div>
         </article>
 
         <article class="card">
@@ -962,8 +973,8 @@
         <section class="wallet-modal-card" role="dialog" aria-modal="true" aria-labelledby="depositTitle">
           <div class="wallet-modal-head">
             <div>
-              <h2 id="depositTitle">Add funds</h2>
-              <p>Deposit funds into your PrimeTask wallet.</p>
+              <h2 id="depositTitle">Fund wallet</h2>
+              <p>Top up your wallet.</p>
             </div>
             <button class="wallet-close" type="button" data-wallet-close="depositModal" aria-label="Close">×</button>
           </div>
@@ -973,10 +984,10 @@
               <input id="depositAmount" type="number" min="0.10" step="0.10" max="10000" placeholder="5.00" required>
             </label>
             <label>M-Pesa phone number
-              <input id="depositPhone" type="tel" inputmode="tel" autocomplete="tel" maxlength="16" placeholder="0712345678" required>
+              <input id="depositPhone" type="tel" inputmode="tel" autocomplete="tel" maxlength="16" placeholder="0712345678 or 0123456789" required>
             </label>
             <p class="wallet-help">Enter your amount and M-Pesa number. Confirm the payment on your phone when prompted.</p>
-            <button class="wallet-submit" id="depositSubmit" type="submit">Deposit funds</button>
+            <button class="wallet-submit" id="depositSubmit" type="submit">Initiate Deposit</button>
           </form>
         </section>
       </div>
@@ -1003,14 +1014,31 @@
         </section>
       </div>
 
-
+      <div class="wallet-modal" id="withdrawalScheduleModal" hidden>
+        <section class="wallet-modal-card" role="dialog" aria-modal="true" aria-labelledby="withdrawalScheduleModalTitle">
+          <div class="wallet-modal-head">
+            <div>
+              <h2 id="withdrawalScheduleModalTitle">Withdrawal schedule</h2>
+              <p id="withdrawalScheduleModalText">Withdrawals open every Thursday, Kenya time.</p>
+            </div>
+            <button class="wallet-close" type="button" data-wallet-close="withdrawalScheduleModal" aria-label="Close">×</button>
+          </div>
+          <p class="withdrawal-schedule-state" id="withdrawalScheduleModalState" aria-live="polite"></p>
+          <div class="withdrawal-countdown">
+            <span id="modalWithdrawalDays">--d</span>
+            <span id="modalWithdrawalHours">--h</span>
+            <span id="modalWithdrawalMinutes">--m</span>
+            <span id="modalWithdrawalSeconds">--s</span>
+          </div>
+        </section>
+      </div>
 
 <footer class="footer">
   <span>© <span id="year"></span> PrimeTask Workspace</span>
   <div class="footer-links">
-    <a href="../contact.html">Support</a>
-    <a href="../privacy.html">Privacy</a>
-    <a href="../terms.html">Terms</a>
+    <a href="../contact">Support</a>
+    <a href="../privacy">Privacy</a>
+    <a href="../terms">Terms</a>
   </div>
 </footer>
 </main>
@@ -1050,14 +1078,21 @@ $("year").textContent = new Date().getFullYear();
 
     function openWalletModal(id) {
       hideNotice();
-      clearWalletMessage(id === "depositModal" ? "depositMessage" : "withdrawalMessage");
+      const messageId =
+        id === "depositModal" ? "depositMessage" :
+        id === "withdrawalModal" ? "withdrawalMessage" : null;
+      if (messageId) clearWalletMessage(messageId);
       $(id).hidden = false;
       document.body.style.overflow = "hidden";
     }
 
     function closeWalletModal(id) {
       $(id).hidden = true;
-      if ($("depositModal").hidden && $("withdrawalModal").hidden) {
+      if (
+        $("depositModal").hidden &&
+        $("withdrawalModal").hidden &&
+        $("withdrawalScheduleModal").hidden
+      ) {
         document.body.style.overflow = "";
       }
     }
@@ -1066,7 +1101,7 @@ $("year").textContent = new Date().getFullYear();
       button.addEventListener("click", () => closeWalletModal(button.dataset.walletClose));
     });
 
-    ["depositModal", "withdrawalModal"].forEach((id) => {
+    ["depositModal", "withdrawalModal", "withdrawalScheduleModal"].forEach((id) => {
       $(id).addEventListener("click", (event) => {
         if (event.target === $(id)) closeWalletModal(id);
       });
@@ -1076,10 +1111,77 @@ $("year").textContent = new Date().getFullYear();
       if (event.key === "Escape") {
         closeWalletModal("depositModal");
         closeWalletModal("withdrawalModal");
+        closeWalletModal("withdrawalScheduleModal");
       }
     });
 
     $("addFundsAction").addEventListener("click", () => openWalletModal("depositModal"));
+
+    // Kenya has no daylight-saving changes. UTC+3 keeps this schedule
+    // independent of the visitor's device timezone.
+    function getWithdrawalSchedule(now = new Date()) {
+      const eatNow = new Date(now.getTime() + 3 * 60 * 60 * 1000);
+      const day = eatNow.getUTCDay();
+      const year = eatNow.getUTCFullYear();
+      const month = eatNow.getUTCMonth();
+      const date = eatNow.getUTCDate();
+      const isOpen = day === 4;
+
+      const daysUntilThursday = (4 - day + 7) % 7;
+      const targetDate = isOpen ? date + 1 : date + daysUntilThursday;
+
+      // Nairobi midnight is 21:00 UTC on the previous calendar day.
+      const target = Date.UTC(year, month, targetDate, -3);
+      return {
+        isOpen,
+        remaining: Math.max(0, target - now.getTime())
+      };
+    }
+
+    function formatWithdrawalCountdown(milliseconds) {
+      const totalSeconds = Math.max(0, Math.floor(milliseconds / 1000));
+      const days = Math.floor(totalSeconds / 86400);
+      const hours = Math.floor((totalSeconds % 86400) / 3600);
+      const minutes = Math.floor((totalSeconds % 3600) / 60);
+      const seconds = totalSeconds % 60;
+      return { days, hours, minutes, seconds };
+    }
+
+    function updateWithdrawalSchedule() {
+      const schedule = getWithdrawalSchedule();
+      const time = formatWithdrawalCountdown(schedule.remaining);
+
+      $("withdrawalScheduleState").textContent = schedule.isOpen
+        ? "Withdrawals are OPEN now."
+        : "Withdrawals are currently CLOSED.";
+
+      $("withdrawalScheduleDescription").textContent = schedule.isOpen
+        ? "You can submit a withdrawal request until midnight tonight, Kenya time."
+        : "Withdrawals reopen Thursday at 12:00 AM, Kenya time.";
+
+      $("withdrawalScheduleModalState").textContent = schedule.isOpen
+        ? "The withdrawal window is open. It closes in:"
+        : "The next withdrawal window opens in:";
+
+      $("withdrawalScheduleModalText").textContent = schedule.isOpen
+        ? "You can submit your request before midnight, Kenya time."
+        : "Withdrawals are available every Thursday, from 12:00 AM to 11:59 PM, Kenya time.";
+
+      const values = [
+        ["withdrawalDays", "modalWithdrawalDays", time.days + "d"],
+        ["withdrawalHours", "modalWithdrawalHours", time.hours + "h"],
+        ["withdrawalMinutes", "modalWithdrawalMinutes", time.minutes + "m"],
+        ["withdrawalSeconds", "modalWithdrawalSeconds", time.seconds + "s"]
+      ];
+
+      values.forEach(([mainId, modalId, value]) => {
+        $(mainId).textContent = value;
+        $(modalId).textContent = value;
+      });
+
+      return schedule.isOpen;
+    }
+
     let withdrawalMembershipEligible = false;
 
     async function refreshWithdrawalEligibility() {
@@ -1087,7 +1189,7 @@ $("year").textContent = new Date().getFullYear();
       const notice = $("withdrawalEligibilityNotice");
 
       withdrawalMembershipEligible = false;
-      button.disabled = true;
+      button.disabled = updateWithdrawalSchedule();
       notice.hidden = false;
       notice.textContent = "Checking membership eligibility...";
 
@@ -1123,15 +1225,28 @@ $("year").textContent = new Date().getFullYear();
           "Membership eligibility could not be verified. Withdrawals are disabled until verification succeeds.";
       }
 
-      button.disabled = !withdrawalMembershipEligible;
+      const scheduleOpen = updateWithdrawalSchedule();
+      button.disabled = scheduleOpen && !withdrawalMembershipEligible;
       return withdrawalMembershipEligible;
     }
 
     $("withdrawAction").addEventListener("click", () => {
-      if (!withdrawalMembershipEligible) return;
+      const scheduleOpen = updateWithdrawalSchedule();
+
+      if (!scheduleOpen) {
+        openWalletModal("withdrawalScheduleModal");
+        return;
+      }
+
+      if (!withdrawalMembershipEligible) {
+        return;
+      }
+
       openWalletModal("withdrawalModal");
     });
 
+    updateWithdrawalSchedule();
+    setInterval(updateWithdrawalSchedule, 1000);
     refreshWithdrawalEligibility();
 
     $("depositForm").addEventListener("submit", async (event) => {
@@ -1180,7 +1295,7 @@ $("year").textContent = new Date().getFullYear();
         } else if (status === "pending") {
           walletMessage(
             "depositMessage",
-            (data.message || "Your deposit is pending verification.") +,
+            "Payment request sent! Check your phone and complete the M-Pesa payment prompt. Your wallet will be credited once your payment is verified.",
             "info"
           );
         } else if (status === "failed") {
@@ -1306,6 +1421,17 @@ $("year").textContent = new Date().getFullYear();
     $("withdrawalForm").addEventListener("submit", async (event) => {
       event.preventDefault();
 
+      if (!updateWithdrawalSchedule()) {
+        walletMessage(
+          "withdrawalMessage",
+          "The withdrawal window has closed. Withdrawals reopen Thursday at 12:00 AM, Kenya time.",
+          "error"
+        );
+        closeWalletModal("withdrawalModal");
+        openWalletModal("withdrawalScheduleModal");
+        return;
+      }
+
       if (!(await refreshWithdrawalEligibility())) {
         walletMessage(
           "withdrawalMessage",
@@ -1349,7 +1475,7 @@ $("year").textContent = new Date().getFullYear();
       } catch (error) {
         walletMessage("withdrawalMessage", error.message || "Withdrawal request failed.", "error");
       } finally {
-        button.disabled = !withdrawalMembershipEligible;
+        button.disabled = !withdrawalMembershipEligible || !updateWithdrawalSchedule();
         button.textContent = "Submit withdrawal request";
       }
     });
@@ -1369,7 +1495,7 @@ $("year").textContent = new Date().getFullYear();
       });
 
       if (response.status === 401) {
-        window.location.replace("../auth/login.html");
+        window.location.replace("/auth/login");
         throw new Error("Your session has expired. Please sign in again.");
       }
 
@@ -1392,7 +1518,7 @@ $("year").textContent = new Date().getFullYear();
       });
 
       if (response.status === 401) {
-        window.location.replace("../auth/login.html");
+        window.location.replace("/auth/login");
         throw new Error("Your session has expired. Please sign in again.");
       }
 
@@ -1411,7 +1537,7 @@ $("year").textContent = new Date().getFullYear();
     async function loadWallet() {
       const root = apiRoot();
       if (!root) {
-        ["availableBalance", "pendingEarnings", "totalEarnings"].forEach(id => $(id).textContent = "Unavailable");
+        ["availableBalance", "totalEarnings"].forEach(id => $(id).textContent = "Unavailable");
         showNotice("The API URL is not configured for this domain. Configure assets/js/config.js before using the dashboard.");
         return;
       }
@@ -1421,10 +1547,9 @@ $("year").textContent = new Date().getFullYear();
         const wallet = result.wallet || result.data || result;
 
         $("availableBalance").textContent = money(wallet.availableBalance);
-        $("pendingEarnings").textContent = money(wallet.pendingEarnings);
         $("totalEarnings").textContent = money(wallet.totalEarnings);
       } catch (error) {
-        ["availableBalance", "pendingEarnings", "totalEarnings"].forEach(id => $(id).textContent = "Unavailable");
+        ["availableBalance", "totalEarnings"].forEach(id => $(id).textContent = "Unavailable");
         showNotice(error.message || "Wallet details could not be loaded.");
       }
     }
@@ -1489,7 +1614,7 @@ $("logoutBtn").addEventListener("click", async () => {
   } catch (error) {
     console.error("Sign-out request failed:", error);
   } finally {
-    window.location.replace("../auth/login.html");
+    window.location.replace("/auth/login");
   }
 });
 

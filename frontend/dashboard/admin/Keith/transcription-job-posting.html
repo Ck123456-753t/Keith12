@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  
+  
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#07101f">
@@ -56,13 +58,25 @@ button:disabled{opacity:.55;cursor:wait}
 .tag.bad{background:#401b25;color:#ffb9c1}
 .note{font-size:12px;border-left:3px solid var(--blue);padding:9px 12px;background:#0a1729;border-radius:0 8px 8px 0}
 @media(max-width:650px){.shell{padding:13px}.panel{padding:15px}.fields{grid-template-columns:1fr}.field.full{grid-column:auto}.preview{grid-template-columns:1fr}.metric strong{font-size:20px}}
+
+/* PrimeTask shared logo: preserve the original image proportions. */
+.logo img, .brand-mark img, .brandmark img,
+.brand-orb img, .hero-mark img, .mark img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  border-radius: inherit;
+}
+
 </style>
+<link rel="icon" type="image/svg+xml" href="/assets/primetask-logo.svg">
 </head>
 <body>
 <main class="shell">
 <header class="top">
   <div class="brand"><div class="logo">P<span>T</span></div><div>PRIMETASK WORKSPACE<div class="small">ADMIN / TRANSCRIPTION OPERATIONS</div></div></div>
-  <a href="transcription-jobs.html" style="color:#a9caff;text-decoration:none;font-weight:750">View job register ↗</a>
+  <a href="transcription-jobs" style="color:#a9caff;text-decoration:none;font-weight:750">View job register ↗</a>
 </header>
 
 <div class="small">WORK QUEUE / JOB CREATION</div>
@@ -113,12 +127,21 @@ button:disabled{opacity:.55;cursor:wait}
       <div class="help">Separate from publication. Leaving this empty adds no deadline.</div>
     </div>
     <div class="field full">
-      <label for="description">Job description</label>
-      <textarea id="description" maxlength="10000" required placeholder="Describe the work and the expected deliverable."></textarea>
-    </div>
-    <div class="field full">
-      <label for="instructions">Worker instructions</label>
-      <textarea id="instructions" maxlength="10000" required placeholder="Formatting, speaker labels, submission format, quality rules, and any job-specific requirements."></textarea>
+      <label for="requiredTranscript">Transcription format</label>
+      <select id="requiredTranscript" required>
+        <option value="" selected disabled>Select the required transcription format</option>
+        <option value="Strict Verbatim">Strict Verbatim</option>
+        <option value="Clean Verbatim">Clean Verbatim</option>
+        <option value="Intelligent Verbatim">Intelligent Verbatim</option>
+        <option value="Edited Transcription">Edited Transcription</option>
+        <option value="Timestamped Transcription">Timestamped Transcription</option>
+        <option value="Speaker-Labelled Transcription">Speaker-Labelled Transcription</option>
+        <option value="Verbatim + Timestamps">Verbatim + Timestamps</option>
+        <option value="Speaker Labels + Timestamps">Speaker Labels + Timestamps</option>
+        <option value="Full Verbatim + Speaker Labels + Timestamps">Full Verbatim + Speaker Labels + Timestamps</option>
+        <option value="Captioning / Subtitles (SRT/VTT)">Captioning / Subtitles (SRT/VTT)</option>
+      </select>
+      <div class="help">Workers will see the selected format in the assignment details.</div>
     </div>
   </div>
   <div class="note">Each accepted job retains the existing one-hour assignment window. This page does not change that timer.</div>
@@ -135,6 +158,7 @@ button:disabled{opacity:.55;cursor:wait}
 </section>
 </main>
 
+<script src="/assets/js/config.js"></script>
 <script src="assets/admin-navigation.js"></script>
 <script src="assets/cloudinary-audio-upload.js"></script>
 <script>
@@ -151,12 +175,11 @@ button:disabled{opacity:.55;cursor:wait}
   const results = $("results");
   const submitBtn = $("submitBtn");
 
-  const API_BASE = (() => {
-    const host = location.hostname;
-    return host === "localhost" || host === "127.0.0.1"
-      ? "http://127.0.0.1:5001/api"
-      : "https://primetask-mdcx.onrender.com/api";
-  })();
+  const API_BASE = String(window.PTW_API_BASE || "").replace(/\/+$/, "");
+
+  if (!API_BASE) {
+    throw new Error("PrimeTask API is not configured. Check /assets/js/config.js.");
+  }
 
   const money = amount => new Intl.NumberFormat("en-US", {
     style: "currency", currency: "USD"
@@ -269,15 +292,14 @@ button:disabled{opacity:.55;cursor:wait}
     if (submitBtn.disabled) return;
 
     const files = selectedFiles();
-    const description = $("description").value.trim();
-    const instructions = $("instructions").value.trim();
+    const requiredTranscript = $("requiredTranscript").value.trim();
 
     if (!files.length || files.length > 7) {
       setMessage("Choose between one and seven audio files.", "error");
       return;
     }
-    if (!description || !instructions) {
-      setMessage("Enter both the job description and worker instructions.", "error");
+    if (!requiredTranscript) {
+      setMessage("Select the required transcription format.", "error");
       return;
     }
 
@@ -347,8 +369,7 @@ button:disabled{opacity:.55;cursor:wait}
         try {
           const payload = {
             title,
-            description,
-            instructions,
+            requiredTranscript,
             audioPublicId: asset.publicId
           };
           if (publishAt) payload.publishAt = publishAt;

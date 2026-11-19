@@ -73,18 +73,18 @@
       border-radius: 14px;
       color: white;
       font-weight: 900;
-      font-size: 18px;
+      font-size: 13.5px;
       background: linear-gradient(145deg, #2563eb, #0e7490);
       box-shadow: 0 8px 25px rgba(37, 99, 235, .22);
     }
 
     .brand-name { font-weight: 800; letter-spacing: -.4px; }
-    .brand-sub { color: var(--muted); font-size: 11px; margin-top: 3px; }
+    .brand-sub { color: var(--muted); font-size: 8.25px; margin-top: 3px; }
 
     .nav-label {
       padding: 25px 12px 10px;
       color: #71849e;
-      font-size: 10px;
+      font-size: 7.5px;
       font-weight: 800;
       letter-spacing: 1.5px;
       text-transform: uppercase;
@@ -102,7 +102,7 @@
       color: #b5c3d6;
       background: transparent;
       text-align: left;
-      font-size: 13px;
+      font-size: 9.75px;
       transition: background .2s, color .2s;
     }
 
@@ -113,7 +113,7 @@
     }
 
     .nav-link.active { box-shadow: inset 3px 0 var(--blue); }
-    .nav-icon { width: 20px; text-align: center; font-size: 16px; }
+    .nav-icon { width: 20px; text-align: center; font-size: 12px; }
     .sr-only {
       position: absolute;
       width: 1px;
@@ -135,7 +135,7 @@
       background: rgba(255, 255, 255, .035);
       border: 1px solid var(--border);
       color: var(--muted);
-      font-size: 11px;
+      font-size: 8.25px;
       line-height: 1.7;
     }
 
@@ -155,11 +155,11 @@
       color: #a5c8f5;
       text-transform: uppercase;
       letter-spacing: 1.6px;
-      font-size: 10px;
+      font-size: 7.5px;
       font-weight: 800;
     }
 
-    h1 { margin: 7px 0 0; font-size: clamp(23px, 3vw, 32px); letter-spacing: -1px; }
+    h1 { margin: 7px 0 0; font-size: clamp(17.25px, 2.25vw, 24px); letter-spacing: -1px; }
     .topbar-right { display: flex; align-items: center; gap: 10px; }
 
 
@@ -173,7 +173,7 @@
       border-radius: 14px;
       color: var(--text);
       background: rgba(10, 24, 43, .92);
-      font-size: 23px;
+      font-size: 17.25px;
       line-height: 1;
       transition: background .2s, border-color .2s, transform .2s;
     }
@@ -200,7 +200,7 @@
     .ptw-menu-label {
       padding: 10px 11px 6px;
       color: #8195b1;
-      font-size: 10px;
+      font-size: 7.5px;
       font-weight: 800;
       letter-spacing: 1.3px;
       text-transform: uppercase;
@@ -217,7 +217,7 @@
       background: transparent;
       text-align: left;
       text-decoration: none;
-      font-size: 13px;
+      font-size: 9.75px;
       cursor: pointer;
     }
     .ptw-menu-link:hover,
@@ -229,6 +229,33 @@
     .ptw-menu-link .nav-icon {
       width: 20px;
       text-align: center;
+    }
+
+    /* Classic platform announcements navigation item */
+    .ptw-menu-link.ptw-announcements-link {
+      margin-top: 3px;
+      color: #eaf2ff;
+      font-weight: 700;
+      background: rgba(96, 165, 250, .07);
+      border-color: rgba(96, 165, 250, .18);
+    }
+
+    .ptw-menu-link.ptw-announcements-link .nav-icon {
+      display: grid;
+      place-items: center;
+      width: 25px;
+      height: 25px;
+      flex: 0 0 25px;
+      border-radius: 7px;
+      color: #93c5fd;
+      background: rgba(96, 165, 250, .14);
+      font-size: 13px;
+    }
+
+    .ptw-menu-link.ptw-announcements-link:hover {
+      color: #fff;
+      background: rgba(59, 130, 246, .18);
+      border-color: rgba(96, 165, 250, .3);
     }
     .ptw-menu-divider {
       height: 1px;
@@ -251,7 +278,7 @@
       border-radius: 30px;
       background: rgba(6, 18, 33, .7);
       color: #c8d7e8;
-      font-size: 11px;
+      font-size: 8.25px;
     }
 
     .status-dot {
@@ -267,21 +294,31 @@
       place-items: center;
       width: 39px;
       height: 39px;
+      flex-shrink: 0;
+      overflow: hidden;
       border-radius: 50%;
       background: linear-gradient(135deg, #2563eb, #fb923c);
       font-weight: 800;
+    }
+
+    .avatar img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: inherit;
     }
 
     .welcome {
       position: relative;
       isolation: isolate;
       overflow: hidden;
-      min-height: 245px;
-      padding: clamp(23px, 4vw, 39px);
+      min-height: 147px;
+      padding: clamp(14px, 2.4vw, 23px);
       display: flex;
       align-items: center;
       border: 1px solid rgba(205, 221, 242, .20);
-      border-radius: 24px;
+      border-radius: 15px;
       background:
         linear-gradient(90deg, rgba(5, 15, 29, .96) 0%, rgba(5, 15, 29, .79) 48%, rgba(5, 15, 29, .25) 100%),
         url("https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=1800&q=85")
@@ -290,6 +327,31 @@
     }
 
     .welcome-content { position: relative; z-index: 1; max-width: 550px; }
+
+    .welcome #pageGreeting {
+      margin: 0 0 17px;
+      color: #f8fafc;
+      font-size: clamp(18.75px, 3vw, 28.5px);
+      font-weight: 800;
+      line-height: 1.15;
+      letter-spacing: -0.8px;
+      overflow-wrap: anywhere;
+    }
+
+    .welcome .welcome-typing {
+      margin: 0 0 12px;
+      color: #fdba74;
+      font-size: clamp(15px, 2.25vw, 21.75px);
+      font-weight: 750;
+      line-height: 1.3;
+      overflow-wrap: anywhere;
+    }
+
+    .welcome .welcome-subtitle {
+      color: #dbe5f1;
+      font-size: 10.5px;
+      line-height: 1.7;
+    }
 
     .welcome-tag {
       display: inline-flex;
@@ -300,12 +362,12 @@
       border-radius: 30px;
       background: rgba(255, 255, 255, .08);
       color: #dceaff;
-      font-size: 11px;
+      font-size: 8.25px;
     }
 
     .welcome h2 {
       margin: 17px 0 10px;
-      font-size: clamp(26px, 4vw, 41px);
+      font-size: clamp(19.5px, 3vw, 30.75px);
       line-height: 1.13;
       letter-spacing: -1.3px;
     }
@@ -316,7 +378,7 @@
       max-width: 430px;
       margin: 0;
       color: #c3d0df;
-      font-size: 13px;
+      font-size: 9.75px;
       line-height: 1.8;
     }
 
@@ -331,7 +393,7 @@
       padding: 11px 16px;
       border: 1px solid transparent;
       border-radius: 11px;
-      font-size: 12px;
+      font-size: 9px;
       font-weight: 750;
     }
 
@@ -354,10 +416,10 @@
       margin: 28px 0 15px;
     }
 
-    .section-heading h3 { margin: 0; font-size: 16px; }
-    .section-heading p { margin: 5px 0 0; color: var(--muted); font-size: 11px; }
+    .section-heading h3 { margin: 0; font-size: 12px; }
+    .section-heading p { margin: 5px 0 0; color: var(--muted); font-size: 8.25px; }
 
-    .muted-link { color: #93c5fd; font-size: 11px; }
+    .muted-link { color: #93c5fd; font-size: 8.25px; }
 
     .stats {
       display: grid;
@@ -376,26 +438,26 @@
     }
 
     .stat-top { display: flex; justify-content: space-between; gap: 10px; align-items: center; }
-    .stat-label { color: var(--muted); font-size: 11px; }
+    .stat-label { color: var(--muted); font-size: 8.25px; }
     .stat-icon {
       display: grid;
       place-items: center;
       width: 37px;
-      height: 37px;
+      height: 27px;
       border-radius: 12px;
       background: rgba(96, 165, 250, .12);
-      font-size: 17px;
+      font-size: 12.75px;
     }
 
     .stat-value {
       margin: 17px 0 5px;
-      font-size: clamp(22px, 3vw, 29px);
+      font-size: clamp(16.5px, 2.25vw, 21.75px);
       font-weight: 800;
       letter-spacing: -.7px;
       overflow-wrap: anywhere;
     }
 
-    .stat-foot { color: #9aabc0; font-size: 10px; line-height: 1.6; }
+    .stat-foot { color: #9aabc0; font-size: 7.5px; line-height: 1.6; }
     .positive { color: var(--green); }
 
     .lower-grid {
@@ -405,8 +467,8 @@
       margin-top: 17px;
     }
 
-    .panel-title { margin: 0; font-size: 14px; }
-    .panel-subtitle { margin: 6px 0 0; color: var(--muted); font-size: 11px; }
+    .panel-title { margin: 0; font-size: 10.5px; }
+    .panel-subtitle { margin: 6px 0 0; color: var(--muted); font-size: 8.25px; }
 
     .transaction-list { margin-top: 17px; }
     .transaction {
@@ -430,11 +492,11 @@
       background: rgba(255, 255, 255, .06);
     }
 
-    .transaction-name { font-size: 12px; font-weight: 700; overflow-wrap: anywhere; }
-    .transaction-date { margin-top: 5px; color: var(--muted); font-size: 10px; }
-    .transaction-amount { text-align: right; font-size: 12px; font-weight: 800; }
-    .transaction-state { margin-top: 5px; color: var(--muted); font-size: 10px; text-transform: capitalize; }
-    .empty { padding: 25px 5px; color: var(--muted); font-size: 12px; line-height: 1.7; }
+    .transaction-name { font-size: 9px; font-weight: 700; overflow-wrap: anywhere; }
+    .transaction-date { margin-top: 5px; color: var(--muted); font-size: 7.5px; }
+    .transaction-amount { text-align: right; font-size: 9px; font-weight: 800; }
+    .transaction-state { margin-top: 5px; color: var(--muted); font-size: 7.5px; text-transform: capitalize; }
+    .empty { padding: 25px 5px; color: var(--muted); font-size: 9px; line-height: 1.7; }
 
     .account-row {
       display: flex;
@@ -442,7 +504,7 @@
       gap: 12px;
       padding: 13px 0;
       border-bottom: 1px solid var(--border);
-      font-size: 11px;
+      font-size: 8.25px;
     }
 
     .account-row:last-child { border-bottom: 0; }
@@ -476,11 +538,11 @@
       height: 42px;
       border-radius: 13px;
       background: rgba(96, 165, 250, .12);
-      font-size: 19px;
+      font-size: 14.25px;
     }
 
-    .service-card h4 { margin: 2px 0 6px; font-size: 12px; }
-    .service-card p { margin: 0; color: var(--muted); font-size: 11px; line-height: 1.65; }
+    .service-card h4 { margin: 2px 0 6px; font-size: 9px; }
+    .service-card p { margin: 0; color: var(--muted); font-size: 8.25px; line-height: 1.65; }
 
     .notice {
       display: none;
@@ -490,7 +552,7 @@
       border: 1px solid rgba(251, 146, 60, .3);
       background: rgba(124, 45, 18, .23);
       color: #fed7aa;
-      font-size: 12px;
+      font-size: 9px;
       line-height: 1.6;
     }
 
@@ -503,7 +565,7 @@
       gap: 10px;
       border-top: 1px solid var(--border);
       color: #90a2b8;
-      font-size: 10px;
+      font-size: 7.5px;
     }
 
     .footer-links { display: flex; flex-wrap: wrap; gap: 15px; }
@@ -530,7 +592,7 @@
       .brand-mark { width: 38px; height: 38px; }
       .nav-label { padding: 11px 4px 6px; }
       .sidebar nav { display: flex; flex-wrap: wrap; gap: 4px; }
-      .nav-link { width: auto; padding: 9px 10px; margin: 0; font-size: 11px; }
+      .nav-link { width: auto; padding: 9px 10px; margin: 0; font-size: 8.25px; }
       .nav-icon { width: auto; }
       .sidebar-spacer, .sidebar-note { display: none; }
       .main { padding: 22px 14px 25px; }
@@ -539,14 +601,14 @@
       .welcome { min-height: 270px; background-position: center; }
       .stats { gap: 10px; }
       .card { padding: 15px; }
-      .stat-value { font-size: 23px; }
+      .stat-value { font-size: 17.25px; }
       .service-intro { grid-template-columns: 1fr; }
       .section-heading { margin-top: 23px; }
     }
 
     @media (max-width: 370px) {
       .stats { grid-template-columns: 1fr; }
-      .welcome h2 { font-size: 28px; }
+      .welcome h2 { font-size: 21px; }
       .avatar { width: 34px; height: 34px; }
     }
 
@@ -591,7 +653,7 @@
       align-items: center;
       gap: 8px;
       color: #bfdbfe;
-      font-size: 10px;
+      font-size: 7.5px;
       font-weight: 850;
       letter-spacing: 1.25px;
     }
@@ -611,9 +673,9 @@
       border-radius: 9px;
       background: rgba(2,6,23,.35);
       color: #cbd5e1;
-      font-size: 10px;
+      font-size: 7.5px;
     }
-    .pocket-chip strong { color: #fdba74; font-size: 13px; }
+    .pocket-chip strong { color: #fdba74; font-size: 9.75px; }
     .pocket-balance-label { margin-bottom: 8px; }
     .wallet-pocket .stat-label { color: #b6c8df; }
     .wallet-pocket .stat-icon {
@@ -624,7 +686,7 @@
     .wallet-pocket .pocket-value {
       margin: 0 0 7px;
       color: #fff;
-      font-size: clamp(27px, 3vw, 36px);
+      font-size: clamp(20.25px, 2.25vw, 27px);
       letter-spacing: -1.2px;
       overflow-wrap: anywhere;
     }
@@ -646,7 +708,7 @@
       border-radius: 10px;
       color: #eaf2ff;
       background: rgba(255,255,255,.07);
-      font-size: 12px;
+      font-size: 9px;
       font-weight: 750;
     }
     .pocket-action:hover {
@@ -664,13 +726,13 @@
     .pocket-note {
       margin: 12px 0 0;
       color: #94a9c4;
-      font-size: 10px;
+      font-size: 7.5px;
       line-height: 1.5;
     }
     @media (max-width: 760px) {
       .wallet-pocket { min-height: 0; }
       .wallet-pocket .pocket-value {
-        font-size: clamp(27px, 8vw, 35px);
+        font-size: clamp(20.25px, 6vw, 26.25px);
       }
       .pocket-actions {
         display: grid;
@@ -685,10 +747,10 @@
 .wallet-modal-card{box-sizing:border-box;width:min(100%,460px);max-height:calc(100vh - 28px);overflow:auto;padding:22px;border:1px solid #26364d;border-radius:16px;background:#08101f;color:#e5edf9;box-shadow:0 20px 60px #0008}
 .wallet-modal-head{display:flex;justify-content:space-between;gap:14px;margin-bottom:18px}
 .wallet-modal-head h2{margin:0 0 6px}
-.wallet-modal-head p,.wallet-help{color:#94a3b8;font-size:.88rem;line-height:1.5}
-.wallet-close{border:0;border-radius:8px;padding:6px 11px;background:#17243a;color:white;font-size:1.2rem;cursor:pointer}
+.wallet-modal-head p,.wallet-help{color:#94a3b8;font-size:0.66rem;line-height:1.5}
+.wallet-close{border:0;border-radius:8px;padding:6px 11px;background:#17243a;color:white;font-size:0.9rem;cursor:pointer}
 .wallet-form{display:grid;gap:14px}
-.wallet-form label{display:grid;gap:7px;color:#cbd5e1;font-size:.9rem}
+.wallet-form label{display:grid;gap:7px;color:#cbd5e1;font-size:0.675rem}
 .wallet-form input{box-sizing:border-box;width:100%;padding:12px;border:1px solid #334155;border-radius:9px;background:#050b16;color:#fff;font:inherit}
 .wallet-submit{width:100%;padding:12px;border:0;border-radius:9px;background:#2563eb;color:white;font:inherit;font-weight:700;cursor:pointer}
 .wallet-submit:disabled{opacity:.6}
@@ -700,20 +762,21 @@
 .withdrawal-history{margin-top:20px}
 .withdrawal-table-wrap{width:100%;overflow-x:auto;border:1px solid #263247;border-radius:12px}
 .withdrawal-table{width:100%;min-width:650px;border-collapse:collapse;text-align:left}
-.withdrawal-table th{padding:13px 12px;background:#102746;color:#60a5fa;font-size:.76rem;font-weight:800;letter-spacing:.045em;white-space:nowrap}
-.withdrawal-table td{padding:14px 12px;border-top:1px solid #263247;color:#f8fafc;font-size:.88rem;white-space:nowrap}
+.withdrawal-table th{padding:13px 12px;background:#102746;color:#60a5fa;font-size:0.57rem;font-weight:800;letter-spacing:0.06em;white-space:nowrap}
+.withdrawal-table td{padding:14px 12px;border-top:1px solid #263247;color:#f8fafc;font-size:0.66rem;white-space:nowrap}
 .withdrawal-table tbody tr:hover{background:#0b1930}
 .withdrawal-table .withdrawal-reference{color:#60a5fa;font-weight:700}
 .withdrawal-table .withdrawal-amount{font-weight:750;color:#fff}
 .withdrawal-table .withdrawal-phone{color:#e2e8f0}
-.withdrawal-table .withdrawal-status{display:inline-block;padding:5px 9px;border-radius:20px;background:#17243a;color:#f8fafc;font-size:.72rem;font-weight:800}
+.withdrawal-table .withdrawal-status{display:inline-block;padding:5px 9px;border-radius:20px;background:#17243a;color:#f8fafc;font-size:0.54rem;font-weight:800}
 .withdrawal-table .status-paid,.withdrawal-table .status-completed,.withdrawal-table .status-successful{background:#123524;color:#4ade80}
 .withdrawal-table .status-pending,.withdrawal-table .status-processing{background:#3a2514;color:#fb923c}
 .withdrawal-table .status-rejected,.withdrawal-table .status-failed{background:#253044;color:#e2e8f0}
-.withdrawal-meta{color:#94a3b8;font-size:.82rem}
-
-
-    /* Compact, full-width four-card wallet layout */
+.withdrawal-meta{color:#94a3b8;font-size:0.615rem}
+.withdrawal-countdown{display:flex;gap:9px;flex-wrap:wrap;margin-top:12px}
+.withdrawal-countdown span{padding:9px 12px;border-radius:9px;background:#132b49;color:#fff;font-weight:800;font-variant-numeric:tabular-nums}
+.withdrawal-schedule-state{color:#93c5fd!important;font-weight:700}
+/* Compact, full-width four-card wallet layout */
     .stats {
       grid-template-columns: minmax(0, 1fr);
       gap: 10px;
@@ -738,12 +801,12 @@
 
     .wallet-pocket .pocket-value {
       margin: 4px 0 5px;
-      font-size: clamp(25px, 5vw, 32px);
+      font-size: clamp(18.75px, 3.75vw, 24px);
     }
 
     .stats .stat-value {
       margin: 8px 0 4px;
-      font-size: clamp(23px, 4vw, 29px);
+      font-size: clamp(17.25px, 3vw, 21.75px);
     }
 
     .stats .wallet-action-card {
@@ -787,7 +850,7 @@
       border-radius: 12px;
       background: rgba(251, 146, 60, .12);
       color: #fb923c;
-      font-size: 23px;
+      font-size: 17.25px;
     }
 
     .wallet-action-icon.withdrawal-icon {
@@ -806,25 +869,25 @@
 
     .wallet-action-copy strong {
       color: #f8fafc;
-      font-size: 13px;
+      font-size: 9.75px;
       font-weight: 750;
     }
 
     .wallet-action-copy small {
       color: #9aabc0;
-      font-size: 11px;
+      font-size: 8.25px;
       font-weight: 400;
     }
 
     .wallet-action-arrow {
       color: #94a3b8;
-      font-size: 25px;
+      font-size: 18.75px;
       line-height: 1;
     }
 
     .wallet-action-card .pocket-note {
       margin: 4px 0 7px 52px;
-      font-size: 10px;
+      font-size: 7.5px;
       line-height: 1.5;
     }
 
@@ -848,8 +911,81 @@
       }
     }
 
-  </style>
-  <link rel="icon" type="image/svg+xml" href="../assets/primetask-favicon.svg">
+
+/* Compact rectangular service shortcuts */
+.service-intro {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+.service-card {
+  min-width: 0;
+  padding: 12px;
+  gap: 10px;
+  border-radius: 12px;
+}
+.service-emoji {
+  width: 32px;
+  height: 32px;
+  border-radius: 9px;
+  font-size: 11.25px;
+}
+.service-card h4 {
+  margin: 1px 0 4px;
+  font-size: 9px;
+  line-height: 1.4;
+}
+.service-card p {
+  font-size: 7.5px;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+@media (max-width: 370px) {
+  .service-intro { grid-template-columns: 1fr; }
+}
+
+</style>
+<style id="ptw-welcome-style">
+  .welcome-typing {
+    margin: 9px 0 5px;
+    color: var(--text, #f8fafc);
+    font-size: clamp(13.5px, 1.875vw, 18.75px);
+    font-weight: 650;
+    line-height: 1.45;
+    overflow-wrap: anywhere;
+    min-height: 1.9333333em;
+  }
+
+  .welcome-typing #welcomeTypingText::after {
+    content: "";
+    display: inline-block;
+    height: 1.3333333em;
+    border-right: 2px solid #fb923c;
+    margin-left: 4px;
+    vertical-align: -2px;
+    animation: ptw-cursor-blink 0.8s steps(2, start) infinite;
+  }
+
+  .welcome-subtitle {
+    margin: 0;
+    color: var(--muted, #94a3b8);
+    font-size: 10.5px;
+    line-height: 1.6;
+  }
+
+  @keyframes ptw-cursor-blink {
+    to { visibility: hidden; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .welcome-typing #welcomeTypingText::after {
+      animation: none;
+    }
+  }
+</style>
+
+    
+<link rel="icon" type="image/svg+xml" href="/assets/primetask-logo.svg">
+<style id="ptw-marketing-typography-scale">body { font-size: 12px; }</style>
 </head>
 
 <body>
@@ -858,7 +994,6 @@
       <header class="topbar">
         <div>
           <div class="eyebrow">Your personal workspace</div>
-          <h1 id="pageGreeting">Welcome home</h1>
         </div>
         <div class="topbar-right">
           <div class="status"><span class="status-dot"></span><span id="connectionStatus">Connecting</span></div>
@@ -873,19 +1008,22 @@
             <nav class="ptw-menu-panel" id="menuPanel"
               aria-label="Workspace menu" hidden>
               <div class="ptw-menu-label">Workspace</div>
-              <a class="ptw-menu-link" href="index.html" aria-current="page"><span class="nav-icon">⌂</span>Dashboard</a>
-              <a class="ptw-menu-link" href="services.html"><span class="nav-icon">▦</span>Services</a>
-              <a class="ptw-menu-link" href="wallet.html"><span class="nav-icon">◈</span>My Wallet</a>
-              <a class="ptw-menu-link" href="membership.html"><span class="nav-icon">▣</span>Membership</a>
-              <a class="ptw-menu-link" href="transactions.html"><span class="nav-icon">↕</span>Transactions</a>
-              <a class="ptw-menu-link" href="referrals.html"><span class="nav-icon">♧</span>My Referrals</a>
-              <a class="ptw-menu-link" href="profile.html"><span class="nav-icon">◉</span>My Profile</a>
+              <a class="ptw-menu-link" href="/dashboard" aria-current="page"><span class="nav-icon">⌂</span>Dashboard</a>
+              <a class="ptw-menu-link" href="/dashboard/services"><span class="nav-icon">▦</span>Services</a>
+              <a class="ptw-menu-link" href="/dashboard/chat"><span class="nav-icon">◉</span>PRIMECHAT</a>
+              <a class="ptw-menu-link" href="/dashboard/wallet"><span class="nav-icon">◈</span>My Wallet</a>
+              <a class="ptw-menu-link" href="/dashboard/membership"><span class="nav-icon">▣</span>Membership</a>
+              <a class="ptw-menu-link" href="/dashboard/transactions"><span class="nav-icon">↕</span>Transactions</a>
+              <a class="ptw-menu-link" href="/dashboard/my-referrals"><span class="nav-icon">♧</span>My Referrals</a>
+              <a class="ptw-menu-link" href="/dashboard/profile"><span class="nav-icon">◉</span>My Profile</a>
+              <a class="ptw-menu-link" href="/dashboard/success-stories"><span class="nav-icon">✦</span>My Testimonial</a>
+              <a class="ptw-menu-link ptw-announcements-link" href="/dashboard/announcements"><span class="nav-icon" aria-hidden="true">▤</span><span>Platform Announcements</span></a>
               <div class="ptw-menu-divider"></div>
               <div class="ptw-menu-label">Account</div>
-              <a class="ptw-menu-link" href="../contact.html"><span class="nav-icon">✉</span>Support</a>
-              <a class="ptw-menu-link" href="../faq.html"><span class="nav-icon">?</span>Help Centre</a>
-              <a class="ptw-menu-link" href="../privacy.html"><span class="nav-icon">◇</span>Privacy</a>
-              <a class="ptw-menu-link" href="../terms.html"><span class="nav-icon">▤</span>Terms</a>
+              <a class="ptw-menu-link" href="/contact"><span class="nav-icon">✉</span>Support</a>
+              <a class="ptw-menu-link" href="/faq"><span class="nav-icon">?</span>Help Centre</a>
+              <a class="ptw-menu-link" href="/privacy"><span class="nav-icon">◇</span>Privacy</a>
+              <a class="ptw-menu-link" href="/terms"><span class="nav-icon">▤</span>Terms</a>
               <button class="ptw-menu-link menu-signout" id="logoutBtn" type="button"><span class="nav-icon">↪</span>Sign Out</button>
             </nav>
           </div>
@@ -897,9 +1035,9 @@
 
       <section class="welcome">
         <div class="welcome-content">
-          <div class="welcome-tag">🏡 Your workspace, your next chapter</div>
-          <h2>A place to work,<br><span>earn and grow.</span></h2>
-          <p>Settle in, explore opportunities, and keep track of your progress. Your next step starts right here.</p>
+          <h1 id="pageGreeting">Good morning, Member ☀️</h1>
+          <p class="welcome-typing" aria-live="polite"><span id="welcomeTypingText"></span></p>
+          <p class="welcome-subtitle">Your workspace is ready. Let's make today count.</p>
         </div>
       </section>
 
@@ -980,18 +1118,18 @@
           <h3>Find your next opportunity</h3>
           <p>Explore the services available in PrimeTask Workspace.</p>
         </div>
-        <a class="muted-link" href="services.html">All services ↗</a>
+        <a class="muted-link" href="/dashboard/services">All services ↗</a>
       </div>
 
       <section class="service-intro" aria-label="Service overview">
-        <a class="service-card" href="https://primetask-workspace.vercel.app/dashboard/services/transcription/index.html">
+        <a class="service-card" href="/dashboard/services/transcription">
           <div class="service-emoji">🎧</div>
           <div>
             <h4>Transcription and note-taking</h4>
             <p>Turn spoken information into clear, useful written work.</p>
           </div>
         </a>
-        <a class="service-card" href="services.html">
+        <a class="service-card" href="/dashboard/services">
           <div class="service-emoji">✍️</div>
           <div>
             <h4>Writing and data services</h4>
@@ -1039,30 +1177,52 @@
           <div class="wallet-modal-head">
             <div>
               <h2 id="withdrawalTitle">Request withdrawal</h2>
-              <p>Submit your request for administrator review.</p>
+
             </div>
             <button class="wallet-close" type="button" data-wallet-close="withdrawalModal" aria-label="Close">×</button>
           </div>
           <div id="withdrawalMessage" class="wallet-message" role="status" aria-live="polite"></div>
           <form class="wallet-form" id="withdrawalForm">
             <label>Amount (USD)
-              <input id="withdrawalAmount" type="number" min="1" max="500" step="0.01" placeholder="5.00" required>
+              <input id="withdrawalAmount" type="number" min="7.85" max="500" step="0.01" placeholder="7.85" required>
             </label>
+            <p id="withdrawalEstimate" class="wallet-help" aria-live="polite" style="display:none"></p>
             <label>M-Pesa phone number
               <input id="withdrawalPhone" type="tel" inputmode="tel" autocomplete="tel" maxlength="16" placeholder="0712345678" required>
             </label>
-            <p class="wallet-help">Requests are reviewed by an administrator. Submitting a request does not send an M-Pesa payment immediately.</p>
+
             <button class="wallet-submit" id="withdrawalSubmit" type="submit">Submit withdrawal request</button>
           </form>
+        </section>
+      </div>
+
+      <div class="wallet-modal" id="withdrawalScheduleModal" hidden>
+        <section class="wallet-modal-card" role="dialog" aria-modal="true" aria-labelledby="withdrawalScheduleModalTitle">
+          <div class="wallet-modal-head">
+            <div>
+              <h3 id="withdrawalScheduleModalTitle">Weekly Withdrawal Schedule</h3>
+              <p id="withdrawalScheduleModalText">
+                Withdrawals reopen every Thursday, Kenya time.
+              </p>
+            </div>
+            <button class="wallet-close" type="button" data-wallet-close="withdrawalScheduleModal" aria-label="Close">×</button>
+          </div>
+          <p class="withdrawal-schedule-state" id="withdrawalScheduleModalState" aria-live="polite"></p>
+          <div class="withdrawal-countdown">
+            <span id="modalWithdrawalDays">--d</span>
+            <span id="modalWithdrawalHours">--h</span>
+            <span id="modalWithdrawalMinutes">--m</span>
+            <span id="modalWithdrawalSeconds">--s</span>
+          </div>
         </section>
       </div>
 
       <footer class="footer">
         <span>© <span id="year"></span> PrimeTask Workspace</span>
         <div class="footer-links">
-          <a href="../contact.html">Support</a>
-          <a href="../privacy.html">Privacy</a>
-          <a href="../terms.html">Terms</a>
+          <a href="/contact">Support</a>
+          <a href="/privacy">Privacy</a>
+          <a href="/terms">Terms</a>
         </div>
       </footer>
     </main>
@@ -1105,14 +1265,21 @@
 
     function openWalletModal(id) {
       hideNotice();
-      clearWalletMessage(id === "depositModal" ? "depositMessage" : "withdrawalMessage");
+      const messageId =
+        id === "depositModal" ? "depositMessage" :
+        id === "withdrawalModal" ? "withdrawalMessage" : null;
+      if (messageId) clearWalletMessage(messageId);
       $(id).hidden = false;
       document.body.style.overflow = "hidden";
     }
 
     function closeWalletModal(id) {
       $(id).hidden = true;
-      if ($("depositModal").hidden && $("withdrawalModal").hidden) {
+      if (
+        $("depositModal").hidden &&
+        $("withdrawalModal").hidden &&
+        $("withdrawalScheduleModal").hidden
+      ) {
         document.body.style.overflow = "";
       }
     }
@@ -1121,7 +1288,7 @@
       button.addEventListener("click", () => closeWalletModal(button.dataset.walletClose));
     });
 
-    ["depositModal", "withdrawalModal"].forEach((id) => {
+    ["depositModal", "withdrawalModal", "withdrawalScheduleModal"].forEach((id) => {
       $(id).addEventListener("click", (event) => {
         if (event.target === $(id)) closeWalletModal(id);
       });
@@ -1131,10 +1298,56 @@
       if (event.key === "Escape") {
         closeWalletModal("depositModal");
         closeWalletModal("withdrawalModal");
+        closeWalletModal("withdrawalScheduleModal");
       }
     });
 
     $("addFundsAction").addEventListener("click", () => openWalletModal("depositModal"));
+
+    // Kenya uses UTC+3 throughout the year.
+    function getWithdrawalSchedule(now = new Date()) {
+      const eatNow = new Date(now.getTime() + 3 * 60 * 60 * 1000);
+      const day = eatNow.getUTCDay();
+      const year = eatNow.getUTCFullYear();
+      const month = eatNow.getUTCMonth();
+      const date = eatNow.getUTCDate();
+      const isOpen = day === 4;
+      const daysUntilThursday = (4 - day + 7) % 7;
+      const targetDate = isOpen ? date + 1 : date + daysUntilThursday;
+
+      // Nairobi midnight is 21:00 UTC on the previous calendar day.
+      const target = Date.UTC(year, month, targetDate, -3);
+
+      return {
+        isOpen,
+        remaining: Math.max(0, target - now.getTime())
+      };
+    }
+
+    function updateWithdrawalSchedule() {
+      const schedule = getWithdrawalSchedule();
+      const totalSeconds = Math.max(0, Math.floor(schedule.remaining / 1000));
+      const days = Math.floor(totalSeconds / 86400);
+      const hours = Math.floor((totalSeconds % 86400) / 3600);
+      const minutes = Math.floor((totalSeconds % 3600) / 60);
+      const seconds = totalSeconds % 60;
+
+      $("withdrawalScheduleModalState").textContent = schedule.isOpen
+        ? "Withdrawals are OPEN. The window closes in:"
+        : "Withdrawals are CLOSED. The next window opens in:";
+
+      $("withdrawalScheduleModalText").textContent = schedule.isOpen
+        ? "You can submit your withdrawal request until midnight tonight, Kenya time."
+        : "Withdrawals reopen Thursday at 12:00 AM and close at midnight, Kenya time.";
+
+      $("modalWithdrawalDays").textContent = days + "d";
+      $("modalWithdrawalHours").textContent = hours + "h";
+      $("modalWithdrawalMinutes").textContent = minutes + "m";
+      $("modalWithdrawalSeconds").textContent = seconds + "s";
+
+      return schedule.isOpen;
+    }
+
     let withdrawalMembershipEligible = false;
 
     async function refreshWithdrawalEligibility() {
@@ -1142,7 +1355,7 @@
       const notice = $("withdrawalEligibilityNotice");
 
       withdrawalMembershipEligible = false;
-      button.disabled = true;
+      button.disabled = updateWithdrawalSchedule();
       notice.hidden = false;
       notice.textContent = "Checking membership eligibility...";
 
@@ -1167,10 +1380,13 @@
           expiresAt > now
         );
 
-        notice.hidden = withdrawalMembershipEligible;
-        notice.textContent = withdrawalMembershipEligible
-          ? ""
-          : "Withdrawals require a currently active membership. Activate or renew your membership to withdraw.";
+        const scheduleOpen = updateWithdrawalSchedule();
+        notice.hidden = scheduleOpen && withdrawalMembershipEligible;
+        notice.textContent = !scheduleOpen
+          ? "Withdrawal requests open every Thursday. An active membership is required to submit a request."
+          : withdrawalMembershipEligible
+            ? ""
+            : "Withdrawals require a currently active membership. Activate or renew your membership to withdraw.";
       } catch (error) {
         withdrawalMembershipEligible = false;
         notice.hidden = false;
@@ -1178,15 +1394,25 @@
           "Membership eligibility could not be verified. Withdrawals are disabled until verification succeeds.";
       }
 
-      button.disabled = !withdrawalMembershipEligible;
+      const scheduleOpen = updateWithdrawalSchedule();
+      button.disabled = scheduleOpen && !withdrawalMembershipEligible;
       return withdrawalMembershipEligible;
     }
 
     $("withdrawAction").addEventListener("click", () => {
+      const scheduleOpen = updateWithdrawalSchedule();
+
+      if (!scheduleOpen) {
+        openWalletModal("withdrawalScheduleModal");
+        return;
+      }
+
       if (!withdrawalMembershipEligible) return;
       openWalletModal("withdrawalModal");
     });
 
+    updateWithdrawalSchedule();
+    setInterval(updateWithdrawalSchedule, 1000);
     refreshWithdrawalEligibility();
 
     $("depositForm").addEventListener("submit", async (event) => {
@@ -1235,8 +1461,7 @@
         } else if (status === "pending") {
           walletMessage(
             "depositMessage",
-            (data.message || "Your deposit is pending verification.") +
-              " Do not submit another payment request while this one is unresolved.",
+            "Payment request sent! Check your phone and complete the M-Pesa payment prompt. Your wallet will be credited once your payment is verified.",
             "info"
           );
         } else if (status === "failed") {
@@ -1319,7 +1544,7 @@
         const thead = document.createElement("thead");
         const headingRow = document.createElement("tr");
 
-        ["Reference", "Date", "Amount (USD)", "Phone Number", "Status"].forEach(label => {
+        ["Reference", "Date", "Amount (USD)", "Payout (KES)", "Rate (KES/USD)", "Phone Number", "Status"].forEach(label => {
           const th = document.createElement("th");
           th.scope = "col";
           th.textContent = label;
@@ -1355,6 +1580,18 @@
             { text: String(reference), className: "withdrawal-reference" },
             { text: formatWalletDate(item.createdAt), className: "" },
             { text: money(value), className: "withdrawal-amount" },
+            {
+              text: item.payoutAmountKes == null || !Number.isFinite(Number(item.payoutAmountKes))
+                ? "—"
+                : "KSh " + new Intl.NumberFormat("en-KE", { maximumFractionDigits: 0 }).format(Number(item.payoutAmountKes)),
+              className: "withdrawal-amount"
+            },
+            {
+              text: item.exchangeRateKesPerUsd == null || !Number.isFinite(Number(item.exchangeRateKesPerUsd))
+                ? "—"
+                : new Intl.NumberFormat("en-KE", { maximumFractionDigits: 4 }).format(Number(item.exchangeRateKesPerUsd)),
+              className: ""
+            },
             { text: item.phoneNumber || "Phone unavailable", className: "withdrawal-phone" },
             { text: statusLabel, className: "" }
           ];
@@ -1362,7 +1599,7 @@
           values.forEach((cell, index) => {
             const td = document.createElement("td");
 
-            if (index === 4) {
+            if (index === 6) {
               const badge = document.createElement("span");
               badge.className = "withdrawal-status status-" + statusClass;
               badge.textContent = cell.text;
@@ -1386,10 +1623,79 @@
       }
     }
 
+    let withdrawalMinimumAmount = 7.85;
+    let withdrawalMaximumAmount = 500;
+    let withdrawalQuoteTimer = null;
+
+    function formatWithdrawalKes(value) {
+      return "KSh " + new Intl.NumberFormat("en-KE", {
+        maximumFractionDigits: 0
+      }).format(value);
+    }
+
+    async function refreshWithdrawalQuote() {
+      const estimate = $("withdrawalEstimate");
+      const amountInput = $("withdrawalAmount");
+      const root = apiRoot();
+
+      if (!root) {
+        estimate.textContent = "Payout estimate unavailable: API configuration is missing.";
+        return;
+      }
+
+      const amount = amountInput.value.trim();
+      const query = amount ? "?amount=" + encodeURIComponent(amount) : "";
+
+      try {
+        const data = await apiGet(root + "/wallet/withdrawals/quote" + query);
+        withdrawalMinimumAmount = Number(data.minimumAmount);
+        withdrawalMaximumAmount = Number(data.maximumAmount);
+        amountInput.min = String(withdrawalMinimumAmount);
+        amountInput.max = String(withdrawalMaximumAmount);
+
+        const rate = Number(data.exchangeRateKesPerUsd);
+        if (!Number.isFinite(rate) || rate < 1 || rate > 1000) {
+          throw new Error("The configured exchange rate is invalid.");
+        }
+
+        const rateText = "Current rate: 1 USD = " +
+          new Intl.NumberFormat("en-KE", { maximumFractionDigits: 4 }).format(rate) +
+          " KSh.";
+
+        if (data.payoutAmountKes != null && Number.isFinite(Number(data.payoutAmountKes))) {
+          estimate.textContent = rateText + " Estimated payout: " +
+            formatWithdrawalKes(Number(data.payoutAmountKes)) + ".";
+        } else {
+          estimate.textContent = rateText + " Enter an amount between $" +
+            withdrawalMinimumAmount.toFixed(2) + " and $" +
+            withdrawalMaximumAmount.toFixed(2) + " to see your estimate.";
+        }
+      } catch (error) {
+        estimate.textContent = error.message || "Payout estimate temporarily unavailable.";
+      }
+    }
+
+    $("withdrawalAmount").addEventListener("input", () => {
+      clearTimeout(withdrawalQuoteTimer);
+      withdrawalQuoteTimer = setTimeout(refreshWithdrawalQuote, 250);
+    });
+
+    refreshWithdrawalQuote();
     $("refreshWithdrawals").addEventListener("click", loadWithdrawalHistory);
 
     $("withdrawalForm").addEventListener("submit", async (event) => {
       event.preventDefault();
+
+      if (!updateWithdrawalSchedule()) {
+        walletMessage(
+          "withdrawalMessage",
+          "The withdrawal window has closed. Withdrawals reopen Thursday at 12:00 AM, Kenya time.",
+          "error"
+        );
+        closeWalletModal("withdrawalModal");
+        openWalletModal("withdrawalScheduleModal");
+        return;
+      }
 
       if (!(await refreshWithdrawalEligibility())) {
         walletMessage(
@@ -1404,8 +1710,17 @@
       const number = Number(amount);
       const phoneNumber = $("withdrawalPhone").value.trim();
 
-      if (!Number.isFinite(number) || number < 1 || number > 500) {
-        walletMessage("withdrawalMessage", "Enter an amount between $1.00 and $500.00.", "error");
+      if (
+        !Number.isFinite(number) ||
+        number < withdrawalMinimumAmount ||
+        number > withdrawalMaximumAmount
+      ) {
+        walletMessage(
+          "withdrawalMessage",
+          "Enter an amount between $" + withdrawalMinimumAmount.toFixed(2) +
+            " and $" + withdrawalMaximumAmount.toFixed(2) + ".",
+          "error"
+        );
         return;
       }
 
@@ -1426,6 +1741,7 @@
           "success"
         );
         $("withdrawalForm").reset();
+        await refreshWithdrawalQuote();
 
         await Promise.allSettled([
           loadWallet(),
@@ -1434,7 +1750,7 @@
       } catch (error) {
         walletMessage("withdrawalMessage", error.message || "Withdrawal request failed.", "error");
       } finally {
-        button.disabled = !withdrawalMembershipEligible;
+        button.disabled = !withdrawalMembershipEligible || !updateWithdrawalSchedule();
         button.textContent = "Submit withdrawal request";
       }
     });
@@ -1454,7 +1770,7 @@
       });
 
       if (response.status === 401) {
-        window.location.replace("../auth/login.html");
+        window.location.replace("/auth/login");
         throw new Error("Your session has expired. Please sign in again.");
       }
 
@@ -1462,7 +1778,6 @@
       if (!response.ok) throw new Error(data.message || "The request could not be completed.");
       return data;
     }
-
 
     async function apiPost(url, body, headers = {}) {
       const response = await fetch(url, {
@@ -1477,7 +1792,7 @@
       });
 
       if (response.status === 401) {
-        window.location.replace("../auth/login.html");
+        window.location.replace("/auth/login");
         throw new Error("Your session has expired. Please sign in again.");
       }
 
@@ -1491,17 +1806,100 @@
       return data;
     }
 
+
+    let ptwWelcomeName = "Member";
+
+    function updateWelcomeGreeting() {
+      const hour = new Date().getHours();
+      let greeting;
+      let emoji = "";
+
+      if (hour >= 5 && hour < 12) {
+        greeting = "Good morning";
+        emoji = " ☀️";
+      } else if (hour >= 12 && hour < 17) {
+        greeting = "Good afternoon";
+        emoji = " ☀️";
+      } else {
+        greeting = "Good evening";
+        emoji = " 🌙";
+      }
+
+      const heading = $("pageGreeting");
+      if (heading) {
+        heading.textContent =
+          `${greeting}, ${ptwWelcomeName}${emoji}`;
+      }
+    }
+
+    function startWelcomeTyping() {
+      const target = $("welcomeTypingText");
+      if (!target || target.dataset.started === "true") return;
+
+      target.dataset.started = "true";
+
+      const message = "Welcome back to PrimeTask Workspace";
+      let index = 0;
+
+      function typeNextCharacter() {
+        if (index >= message.length) return;
+
+        index++;
+        target.textContent = message.slice(0, index);
+        setTimeout(typeNextCharacter, 65);
+      }
+
+      typeNextCharacter();
+    }
+
+    // Local time keeps the greeting appropriate throughout the day.
+    setInterval(updateWelcomeGreeting, 60000);
+
     function setUser(user) {
       const firstName = user.firstName || "";
       const lastName = user.lastName || "";
       const fullName = [firstName, lastName].filter(Boolean).join(" ") || user.username || "Member";
 
-      $("pageGreeting").textContent = `Welcome home, ${firstName || user.username || "Member"}`;
+      ptwWelcomeName = firstName || user.username || "Member";
+      updateWelcomeGreeting();
+      startWelcomeTyping();
       $("accountName").textContent = fullName;
       $("accountUsername").textContent = user.username ? `@${user.username}` : "Not provided";
       $("accountEmail").textContent = user.email || "Not provided";
       $("accountStatus").textContent = user.status || "Active";
-      $("userAvatar").textContent = (firstName || user.username || "P").charAt(0).toUpperCase();
+      const avatar = $("userAvatar");
+      const initial = (firstName || user.username || "P")
+        .charAt(0).toUpperCase();
+
+      avatar.textContent = initial;
+
+      const pictureUrl = typeof user.profilePictureUrl === "string"
+        ? user.profilePictureUrl.trim()
+        : "";
+
+      try {
+        const parsed = new URL(pictureUrl);
+
+        if (
+          parsed.protocol === "https:" &&
+          parsed.hostname === "res.cloudinary.com"
+        ) {
+          const image = document.createElement("img");
+          image.alt = "Profile picture";
+          image.loading = "eager";
+          image.src = parsed.href;
+
+          image.onerror = () => {
+            image.remove();
+            avatar.textContent = initial;
+          };
+
+          avatar.textContent = "";
+          avatar.appendChild(image);
+        }
+      } catch (_) {
+        avatar.textContent = initial;
+      }
       $("connectionStatus").textContent = "Connected";
     }
 
@@ -1605,7 +2003,7 @@
       } catch (error) {
         console.error("Sign-out request failed:", error);
       } finally {
-        window.location.replace("../auth/login.html");
+        window.location.replace("/auth/login");
       }
     });
 

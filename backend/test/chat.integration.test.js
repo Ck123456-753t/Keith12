@@ -17,6 +17,10 @@ process.env.JWT_SECRET =
   "ptw-v3-chat-integration-test-secret-only";
 
 const User = require("../src/models/User");
+const Device = require("../src/models/Device");
+const DeviceRegistration = require("../src/models/DeviceRegistration");
+const { createDeviceCredential } =
+  require("../src/services/deviceCredentialService");
 const ChatConversation = require("../src/models/ChatConversation");
 const ChatMessage = require("../src/models/ChatMessage");
 const ChatDailyActivity = require("../src/models/ChatDailyActivity");
@@ -34,6 +38,7 @@ const { qualifyStreakDay } = require("../src/services/chatService");
 let server;
 let baseUrl;
 let testUsers = [];
+let testDeviceCredentials = new Map();
 
 function makeToken(user) {
   return jwt.sign(
@@ -51,7 +56,13 @@ function makeToken(user) {
 }
 
 function cookieFor(user) {
-  return `ptw_session=${makeToken(user)}`;
+  const deviceCredential = testDeviceCredentials.get(String(user._id));
+
+  if (!deviceCredential) {
+    throw new Error(`Missing test device credential for ${user.username}`);
+  }
+
+  return `ptw_session=${makeToken(user)}; ptw_device=${deviceCredential}`;
 }
 
 async function request(path, user, options = {}) {
@@ -87,7 +98,27 @@ async function createUser(username, role = "user") {
     sessionVersion: 0
   });
 
+  const deviceCredential = createDeviceCredential();
+
+  const device = await Device.create({
+    deviceKeyHash: deviceCredential.hash,
+    status: "active",
+    deviceLabel: `Chat integration device ${number}`,
+    registeredAt: new Date(),
+    lastSeenAt: new Date()
+  });
+
+  await DeviceRegistration.create({
+    userId: user._id,
+    deviceId: device._id,
+    status: "active",
+    registeredAt: new Date(),
+    lastSeenAt: new Date()
+  });
+
   testUsers.push(user);
+  testDeviceCredentials.set(String(user._id), deviceCredential.credential);
+
   return user;
 }
 
@@ -146,6 +177,8 @@ before(async () => {
 
   await Promise.all([
     User.init(),
+    Device.init(),
+    DeviceRegistration.init(),
     ChatConversation.init(),
     ChatMessage.init(),
     ChatDailyActivity.init(),
@@ -185,10 +218,13 @@ beforeEach(async () => {
     MarketingWalletTransaction.deleteMany({}),
     Notification.deleteMany({}),
     ChatConversation.deleteMany({}),
+    DeviceRegistration.deleteMany({}),
+    Device.deleteMany({}),
     User.deleteMany({ username: /^chat_test_/ })
   ]);
 
   testUsers = [];
+  testDeviceCredentials = new Map();
 });
 
 after(async () => {
@@ -206,6 +242,8 @@ after(async () => {
       MarketingWalletTransaction.deleteMany({}),
       Notification.deleteMany({}),
       ChatConversation.deleteMany({}),
+      DeviceRegistration.deleteMany({}),
+      Device.deleteMany({}),
       User.deleteMany({ username: /^chat_test_/ })
     ]);
 

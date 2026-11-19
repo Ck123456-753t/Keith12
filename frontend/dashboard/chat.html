@@ -1,0 +1,1040 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  
+  
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#071426">
+  <meta name="description" content="PRIMECHAT, messaging for PrimeTask Workspace members.">
+  <title>PRIMECHAT</title>
+<script src="../assets/js/config.js"></script>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #071426;
+      --panel: #0b1b30;
+      --panel2: #10243c;
+      --line: rgba(166, 193, 225, .14);
+      --text: #f4f7fc;
+      --muted: #91a5bf;
+      --blue: #60a5fa;
+      --orange: #fb923c;
+      --green: #4ade80;
+      --red: #f87171;
+      --radius: 18px;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background:
+        radial-gradient(ellipse at 80% 0%, rgba(37, 99, 235, .12), transparent 42%),
+        var(--bg);
+      color: var(--text);
+      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+    button, input, textarea { font: inherit; }
+    button, a { -webkit-tap-highlight-color: transparent; }
+    button { cursor: pointer; }
+    a { color: inherit; text-decoration: none; }
+    button:focus-visible, input:focus-visible, textarea:focus-visible, a:focus-visible {
+      outline: 2px solid var(--blue);
+      outline-offset: 3px;
+    }
+    .layout { min-height: 100vh; }
+    .sidebar {
+      position: fixed;
+      inset: 0 auto 0 0;
+      width: 228px;
+      padding: 23px 15px;
+      display: flex;
+      flex-direction: column;
+      background: rgba(4, 13, 26, .97);
+      border-right: 1px solid var(--line);
+      z-index: 20;
+    }
+    .brand { display: flex; align-items: center; gap: 11px; padding: 5px 7px 23px; border-bottom: 1px solid var(--line); }
+    .brand-mark {
+      display: grid; place-items: center; width: 42px; height: 42px;
+      border-radius: 13px; font-size: 17px; font-weight: 900;
+      background: linear-gradient(145deg, #2563eb, #0e7490);
+    }
+    .brand-name { font-size: 15px; font-weight: 900; letter-spacing: .3px; }
+    .brand-sub { margin-top: 3px; color: var(--muted); font-size: 10px; }
+    .nav-label { padding: 24px 10px 9px; color: #71849e; font-size: 10px; font-weight: 800; letter-spacing: 1.4px; text-transform: uppercase; }
+    .nav-link {
+      display: flex; align-items: center; gap: 11px; width: 100%;
+      margin: 3px 0; padding: 12px 11px; border: 1px solid transparent;
+      border-radius: 11px; background: transparent; color: #b5c3d6;
+      font-size: 13px; text-align: left;
+    }
+    .nav-link:hover, .nav-link.active { background: rgba(59, 130, 246, .14); border-color: rgba(96, 165, 250, .18); color: white; }
+    .nav-link.active { box-shadow: inset 3px 0 var(--blue); }
+    .nav-icon { width: 20px; text-align: center; font-size: 16px; }
+    .sidebar-bottom { margin-top: auto; padding: 13px 11px; border: 1px solid var(--line); border-radius: 13px; color: var(--muted); font-size: 11px; line-height: 1.7; }
+    .sidebar-bottom strong { display: block; color: var(--text); }
+    .main { min-width: 0; margin-left: 228px; padding: 26px clamp(15px, 2.5vw, 32px) 34px; }
+    .topbar { display: flex; align-items: center; justify-content: space-between; gap: 14px; margin-bottom: 20px; }
+    .eyebrow { color: #9cc7ff; font-size: 10px; font-weight: 800; letter-spacing: 1.5px; text-transform: uppercase; }
+    h1 { margin: 6px 0 0; font-size: clamp(25px, 3vw, 34px); letter-spacing: -1px; }
+    .top-actions { display: flex; align-items: center; gap: 9px; }
+    .status { display: flex; align-items: center; gap: 7px; color: var(--muted); font-size: 11px; }
+    .status-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--green); }
+    .avatar { display: grid; place-items: center; width: 36px; height: 36px; border: 1px solid var(--line); border-radius: 12px; background: var(--panel2); font-weight: 800; }
+    .mobile-menu { display: none; }
+    .notice { display: none; padding: 12px 14px; margin-bottom: 16px; border: 1px solid rgba(248, 113, 113, .25); border-radius: 12px; background: rgba(127, 29, 29, .15); color: #fecaca; font-size: 13px; line-height: 1.5; }
+    .notice.show { display: block; }
+    .welcome {
+      display: flex; align-items: center; justify-content: space-between; gap: 20px;
+      padding: 20px 22px; margin-bottom: 17px; border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: linear-gradient(115deg, rgba(37, 99, 235, .13), rgba(15, 35, 58, .75));
+    }
+    .welcome h2 { margin: 0 0 6px; font-size: 19px; letter-spacing: -.4px; }
+    .welcome p { margin: 0; color: var(--muted); font-size: 12px; line-height: 1.6; }
+    .welcome-mark { display: grid; place-items: center; flex: 0 0 48px; height: 48px; border: 1px solid rgba(96, 165, 250, .2); border-radius: 15px; background: rgba(59, 130, 246, .12); font-size: 23px; }
+    .stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin-bottom: 17px; }
+    .stat { min-width: 0; padding: 15px 16px; border: 1px solid var(--line); border-radius: 15px; background: rgba(11, 27, 48, .85); }
+    .stat-label { color: var(--muted); font-size: 11px; }
+    .stat-value { margin-top: 8px; font-size: 23px; font-weight: 850; letter-spacing: -.6px; overflow-wrap: anywhere; }
+    .stat-note { margin-top: 4px; color: var(--muted); font-size: 10px; }
+    .stat-value.orange { color: var(--orange); }
+    .chat-shell {
+      display: grid; grid-template-columns: minmax(225px, .78fr) minmax(0, 1.65fr);
+      min-height: 570px; border: 1px solid var(--line); border-radius: var(--radius);
+      overflow: hidden; background: rgba(9, 24, 42, .9);
+    }
+    .conversation-panel { min-width: 0; display: flex; flex-direction: column; border-right: 1px solid var(--line); }
+    .panel-head { padding: 17px 15px 13px; border-bottom: 1px solid var(--line); }
+    .panel-head-row { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+    h2.section-title { margin: 0; font-size: 14px; }
+    .subtle { color: var(--muted); font-size: 11px; line-height: 1.5; }
+    .search { width: 100%; margin-top: 13px; padding: 10px 11px; border: 1px solid var(--line); border-radius: 10px; outline: none; background: #071629; color: var(--text); font-size: 12px; }
+    .search:focus, .field:focus, .composer textarea:focus { border-color: rgba(96, 165, 250, .6); }
+    .quick-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; padding: 12px 12px 5px; }
+    .btn { display: inline-flex; align-items: center; justify-content: center; gap: 7px; padding: 10px 12px; border: 1px solid var(--line); border-radius: 10px; background: var(--panel2); color: var(--text); font-size: 11px; font-weight: 750; }
+    .btn:hover { border-color: rgba(96, 165, 250, .55); }
+    .btn.primary { border-color: #3b82f6; background: #2563eb; color: white; }
+    .btn.orange { border-color: rgba(251, 146, 60, .35); background: rgba(194, 85, 20, .13); color: #fdba74; }
+    .btn:disabled { opacity: .5; cursor: not-allowed; }
+    .conversation-list { flex: 1; min-height: 180px; padding: 8px; overflow: auto; }
+    .conversation {
+      display: flex; width: 100%; gap: 10px; align-items: center; padding: 12px 10px;
+      margin-bottom: 4px; border: 1px solid transparent; border-radius: 12px;
+      background: transparent; color: var(--text); text-align: left;
+    }
+    .conversation:hover { background: rgba(255, 255, 255, .035); }
+    .conversation.selected { border-color: rgba(96, 165, 250, .2); background: rgba(37, 99, 235, .13); }
+    .conversation-icon { display: grid; place-items: center; flex: 0 0 37px; height: 37px; border: 1px solid var(--line); border-radius: 12px; background: #10243c; color: #bfdbfe; font-size: 15px; font-weight: 800; }
+    .conversation-text { min-width: 0; flex: 1; }
+    .conversation-name { font-size: 12px; font-weight: 800; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .conversation-preview { margin-top: 4px; color: var(--muted); font-size: 10px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .empty-list { padding: 22px 12px; color: var(--muted); text-align: center; font-size: 12px; line-height: 1.7; }
+    .chat-main { min-width: 0; display: flex; flex-direction: column; }
+    .chat-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; min-height: 69px; padding: 13px 17px; border-bottom: 1px solid var(--line); }
+    .chat-person { display: flex; align-items: center; gap: 10px; min-width: 0; }
+    .chat-person-icon { display: grid; place-items: center; flex: 0 0 38px; height: 38px; border-radius: 12px; background: rgba(37, 99, 235, .16); color: #bfdbfe; }
+    .chat-person-name { font-size: 13px; font-weight: 850; overflow-wrap: anywhere; }
+    .chat-person-status { margin-top: 4px; color: var(--muted); font-size: 10px; }
+    .head-buttons { display: flex; align-items: center; gap: 7px; }
+    .head-buttons .btn { padding: 8px 10px; }
+    .messages { flex: 1; min-height: 290px; max-height: 490px; padding: 17px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; }
+    .messages-empty { margin: auto; max-width: 280px; color: var(--muted); text-align: center; font-size: 12px; line-height: 1.8; }
+    .message-row { display: flex; flex-direction: column; align-items: flex-start; max-width: 86%; }
+    .message-row.own { align-self: flex-end; align-items: flex-end; }
+    .message-sender { margin: 0 4px 5px; color: var(--muted); font-size: 10px; }
+    .bubble { padding: 11px 13px; border: 1px solid var(--line); border-radius: 5px 15px 15px 15px; background: #12263e; color: #e8eff9; font-size: 13px; line-height: 1.6; white-space: pre-wrap; overflow-wrap: anywhere; }
+    .own .bubble { border-color: rgba(96, 165, 250, .24); border-radius: 15px 5px 15px 15px; background: #173d70; }
+    .message-time { margin: 5px 4px 0; color: #778ba5; font-size: 9px; }
+    .composer { padding: 13px 15px 15px; border-top: 1px solid var(--line); background: rgba(5, 17, 31, .55); }
+    .composer textarea { display: block; width: 100%; min-height: 68px; max-height: 150px; resize: vertical; padding: 12px; border: 1px solid var(--line); border-radius: 12px; outline: none; background: #071629; color: var(--text); font-size: 13px; line-height: 1.6; }
+    .composer-bottom { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: 9px; }
+    .char-count { color: var(--muted); font-size: 10px; }
+    .chat-placeholder { flex: 1; display: grid; place-items: center; min-height: 380px; padding: 25px; text-align: center; }
+    .placeholder-inner { max-width: 280px; }
+    .placeholder-icon { display: grid; place-items: center; width: 64px; height: 64px; margin: 0 auto 15px; border: 1px solid var(--line); border-radius: 21px; background: rgba(37, 99, 235, .1); font-size: 27px; }
+    .placeholder-inner h3 { margin: 0 0 8px; font-size: 17px; }
+    .placeholder-inner p { margin: 0; color: var(--muted); font-size: 12px; line-height: 1.8; }
+    .below-grid { display: grid; grid-template-columns: 1.25fr 1fr; gap: 13px; margin-top: 15px; }
+    .info-card { min-width: 0; padding: 16px; border: 1px solid var(--line); border-radius: 15px; background: rgba(11, 27, 48, .78); }
+    .info-card-head { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+    .info-card h3 { margin: 0; font-size: 13px; }
+    .streak-count { margin: 13px 0 8px; font-size: 22px; font-weight: 900; }
+    .streak-track { display: grid; grid-template-columns: repeat(6, 1fr); gap: 6px; margin: 13px 0 10px; }
+    .streak-step { padding: 9px 2px; border: 1px solid var(--line); border-radius: 9px; color: var(--muted); background: #08182b; text-align: center; font-size: 10px; }
+    .streak-step.done { border-color: rgba(74, 222, 128, .35); background: rgba(22, 101, 52, .22); color: #86efac; }
+    .streak-step span { display: block; margin-top: 4px; font-size: 9px; }
+    .reward-amount { margin-top: 14px; font-size: 23px; font-weight: 900; color: var(--orange); }
+    .wallet-row { display: flex; justify-content: space-between; gap: 10px; margin-top: 15px; padding-top: 12px; border-top: 1px solid var(--line); color: var(--muted); font-size: 11px; }
+    .wallet-row strong { color: var(--text); font-size: 12px; }
+    .footer { padding: 21px 0 0; color: #70849f; text-align: center; font-size: 10px; }
+    .modal-backdrop { position: fixed; inset: 0; z-index: 50; display: grid; place-items: center; padding: 16px; background: rgba(0, 0, 0, .7); }
+    .modal-backdrop[hidden] { display: none; }
+    .modal { width: min(410px, 100%); padding: 21px; border: 1px solid var(--line); border-radius: 17px; background: #0b1b30; box-shadow: 0 20px 80px rgba(0, 0, 0, .4); }
+    .modal h2 { margin: 0 0 7px; font-size: 18px; }
+    .modal p { margin: 0 0 17px; color: var(--muted); font-size: 12px; line-height: 1.7; }
+    .field-label { display: block; margin-bottom: 7px; color: #cbd5e1; font-size: 11px; font-weight: 750; }
+    .field { width: 100%; padding: 12px; border: 1px solid var(--line); border-radius: 10px; outline: none; background: #071629; color: var(--text); }
+    .modal-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 16px; }
+    .toast { position: fixed; z-index: 80; right: 18px; bottom: 18px; max-width: min(370px, calc(100vw - 36px)); padding: 13px 16px; border: 1px solid var(--line); border-radius: 12px; background: #10243c; color: var(--text); box-shadow: 0 12px 40px rgba(0, 0, 0, .35); font-size: 12px; line-height: 1.6; }
+    .toast[hidden] { display: none; }
+    .mobile-overlay { display: none; }
+    @media (max-width: 1050px) {
+      .sidebar { width: 205px; }
+      .main { margin-left: 205px; }
+      .chat-shell { grid-template-columns: minmax(200px, .75fr) minmax(0, 1.5fr); }
+    }
+    @media (max-width: 760px) {
+      .sidebar { transform: translateX(-105%); width: 245px; transition: transform .2s ease; box-shadow: 20px 0 55px rgba(0,0,0,.3); }
+      .sidebar.open { transform: translateX(0); }
+      .mobile-overlay.open { display: block; position: fixed; inset: 0; z-index: 15; background: rgba(0,0,0,.55); }
+      .main { margin-left: 0; padding: 18px 12px 25px; }
+      .mobile-menu { display: inline-flex; }
+      .topbar { gap: 8px; }
+      .topbar h1 { font-size: 25px; }
+      .status { display: none; }
+      .welcome { padding: 16px; }
+      .stats { gap: 7px; }
+      .stat { padding: 12px 10px; }
+      .stat-value { font-size: 19px; }
+      .stat-label { font-size: 10px; }
+      .chat-shell { grid-template-columns: 1fr; min-height: 0; }
+      .conversation-panel { border-right: 0; border-bottom: 1px solid var(--line); }
+      .conversation-list { display: flex; gap: 7px; min-height: 0; max-height: 150px; overflow-x: auto; overflow-y: hidden; }
+      .conversation { flex: 0 0 185px; align-self: flex-start; }
+      .messages { min-height: 290px; max-height: 55vh; }
+      .chat-placeholder { min-height: 260px; }
+      .below-grid { grid-template-columns: 1fr; }
+      .head-buttons .btn { font-size: 10px; }
+    }
+    @media (max-width: 390px) {
+      .stats { grid-template-columns: 1fr 1fr; }
+      .stats .stat:last-child { grid-column: 1 / -1; }
+      .chat-head { padding: 12px 10px; }
+      .messages { padding: 12px 10px; }
+      .head-buttons .refresh-label { display: none; }
+    }
+
+
+/* PRIMECHAT MESSENGER REDESIGN */
+body {
+  --pc-bg: #0b141a;
+  --pc-panel: #111b21;
+  --pc-panel-2: #202c33;
+  --pc-border: #26343b;
+  --pc-text: #e9edef;
+  --pc-muted: #aebac1;
+  --pc-own: #005c4b;
+  background: var(--pc-bg) !important;
+  color: var(--pc-text);
+}
+html[data-chat-theme="light"],
+body[data-chat-theme="light"] {
+  color-scheme: light;
+}
+body[data-chat-theme="light"] {
+  --pc-bg: #efeae2;
+  --pc-panel: #ffffff;
+  --pc-panel-2: #f0f2f5;
+  --pc-border: #d9e0e4;
+  --pc-text: #17212b;
+  --pc-muted: #667781;
+  --pc-own: #d9fdd3;
+}
+.layout, .main, .sidebar, .topbar, .chat-shell,
+.conversation-panel, .chat-main, #activeChat {
+  background: var(--pc-panel) !important;
+  color: var(--pc-text) !important;
+  border-color: var(--pc-border) !important;
+}
+.welcome, .stats, .below-grid, .main > .footer {
+  display: none !important;
+}
+#conversationSearch {
+  width: 100%;
+  box-sizing: border-box;
+  border-radius: 10px;
+  background: var(--pc-panel-2);
+  color: var(--pc-text);
+  border: 1px solid var(--pc-border);
+  padding: 11px 13px;
+}
+.message-row {
+  max-width: 82%;
+  margin: 8px 12px;
+}
+.message-row.own {
+  margin-left: auto;
+}
+.bubble {
+  padding: 9px 12px;
+  border-radius: 10px;
+  background: var(--pc-panel-2);
+  color: var(--pc-text);
+  overflow-wrap: anywhere;
+  box-shadow: 0 1px 1px #00000012;
+}
+.message-row.own .bubble {
+  background: var(--pc-own);
+  color: #f4fffb;
+}
+.message-meta {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 5px;
+  margin-top: 3px;
+}
+.message-time {
+  color: var(--pc-muted);
+  font-size: 11px;
+}
+.message-ticks {
+  color: #aebac1;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: -4px;
+  padding-right: 4px;
+}
+.message-ticks.read {
+  color: #53bdeb;
+}
+.theme-toggle {
+  border: 1px solid var(--pc-border);
+  background: var(--pc-panel-2);
+  color: var(--pc-text);
+  border-radius: 50%;
+  width: 38px;
+  height: 38px;
+  cursor: pointer;
+}
+@media (max-width: 760px) {
+  .main {
+    margin-left: 0 !important;
+    width: 100% !important;
+  }
+  .chat-shell {
+    min-width: 0 !important;
+  }
+  .conversation-panel, .chat-main {
+    width: 100% !important;
+    min-width: 0 !important;
+  }
+  .message-row {
+    max-width: 90%;
+  }
+}
+
+
+/* PrimeTask shared logo: preserve the original image proportions. */
+.logo img, .brand-mark img, .brandmark img,
+.brand-orb img, .hero-mark img, .mark img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  border-radius: inherit;
+}
+
+</style>
+<link rel="icon" type="image/svg+xml" href="/assets/primetask-logo.svg">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <a class="brand" href="/dashboard">
+      <span class="brand-mark">PT
+      <span><span class="brand-name">PRIMECHAT</span><span class="brand-sub" style="display:block">PrimeTask Workspace</span></span>
+    </a>
+    <div class="nav-label">Workspace</div>
+    <nav aria-label="Workspace navigation">
+      <a class="nav-link" href="/dashboard"><span class="nav-icon">⌂</span>Dashboard</a>
+      <a class="nav-link" href="/dashboard/services"><span class="nav-icon">▦</span>Services</a>
+      <a class="nav-link active" href="/dashboard/chat" aria-current="page"><span class="nav-icon">◉</span>PRIMECHAT</a>
+      <a class="nav-link" href="/dashboard/wallet"><span class="nav-icon">◈</span>My Wallet</a>
+      <a class="nav-link" href="/dashboard/membership"><span class="nav-icon">◇</span>Membership</a>
+      <a class="nav-link" href="/dashboard/transactions"><span class="nav-icon">↕</span>Transactions</a>
+      <a class="nav-link" href="/dashboard/my-referrals"><span class="nav-icon">♧</span>My Referrals</a>
+      <a class="nav-link" href="/dashboard/profile"><span class="nav-icon">○</span>My Profile</a>
+    </nav>
+    <div class="nav-label">Account</div>
+    <nav aria-label="Account navigation">
+      <a class="nav-link" href="../contact"><span class="nav-icon">✉</span>Support</a>
+      <a class="nav-link" href="../faq"><span class="nav-icon">?</span>Help Centre</a>
+      <button class="nav-link" id="logoutBtn" type="button"><span class="nav-icon">↪</span>Sign Out</button>
+    </nav>
+    <div class="sidebar-bottom"><strong>Talk. Connect. Grow.</strong>Text conversations and daily streak rewards, together in one place.</div>
+  </aside>
+  <div class="mobile-overlay" id="mobileOverlay"></div>
+
+  <main class="main">
+    <header class="topbar">
+      <div style="display:flex;align-items:center;gap:11px">
+        <button class="btn mobile-menu" id="mobileMenu" type="button" aria-label="Open navigation">☰</button>
+        <div><div class="eyebrow">Your member conversations</div><h1>PRIMECHAT</h1></div>
+      </div>
+      <div class="top-actions">
+        <button id="themeToggle" class="theme-toggle" type="button"
+          aria-label="Switch theme" title="Switch theme">☀️</button>
+
+        <div class="status"><span class="status-dot" id="statusDot"></span><span id="connectionStatus">Connecting</span></div>
+        <div class="avatar" id="userAvatar">P</div>
+        <button class="btn" id="notificationsBtn" type="button" aria-label="Refresh notifications">♧ <span id="notificationCount">0</span></button>
+      </div>
+    </header>
+
+    <div class="notice" id="notice" role="status" aria-live="polite"></div>
+
+    <section class="welcome">
+      <div><h2>Your conversations, all in one place.</h2><p>Message members by username or open the shared Admin inbox. Keep it respectful, keep it useful.</p></div>
+      <div class="welcome-mark" aria-hidden="true">✉</div>
+    </section>
+
+    <section class="stats" aria-label="Chat overview">
+      <article class="stat"><div class="stat-label">Conversations</div><div class="stat-value" id="conversationCount">—</div><div class="stat-note">Your active chats</div></article>
+      <article class="stat"><div class="stat-label">Current streak</div><div class="stat-value" id="streakSummary">—</div><div class="stat-note">Consecutive qualifying days</div></article>
+      <article class="stat"><div class="stat-label">Chat rewards balance</div><div class="stat-value orange" id="marketingBalance">—</div><div class="stat-note">Separate marketing wallet · USD</div></article>
+    </section>
+
+    <section class="chat-shell" aria-label="PrimeChat messenger">
+      <aside class="conversation-panel">
+        <div class="panel-head">
+          <div class="panel-head-row"><h2 class="section-title">Conversations</h2><button class="btn" id="refreshConversations" type="button" title="Refresh conversations">↻</button></div>
+          <div class="subtle" style="margin-top:5px">Choose a conversation to open it.</div>
+          <input class="search" id="conversationSearch" type="search" placeholder="Search usernames or conversations..." aria-label="Search conversations">
+        </div>
+        <div class="quick-actions">
+          <button class="btn primary" id="newMemberBtn" type="button">＋ Member</button>
+          <button class="btn orange" id="adminBtn" type="button">✦ Admin</button>
+        </div>
+        <div class="conversation-list" id="conversationList" aria-live="polite">
+          <div class="empty-list">Loading conversations…</div>
+        </div>
+      </aside>
+
+      <section class="chat-main" aria-label="Selected conversation">
+        <div id="chatPlaceholder" class="chat-placeholder">
+          <div class="placeholder-inner">
+            <div class="placeholder-icon">✉</div>
+            <h3>Make a connection</h3>
+            <p>Select a conversation, start a chat with a member by username, or open the Admin inbox.</p>
+          </div>
+        </div>
+        <div id="activeChat" style="display:none;min-width:0;flex:1;flex-direction:column">
+          <header class="chat-head">
+            <div class="chat-person">
+              <div class="chat-person-icon" id="chatPersonIcon">◉</div>
+              <div style="min-width:0"><div class="chat-person-name" id="chatPersonName">Conversation</div><div class="chat-person-status" id="chatPersonStatus">Text conversation</div></div>
+            </div>
+            <div class="head-buttons">
+              <button class="btn" id="refreshMessages" type="button" title="Refresh messages">↻ <span class="refresh-label">Refresh</span></button>
+            </div>
+          </header>
+          <div class="messages" id="messages" aria-live="polite">
+            <div class="messages-empty">Select a conversation to load messages.</div>
+          </div>
+          <form class="composer" id="messageForm">
+            <label for="messageText" class="sr-only" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)">Write a message</label>
+            <textarea id="messageText" maxlength="4000" placeholder="Write a message…" required></textarea>
+            <div class="composer-bottom"><span class="char-count"><span id="charCount">0</span>/4000 · Text only</span><button class="btn primary" id="sendBtn" type="submit">Send message ↗</button></div>
+          </form>
+        </div>
+      </section>
+    </section>
+
+    <section class="below-grid">
+      <article class="info-card">
+        <div class="info-card-head"><h3>Daily streak partnership</h3><span class="subtle">Africa/Nairobi time</span></div>
+        <div class="streak-count"><span id="streakDays">0</span><span style="color:var(--muted);font-size:12px;font-weight:600"> / 6 days</span></div>
+        <div class="subtle" id="streakDescription">Both participants must send at least one message on each qualifying day.</div>
+        <div class="streak-track" id="streakTrack">
+          <div class="streak-step">Day 1<span>○</span></div><div class="streak-step">Day 2<span>○</span></div>
+          <div class="streak-step">Day 3<span>○</span></div><div class="streak-step">Day 4<span>○</span></div>
+          <div class="streak-step">Day 5<span>○</span></div><div class="streak-step">Day 6<span>○</span></div>
+        </div>
+        <div class="subtle">Reward: $0.03 per participant for each qualifying day from day six onward. Missing a day resets the consecutive streak.</div>
+      </article>
+      <article class="info-card">
+        <div class="info-card-head"><h3>Marketing rewards</h3><span class="subtle">USD only</span></div>
+        <div class="reward-amount" id="walletBalanceLarge">—</div>
+        <div class="subtle">Rewards earned through eligible chat streaks are kept separate from your normal wallet and transcription wallet.</div>
+        <div class="wallet-row"><span>Lifetime chat rewards</span><strong id="lifetimeRewards">—</strong></div>
+        <div class="wallet-row"><span>Withdrawal status</span><strong>Not withdrawable here</strong></div>
+      </article>
+    </section>
+    <footer class="footer">PRIMECHAT · PrimeTask Workspace</footer>
+  </main>
+</div>
+
+<div class="modal-backdrop" id="memberModal" hidden>
+  <section class="modal" role="dialog" aria-modal="true" aria-labelledby="memberModalTitle">
+    <h2 id="memberModalTitle">Start a member chat</h2>
+    <p>Enter the member's exact username. Personal names are not used to locate member conversations.</p>
+    <form id="memberForm">
+      <label class="field-label" for="memberUsername">Member username</label>
+      <input class="field" id="memberUsername" name="username" maxlength="40" autocomplete="off" placeholder="e.g. member_username" required pattern="[A-Za-z0-9_]+">
+      <div class="modal-actions"><button class="btn" id="cancelMember" type="button">Cancel</button><button class="btn primary" id="startMember" type="submit">Open conversation</button></div>
+    </form>
+  </section>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+
+<script>
+"use strict";
+
+(() => {
+  const $ = id => document.getElementById(id);
+  const state = {
+    user: null,
+    conversations: [],
+    selectedId: null,
+    messages: [],
+    streak: null,
+    messagesRequestId: 0,
+    sending: false,
+    polling: null,
+    toastTimer: null
+  };
+
+  const apiRoot = () => typeof window.PTW_API_BASE === "string" ? window.PTW_API_BASE.replace(/\/+$/, "") : null;
+
+  function escapeHtml(value) {
+    return String(value ?? "").replace(/[&<>"']/g, char => ({
+      "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
+    })[char]);
+  }
+
+  function moneyFromCents(value) {
+    const cents = Number(value);
+    if (!Number.isFinite(cents)) return "—";
+    return "$" + (cents / 100).toLocaleString("en-US", {
+      minimumFractionDigits: 2, maximumFractionDigits: 2
+    });
+  }
+
+  function showNotice(message) {
+    $("notice").textContent = message;
+    $("notice").classList.add("show");
+  }
+
+  function hideNotice() {
+    $("notice").textContent = "";
+    $("notice").classList.remove("show");
+  }
+
+  function toast(message) {
+    $("toast").textContent = message;
+    $("toast").hidden = false;
+    clearTimeout(state.toastTimer);
+    state.toastTimer = setTimeout(() => { $("toast").hidden = true; }, 3600);
+  }
+
+  async function api(path, options = {}) {
+    const root = apiRoot();
+    if (!root) throw new Error("The API is not configured for this website.");
+
+    const headers = { Accept: "application/json", ...(options.headers || {}) };
+    if (options.body !== undefined) headers["Content-Type"] = "application/json";
+
+    const response = await fetch(root + path, {
+      method: options.method || "GET",
+      credentials: "include",
+      headers,
+      body: options.body === undefined ? undefined : JSON.stringify(options.body)
+    });
+
+    if (response.status === 401) {
+      window.location.replace("/auth/login");
+      throw new Error("Your session has expired.");
+    }
+
+    const data = await response.json().catch(() => ({}));
+    if (!response.ok || data.success === false) {
+      throw new Error(data.message || "The request could not be completed.");
+    }
+    return data;
+  }
+
+  function isStaff() {
+    return ["admin", "founder"].includes(String(state.user?.role || "").toLowerCase());
+  }
+
+  function conversationId(item) {
+    return String(item?.id || item?._id || "");
+  }
+
+  function isAdminConversation(item) {
+    return item?.kind === "admin" || item?.type === "admin";
+  }
+
+  function conversationName(item) {
+    if (isAdminConversation(item)) return "Admin";
+    const counterpart = item?.counterpart || item?.otherMember || item?.member || {};
+    return counterpart.username || item?.username || item?.otherUsername || "Member conversation";
+  }
+
+  function conversationPreview(item) {
+    return item?.lastMessagePreview || item?.lastMessage?.text || item?.preview || (item?.lastMessageAt ? "Open to view messages" : "Start your conversation");
+  }
+
+  function formatTime(value) {
+    if (!value) return "";
+    const date = new Date(value);
+    if (Number.isNaN(date.getTime())) return "";
+    return date.toLocaleString([], { month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" });
+  }
+
+  function renderConversations() {
+    const query = $("conversationSearch").value.trim().toLowerCase();
+    const list = state.conversations.filter(item => conversationName(item).toLowerCase().includes(query));
+    $("conversationCount").textContent = String(state.conversations.length);
+
+    if (!list.length) {
+      $("conversationList").innerHTML = `<div class="empty-list">${state.conversations.length ? "No conversations match your search." : "No conversations yet.<br>Start with a member or open Admin."}</div>`;
+      return;
+    }
+
+    $("conversationList").innerHTML = list.map(item => {
+      const id = conversationId(item);
+      const admin = isAdminConversation(item);
+      const selected = id === state.selectedId;
+      return `<button type="button" class="conversation ${selected ? "selected" : ""}" data-conversation-id="${escapeHtml(id)}">
+        <span class="conversation-icon">${admin ? "✦" : escapeHtml(conversationName(item).slice(0, 1).toUpperCase())}</span>
+        <span class="conversation-text"><span class="conversation-name">${escapeHtml(conversationName(item))}</span>
+        <span class="conversation-preview">${escapeHtml(conversationPreview(item))}</span></span>
+      </button>`;
+    }).join("");
+
+    $("conversationList").querySelectorAll("[data-conversation-id]").forEach(button => {
+      button.addEventListener("click", () => openConversation(button.dataset.conversationId));
+    });
+  }
+
+  async function loadConversations() {
+    const data = await api("/chat/conversations");
+    state.conversations = Array.isArray(data.conversations) ? data.conversations : [];
+    renderConversations();
+
+    if (state.selectedId && !state.conversations.some(item => conversationId(item) === state.selectedId)) {
+      state.selectedId = null;
+    }
+    if (state.selectedId) {
+      const selected = state.conversations.find(item => conversationId(item) === state.selectedId);
+      if (selected) setChatHeader(selected);
+    }
+  }
+
+  function setChatHeader(item) {
+    const admin = isAdminConversation(item);
+    $("chatPersonName").textContent = conversationName(item);
+    $("chatPersonIcon").textContent = admin ? "✦" : "◉";
+    $("chatPersonStatus").textContent = admin ? "Shared Admin inbox" : "Member conversation";
+  }
+
+  function showActiveChat(show) {
+    $("chatPlaceholder").style.display = show ? "none" : "grid";
+    $("activeChat").style.display = show ? "flex" : "none";
+  }
+
+  async function openConversation(id) {
+    const item = state.conversations.find(conversation => conversationId(conversation) === id);
+    if (!item) return;
+
+    state.selectedId = id;
+    renderConversations();
+    setChatHeader(item);
+    showActiveChat(true);
+    $("messages").innerHTML = `<div class="messages-empty">Loading messages…</div>`;
+    state.messages = [];
+    state.streak = null;
+    renderStreak(null);
+
+    await Promise.allSettled([loadMessages(), loadStreak()]);
+  }
+
+  function renderMessages() {
+    const container = $("messages");
+    if (!state.messages.length) {
+      container.innerHTML = `<div class="messages-empty">No messages in this conversation yet.<br>Send a message to get things started.</div>`;
+      return;
+    }
+
+    const staffView = isStaff() && state.conversations.some(item => conversationId(item) === state.selectedId && isAdminConversation(item));
+    container.innerHTML = state.messages.map(message => {
+      const sender = message.sender || {};
+      const senderType = sender.type || "member";
+      const senderLabel = senderType === "admin" ? "Admin" : (sender.username || "Member");
+      const own = senderType === "member" && sender.username && sender.username === state.user?.username;
+      const staffOwn = staffView && senderType === "admin";
+      const rowClass = own || staffOwn ? "message-row own" : "message-row";
+      const isRead = Boolean(
+        message.readAt ||
+        message.readAtByRecipient ||
+        message.readByRecipientAt ||
+        message.status === "read" ||
+        message.readStatus === "read" ||
+        message.isRead === true
+      );
+      return `<article class="${rowClass}">
+        <div class="message-sender">${escapeHtml(senderLabel)}</div>
+        <div class="bubble">${escapeHtml(message.text)}</div>
+        <div class="message-meta">
+          <span class="message-time">${escapeHtml(formatTime(message.createdAt))}</span>
+          ${own || staffOwn ? `<span class="message-ticks ${isRead ? "read" : "unread"}" aria-label="${isRead ? "Read" : "Sent"}">✓✓</span>` : ""}
+        </div>
+      </article>`;
+    }).join("");
+    container.scrollTop = container.scrollHeight;
+  }
+
+  async function loadMessages() {
+    if (!state.selectedId) return;
+
+    const selectedId = state.selectedId;
+    const requestId = ++state.messagesRequestId;
+
+    try {
+      const data = await api("/chat/conversations/" + encodeURIComponent(selectedId) + "/messages?limit=100");
+
+      // Ignore responses belonging to an older conversation or request.
+      if (
+        selectedId !== state.selectedId ||
+        requestId !== state.messagesRequestId
+      ) return;
+
+      state.messages = Array.isArray(data.messages) ? data.messages : [];
+      renderMessages();
+    } catch (error) {
+      if (
+        selectedId === state.selectedId &&
+        requestId === state.messagesRequestId
+      ) {
+        throw error;
+      }
+    }
+  }
+
+  function renderStreak(streak) {
+    state.streak = streak;
+    const days = Math.max(0, Math.min(6, Number(streak?.currentStreakDays) || 0));
+    $("streakDays").textContent = String(days);
+    $("streakSummary").textContent = days + "/6";
+    $("streakDescription").textContent = streak
+      ? (streak.rewardsActive
+        ? "Your streak partnership is unlocked. Keep both participants active each day."
+        : "Both participants must send at least one message on each qualifying day.")
+      : "Open a conversation to see its daily streak progress.";
+
+    $("streakTrack").innerHTML = Array.from({ length: 6 }, (_, index) =>
+      `<div class="streak-step ${index < days ? "done" : ""}">Day ${index + 1}<span>${index < days ? "✓" : "○"}</span></div>`
+    ).join("");
+  }
+
+  async function loadStreak() {
+    if (!state.selectedId) {
+      renderStreak(null);
+      return;
+    }
+    const id = state.selectedId;
+    try {
+      const data = await api("/chat/conversations/" + encodeURIComponent(id) + "/streak");
+      if (id === state.selectedId) renderStreak(data.streak || null);
+    } catch (error) {
+      renderStreak(null);
+    }
+  }
+
+  async function loadMarketingWallet() {
+    const data = await api("/marketing-wallet");
+    const wallet = data.wallet || data.marketingWallet || data;
+    const balance = wallet.balanceCents ?? wallet.availableBalanceCents ?? 0;
+    const lifetime = wallet.lifetimeRewardsCents ?? wallet.totalRewardsCents ?? 0;
+    $("marketingBalance").textContent = moneyFromCents(balance);
+    $("walletBalanceLarge").textContent = moneyFromCents(balance);
+    $("lifetimeRewards").textContent = moneyFromCents(lifetime);
+  }
+
+  async function loadNotifications() {
+    const data = await api("/notifications?limit=50");
+    const notifications = Array.isArray(data.notifications) ? data.notifications : [];
+    const unread = Number(data.unreadCount ?? notifications.filter(item => !item.readAt).length);
+    $("notificationCount").textContent = String(Math.max(0, unread));
+    return notifications;
+  }
+
+  async function startMemberConversation(username) {
+    const data = await api("/chat/conversations/member", {
+      method: "POST", body: { username: username.trim() }
+    });
+    const created = data.conversation;
+    await loadConversations();
+    const id = conversationId(created);
+    const match = state.conversations.find(item => conversationId(item) === id)
+      || state.conversations.find(item => conversationName(item).toLowerCase() === username.trim().toLowerCase());
+    if (match) await openConversation(conversationId(match));
+    else if (id) {
+      state.conversations.unshift(created);
+      renderConversations();
+      await openConversation(id);
+    }
+    toast("Member conversation opened.");
+  }
+
+  async function openAdminInbox() {
+    const data = await api("/chat/conversations/admin", { method: "POST", body: {} });
+    const id = conversationId(data.conversation);
+    await loadConversations();
+    let match = state.conversations.find(item => conversationId(item) === id);
+    if (!match && id) {
+      match = data.conversation;
+      state.conversations.unshift(match);
+      renderConversations();
+    }
+    if (match) await openConversation(conversationId(match));
+    toast("Admin inbox opened.");
+  }
+
+  async function sendMessage(event) {
+    event.preventDefault();
+    if (!state.selectedId || state.sending) return;
+    const text = $("messageText").value.trim();
+    if (!text) return;
+    if (text.length > 4000) {
+      toast("Messages must be 4,000 characters or fewer.");
+      return;
+    }
+
+    state.sending = true;
+    $("sendBtn").disabled = true;
+    try {
+      const data = await api("/chat/conversations/" + encodeURIComponent(state.selectedId) + "/messages", {
+        method: "POST", body: { text }
+      });
+      $("messageText").value = "";
+      $("charCount").textContent = "0";
+      if (data.message) {
+        state.messages.push(data.message);
+        renderMessages();
+      } else {
+        await loadMessages();
+      }
+      await Promise.allSettled([loadStreak(), loadConversations(), loadMarketingWallet()]);
+    } catch (error) {
+      toast(error.message || "Message could not be sent.");
+    } finally {
+      state.sending = false;
+      $("sendBtn").disabled = !state.selectedId;
+      $("messageText").focus();
+    }
+  }
+
+  async function verifySession() {
+    if (typeof window.PTW_AUTH_API_ME !== "string") {
+      $("connectionStatus").textContent = "API not configured";
+      showNotice("Authentication API is not configured for this domain. Check the shared PTW API configuration.");
+      return false;
+    }
+
+    try {
+      const response = await fetch(window.PTW_AUTH_API_ME, {
+        method: "GET",
+        credentials: "include",
+        headers: { Accept: "application/json" }
+      });
+      if (response.status === 401) {
+        window.location.replace("/auth/login");
+        return false;
+      }
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(data.message || "Unable to verify your session.");
+
+      state.user = data.user || data.data || data;
+      $("userAvatar").textContent = String(state.user.username || state.user.firstName || "P").slice(0, 1).toUpperCase();
+      $("connectionStatus").textContent = "Connected";
+      $("statusDot").style.background = "var(--green)";
+      hideNotice();
+      return true;
+    } catch (error) {
+      $("connectionStatus").textContent = "Unavailable";
+      $("statusDot").style.background = "var(--red)";
+      showNotice(error.message || "Unable to verify your session.");
+      return false;
+    }
+  }
+
+  async function logout() {
+    try {
+      if (typeof window.PTW_AUTH_API_LOGOUT === "string") {
+        await fetch(window.PTW_AUTH_API_LOGOUT, {
+          method: "POST", credentials: "include", headers: { Accept: "application/json" }
+        });
+      }
+    } catch (error) {
+      console.error("Sign-out request failed.");
+    } finally {
+      window.location.replace("/auth/login");
+    }
+  }
+
+  function showMemberModal() {
+    $("memberModal").hidden = false;
+    $("memberUsername").value = "";
+    $("memberUsername").focus();
+  }
+
+  function hideMemberModal() {
+    $("memberModal").hidden = true;
+    $("newMemberBtn").focus();
+  }
+
+  async function refreshPageData() {
+    hideNotice();
+    const results = await Promise.allSettled([
+      loadConversations(), loadMarketingWallet(), loadNotifications()
+    ]);
+    const failed = results.filter(result => result.status === "rejected");
+    if (failed.length) {
+      showNotice(failed[0].reason?.message || "Some chat information could not be loaded. Try refreshing.");
+    }
+    if (state.selectedId) {
+      await Promise.allSettled([loadMessages(), loadStreak()]);
+    }
+  }
+
+  $("messageForm").addEventListener("submit", sendMessage);
+  $("messageText").addEventListener("input", () => {
+    $("charCount").textContent = String($("messageText").value.length);
+  });
+  $("messageText").addEventListener("keydown", event => {
+    if (event.key === "Enter" && !event.shiftKey && !event.isComposing) {
+      event.preventDefault();
+      $("messageForm").requestSubmit();
+    }
+  });
+  $("newMemberBtn").addEventListener("click", showMemberModal);
+  $("cancelMember").addEventListener("click", hideMemberModal);
+  $("memberModal").addEventListener("click", event => {
+    if (event.target === $("memberModal")) hideMemberModal();
+  });
+  $("memberForm").addEventListener("submit", async event => {
+    event.preventDefault();
+    const username = $("memberUsername").value.trim();
+    if (!/^[A-Za-z0-9_]+$/.test(username)) {
+      toast("Enter a valid member username.");
+      return;
+    }
+    $("startMember").disabled = true;
+    try {
+      await startMemberConversation(username);
+      hideMemberModal();
+    } catch (error) {
+      toast(error.message || "Could not open that member conversation.");
+    } finally {
+      $("startMember").disabled = false;
+    }
+  });
+  $("adminBtn").addEventListener("click", async () => {
+    $("adminBtn").disabled = true;
+    try {
+      await openAdminInbox();
+    } catch (error) {
+      toast(error.message || "Could not open the Admin inbox.");
+    } finally {
+      $("adminBtn").disabled = false;
+    }
+  });
+  $("refreshConversations").addEventListener("click", async () => {
+    try { await loadConversations(); toast("Conversations refreshed."); }
+    catch (error) { toast(error.message || "Could not refresh conversations."); }
+  });
+  $("refreshMessages").addEventListener("click", async () => {
+    try {
+      await Promise.allSettled([loadMessages(), loadStreak()]);
+      toast("Conversation refreshed.");
+    } catch (error) { toast(error.message || "Could not refresh messages."); }
+  });
+  $("notificationsBtn").addEventListener("click", async () => {
+    try {
+      const notifications = await loadNotifications();
+      const unread = notifications.filter(item => !item.readAt);
+      if (unread.length) {
+        await api("/notifications/read-all", { method: "PATCH", body: {} });
+        $("notificationCount").textContent = "0";
+        toast("Notifications marked as read.");
+      } else {
+        toast("You have no unread notifications.");
+      }
+    } catch (error) {
+      toast(error.message || "Could not load notifications.");
+    }
+  });
+
+    // PRIMECHAT MESSENGER REDESIGN: theme preference
+    (() => {
+      const toggle = document.getElementById("themeToggle");
+      if (!toggle) return;
+
+      const applyTheme = (theme) => {
+        document.documentElement.dataset.chatTheme = theme;
+        document.body.dataset.chatTheme = theme;
+        toggle.textContent = theme === "light" ? "🌙" : "☀️";
+        toggle.setAttribute(
+          "aria-label",
+          theme === "light" ? "Switch to dark theme" : "Switch to light theme"
+        );
+      };
+
+      let saved = "dark";
+      try {
+        saved = localStorage.getItem("primechat-theme") || "dark";
+      } catch (_) {}
+
+      applyTheme(saved === "light" ? "light" : "dark");
+
+      toggle.addEventListener("click", () => {
+        const next =
+          document.documentElement.dataset.chatTheme === "dark" ? "light" : "dark";
+        applyTheme(next);
+        try {
+          localStorage.setItem("primechat-theme", next);
+        } catch (_) {}
+      });
+    })();
+
+$("conversationSearch").addEventListener("input", renderConversations);
+  $("logoutBtn").addEventListener("click", logout);
+
+  $("mobileMenu").addEventListener("click", () => {
+    $("sidebar").classList.toggle("open");
+    $("mobileOverlay").classList.toggle("open");
+  });
+  $("mobileOverlay").addEventListener("click", () => {
+    $("sidebar").classList.remove("open");
+    $("mobileOverlay").classList.remove("open");
+  });
+  $("sidebar").querySelectorAll("a").forEach(link => link.addEventListener("click", () => {
+    $("sidebar").classList.remove("open");
+    $("mobileOverlay").classList.remove("open");
+  }));
+
+  async function init() {
+    const authenticated = await verifySession();
+    if (!authenticated) return;
+    await refreshPageData();
+    state.polling = setInterval(async () => {
+      if (document.visibilityState !== "visible") return;
+      await Promise.allSettled([
+        loadConversations(),
+        loadNotifications(),
+        state.selectedId ? loadMessages() : Promise.resolve()
+      ]);
+    }, 20000);
+  }
+
+  window.addEventListener("beforeunload", () => clearInterval(state.polling));
+  init();
+})();
+</script>
+</body>
+</html>

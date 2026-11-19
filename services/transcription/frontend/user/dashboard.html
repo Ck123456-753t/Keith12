@@ -1,50 +1,655 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#08111f">
-  <meta name="description" content="Monitor your work, minutes, submissions, and earnings.">
-  <title>Dashboard | PrimeTask Transcription</title>
-  <link rel="stylesheet" href="../assets/transcription.css">
-  <script src="../assets/transcription.js" defer></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#06152f">
+<title>Dashboard | PrimeTask Transcription</title>
+
+<style>
+:root {
+  --navy: #06152f;
+  --navy2: #0b2854;
+  --blue: #174b91;
+  --orange: #ff791f;
+  --orange-light: #fff0e5;
+  --white: #fff;
+  --muted: #65758b;
+  --border: #e2e8f0;
+  --shadow: 0 12px 32px rgba(6, 21, 47, .10);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: Arial, Helvetica, sans-serif;
+  background: #f2f5fa;
+  color: var(--navy);
+  min-height: 100vh;
+}
+
+a { text-decoration: none; color: inherit; }
+button { font: inherit; cursor: pointer; }
+
+.hero {
+  position: relative;
+  isolation: isolate;
+  overflow: visible;
+  min-height: 355px;
+  padding: 22px clamp(17px, 5vw, 65px) 100px;
+  color: white;
+  background:
+    linear-gradient(105deg, rgba(4,17,41,.96), rgba(7,37,77,.79)),
+    url("https://images.unsplash.com/photo-1521737711867-e3b97375f902?auto=format&fit=crop&w=1900&q=85")
+    center 44% / cover no-repeat;
+}
+
+.hero::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 7px;
+  background: linear-gradient(
+    to right,
+    var(--orange) 0 23%,
+    white 23% 26%,
+    var(--orange) 26% 100%
+  );
+}
+
+.topbar {
+  max-width: 1280px;
+  margin: auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 18px;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.brand-mark {
+  width: 46px;
+  height: 46px;
+  display: grid;
+  place-items: center;
+  background: white;
+  color: var(--navy);
+  border-radius: 12px;
+  border-bottom: 4px solid var(--orange);
+  font-size: 25px;
+  font-weight: 900;
+}
+
+.brand-name { font-size: 19px; font-weight: 800; }
+.brand-sub {
+  margin-top: 4px;
+  color: #c4d7f3;
+  font-size: 10px;
+  letter-spacing: 1.8px;
+}
+
+.menu-btn {
+  display: none;
+  background: #ffffff14;
+  border: 1px solid #ffffff50;
+  color: white;
+  border-radius: 10px;
+  width: 44px;
+  height: 44px;
+  font-size: 23px;
+}
+
+.nav {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.nav a {
+  padding: 11px 10px;
+  border-radius: 8px;
+  color: #e0e9f8;
+  font-size: 12px;
+}
+
+.nav a:hover, .nav a.active {
+  color: white;
+  background: #ffffff1b;
+}
+
+.nav a.active {
+  box-shadow: inset 0 -3px var(--orange);
+  border-radius: 8px 8px 3px 3px;
+}
+
+.hero-content {
+  max-width: 1280px;
+  margin: 65px auto 0;
+}
+
+.eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  color: #ffb17d;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+.eyebrow::before {
+  content: "";
+  width: 27px;
+  height: 3px;
+  background: var(--orange);
+}
+
+h1 {
+  max-width: 680px;
+  margin-top: 14px;
+  font-size: clamp(32px, 5vw, 51px);
+  letter-spacing: -1.5px;
+  line-height: 1.1;
+}
+
+.hero-content p {
+  max-width: 550px;
+  margin-top: 15px;
+  color: #d7e4f6;
+  font-size: 14px;
+  line-height: 1.8;
+}
+
+.main {
+  max-width: 1280px;
+  margin: -59px auto 0;
+  padding: 0 22px 38px;
+  position: relative;
+}
+
+.balance-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  padding: 25px;
+  background: white;
+  border: 1px solid #e5ebf4;
+  border-left: 5px solid var(--orange);
+  border-radius: 15px;
+  box-shadow: var(--shadow);
+}
+
+.label {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.balance {
+  margin-top: 9px;
+  color: var(--navy);
+  font-size: clamp(31px, 4vw, 42px);
+  font-weight: 900;
+  letter-spacing: -1px;
+}
+
+.note {
+  margin-top: 7px;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.btn {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 0 17px;
+  border: 0;
+  border-radius: 9px;
+  background: var(--navy);
+  color: white;
+  font-size: 12px;
+  font-weight: 800;
+  transition: .2s ease;
+}
+
+.btn:hover { background: var(--blue); }
+
+.btn-orange {
+  background: var(--orange);
+  color: #201307;
+}
+
+.btn-orange:hover { background: #ff9147; }
+
+.heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin: 31px 0 16px;
+}
+
+.heading h2 { font-size: 19px; }
+.heading p { margin-top: 5px; color: var(--muted); font-size: 12px; }
+
+.stats {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 15px;
+}
+
+.stat {
+  position: relative;
+  overflow: hidden;
+  padding: 21px;
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  box-shadow: 0 5px 18px #06152f08;
+}
+
+.stat::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 5px;
+  height: 100%;
+  background: var(--orange);
+}
+
+.stat:nth-child(2)::after { background: var(--navy2); }
+.stat:nth-child(3)::after { background: #d8e3f4; }
+
+.stat-icon {
+  width: 42px;
+  height: 42px;
+  display: grid;
+  place-items: center;
+  border-radius: 11px;
+  background: var(--orange-light);
+  color: #bc4a00;
+  font-size: 20px;
+  font-weight: 800;
+}
+
+.stat:nth-child(2) .stat-icon {
+  background: #eaf1fc;
+  color: var(--blue);
+}
+
+.stat:nth-child(3) .stat-icon {
+  background: #edf1f7;
+  color: var(--navy2);
+}
+
+.stat-value {
+  margin-top: 17px;
+  font-size: 27px;
+  font-weight: 900;
+  color: var(--navy);
+}
+
+.stat-label {
+  margin-top: 6px;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.columns {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 18px;
+  margin-top: 23px;
+}
+
+.panel {
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: 15px;
+  background: white;
+  box-shadow: 0 5px 18px #06152f08;
+}
+
+.panel-head {
+  padding: 19px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  border-bottom: 1px solid var(--border);
+}
+
+.panel-head h2 { font-size: 15px; }
+
+.link {
+  color: #1556a8;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.empty {
+  padding: 29px 20px;
+  text-align: center;
+}
+
+.empty-icon {
+  width: 52px;
+  height: 52px;
+  margin: 0 auto 13px;
+  display: grid;
+  place-items: center;
+  border-radius: 14px;
+  background: var(--orange-light);
+  color: #bd4e08;
+  font-size: 25px;
+}
+
+.empty h3 { font-size: 14px; }
+.empty p {
+  max-width: 300px;
+  margin: 9px auto 17px;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.7;
+}
+
+.actions { padding: 5px 19px; }
+
+.action {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 15px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.action:last-child { border-bottom: 0; }
+
+.action-icon {
+  flex-shrink: 0;
+  width: 41px;
+  height: 41px;
+  display: grid;
+  place-items: center;
+  background: #edf3fc;
+  border-radius: 11px;
+  color: var(--navy2);
+  font-size: 18px;
+  font-weight: 800;
+}
+
+.action:nth-child(even) .action-icon {
+  background: var(--orange-light);
+  color: #b94c0a;
+}
+
+.action-copy { flex: 1; }
+.action-copy strong { font-size: 12px; }
+.action-copy p {
+  margin-top: 5px;
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+.arrow { color: #8090a7; font-size: 21px; }
+
+.status {
+  display: none;
+  margin-top: 17px;
+  padding: 13px 15px;
+  border-left: 4px solid var(--orange);
+  border-radius: 7px;
+  background: white;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.footer {
+  padding: 23px 12px 10px;
+  color: var(--muted);
+  font-size: 11px;
+  text-align: center;
+}
+
+.footer-line {
+  width: 70px;
+  height: 3px;
+  margin: 0 auto 13px;
+  background: linear-gradient(to right, var(--navy) 0 65%, var(--orange) 65%);
+}
+
+@media (max-width: 1000px) {
+  .menu-btn { display: block; }
+
+  .nav {
+    display: none;
+    position: absolute;
+    z-index: 10;
+    top: 82px;
+    left: 15px;
+    right: 15px;
+    padding: 10px;
+    flex-direction: column;
+    align-items: stretch;
+    border: 1px solid #ffffff30;
+    border-radius: 13px;
+    background: #06152ff7;
+    box-shadow: var(--shadow);
+  }
+
+  .nav.open { display: flex; }
+  .nav a { padding: 13px; }
+}
+
+@media (max-width: 680px) {
+  .hero { min-height: 365px; padding: 20px 16px 92px; }
+  .brand-name { font-size: 17px; }
+  .hero-content { margin-top: 52px; }
+  h1 { letter-spacing: -.8px; }
+  .hero-content p { font-size: 13px; }
+  .main { padding: 0 13px 28px; }
+  .balance-card { align-items: flex-start; flex-direction: column; padding: 21px; }
+  .balance-card .btn { width: 100%; }
+  .stats { grid-template-columns: minmax(0, 1fr); gap: 10px; }
+  .stat { padding: 16px; }
+  .stat-value { font-size: 23px; }
+  .stat-label { line-height: 1.5; }
+  .columns { grid-template-columns: 1fr; gap: 14px; }
+  .heading h2 { font-size: 17px; }
+}
+
+@media (max-width: 360px) {
+  .stats { grid-template-columns: 1fr; }
+}
+</style>
 </head>
+
 <body>
-<header class="topbar">
-  <a class="brand" href="../index.html">
-    <span class="brand-mark">≋</span>
-    <span>PrimeTask<small>TRANSCRIPTION</small></span>
-  </a>
-  <div class="menu-wrap">
-    <button class="menu-toggle" type="button" aria-label="Open navigation menu" aria-expanded="false" aria-controls="main-menu">☰</button>
-    <nav class="menu-panel" id="main-menu" aria-label="Transcription navigation">
-      <div class="menu-label">YOUR WORKSPACE</div>
-      <a href="dashboard.html" aria-current="page">Dashboard</a>
-<a href="available-work.html">Available work</a>
-<a href="job-details.html">Job details</a>
-<a href="awarded-jobs.html">Awarded jobs</a>
-<a href="submissions.html">Submissions</a>
-<a href="wallet.html">Wallet</a>
-<a href="minute-packages.html">Minute packages</a>
-<a href="withdrawals.html">Withdrawals</a>
-      <div class="menu-label">SERVICE</div>
-      <a href="../index.html">Service home</a>
+<header class="hero">
+  <div class="topbar">
+    <a href="dashboard.html" class="brand">
+      <div class="brand-mark">P</div>
+      <div>
+        <div class="brand-name">PrimeTask</div>
+        <div class="brand-sub">TRANSCRIPTION WORKSPACE</div>
+      </div>
+    </a>
+
+    <button id="menuButton" class="menu-btn"
+      type="button" aria-label="Toggle menu" aria-expanded="false">☰</button>
+
+    <nav id="navigation" class="nav">
+      <a class="active" href="dashboard.html">Dashboard</a>
+      <a href="jobs.html">Jobs</a>
+      <a href="my-assignment.html">My Assignment</a>
+      <a href="wallet.html">Wallet</a>
+      <a href="purchase-minutes.html">Purchase Minutes</a>
+      <a href="withdrawal-history.html">Withdrawal History</a>
     </nav>
   </div>
+
+  <div class="hero-content">
+    <div class="eyebrow">Your workspace</div>
+    <h1>Listen carefully.<br>Work confidently.</h1>
+    <p>
+      Your transcription workspace for discovering jobs, managing assignments,
+      tracking available minutes, and keeping your earnings organized.
+    </p>
+  </div>
 </header>
-<main>
-  <div class="page-head">
-    <div><div class="eyebrow">▦ / TRANSCRIPTION WORKSPACE</div><h1>Your transcription workspace</h1><p>Monitor your work, minutes, submissions, and earnings.</p></div>
+
+<main class="main">
+  <section class="balance-card">
+    <div>
+      <div class="label">Available wallet balance</div>
+      <div class="balance" id="walletBalance">--</div>
+      <div class="note" id="walletNote">Your account balance will load here.</div>
+    </div>
+    <a class="btn btn-orange" href="wallet.html">VIEW WALLET &nbsp; ↗</a>
+  </section>
+
+  <section>
+    <div class="heading">
+      <div>
+        <h2>Workspace overview</h2>
+        <p>Your account at a glance.</p>
+      </div>
+    </div>
+
+    <div class="stats">
+      <article class="stat">
+        <div class="stat-icon">⌕</div>
+        <div class="stat-value" id="availableJobs">--</div>
+        <div class="stat-label">Available jobs</div>
+      </article>
+
+      <article class="stat">
+        <div class="stat-icon">▤</div>
+        <div class="stat-value" id="myAssignments">--</div>
+        <div class="stat-label">My assignments</div>
+      </article>
+
+      <article class="stat">
+        <div class="stat-icon">◷</div>
+        <div class="stat-value" id="availableMinutes">--</div>
+        <div class="stat-label">Available minutes</div>
+      </article>
+    </div>
+  </section>
+
+  <div id="connectionStatus" class="status" role="status">
+    Account information is not connected yet. Figures will remain blank until
+    the dashboard is linked to verified API responses.
   </div>
 
-        <section class="grid">
-          <article class="card"><div class="card-icon">⌕</div><h2>Available work</h2><p>Discover transcription tasks and inspect their requirements.</p><div class="actions"><a class="button primary" href="available-work.html">Browse jobs</a></div></article>
-          <article class="card"><div class="card-icon">▣</div><h2>Awarded jobs</h2><p>Continue working on tasks assigned to your account.</p><div class="actions"><a class="button" href="awarded-jobs.html">View assignments</a></div></article>
-          <article class="card"><div class="card-icon">✎</div><h2>Submissions</h2><p>Review your submitted work and its review status.</p><div class="actions"><a class="button" href="submissions.html">View submissions</a></div></article>
-          <article class="card"><div class="card-icon">◈</div><h2>Minutes and wallet</h2><p>Manage transcription minutes and review your financial records.</p><div class="actions"><a class="button" href="minute-packages.html">Minute packages</a><a class="button" href="wallet.html">Wallet</a></div></article>
-        </section>
+  <section class="columns">
+    <article class="panel">
+      <div class="panel-head">
+        <h2>Find transcription work</h2>
+        <a class="link" href="jobs.html">ALL JOBS ↗</a>
+      </div>
 
+      <div class="empty">
+        <div class="empty-icon">⌕</div>
+        <h3>Your next assignment starts here.</h3>
+        <p>
+          Explore available jobs, check the audio duration and requirements,
+          and review the advertised reward in USD.
+        </p>
+        <a class="btn btn-orange" href="jobs.html">BROWSE JOBS</a>
+      </div>
+    </article>
+
+    <article class="panel">
+      <div class="panel-head">
+        <h2>Quick access</h2>
+      </div>
+
+      <div class="actions">
+        <a class="action" href="my-assignment.html">
+          <div class="action-icon">▤</div>
+          <div class="action-copy">
+            <strong>My assignments</strong>
+            <p>Open assigned work and submission details.</p>
+          </div>
+          <span class="arrow">›</span>
+        </a>
+
+        <a class="action" href="purchase-minutes.html">
+          <div class="action-icon">◷</div>
+          <div class="action-copy">
+            <strong>Purchase minutes</strong>
+            <p>Browse available packages and prices.</p>
+          </div>
+          <span class="arrow">›</span>
+        </a>
+
+        <a class="action" href="wallet.html">
+          <div class="action-icon">$</div>
+          <div class="action-copy">
+            <strong>Wallet</strong>
+            <p>View your available balance and transactions.</p>
+          </div>
+          <span class="arrow">›</span>
+        </a>
+
+        <a class="action" href="withdrawal-history.html">
+          <div class="action-icon">↗</div>
+          <div class="action-copy">
+            <strong>Withdrawal history</strong>
+            <p>Check requests and payment statuses.</p>
+          </div>
+          <span class="arrow">›</span>
+        </a>
+      </div>
+    </article>
+  </section>
+
+  <footer class="footer">
+    <div class="footer-line"></div>
+    PrimeTask Transcription · Creating Opportunities and delivering excellence.
+  </footer>
 </main>
-<footer>PrimeTask Workspace · Transcription Service · Local development</footer>
+
+<script>
+"use strict";
+
+const menuButton = document.getElementById("menuButton");
+const navigation = document.getElementById("navigation");
+
+menuButton.addEventListener("click", () => {
+  const open = navigation.classList.toggle("open");
+  menuButton.setAttribute("aria-expanded", String(open));
+  menuButton.textContent = open ? "×" : "☰";
+});
+
+navigation.querySelectorAll("a").forEach(link => {
+  link.addEventListener("click", () => {
+    navigation.classList.remove("open");
+    menuButton.setAttribute("aria-expanded", "false");
+    menuButton.textContent = "☰";
+  });
+});
+
+// Values are deliberately blank until connected to verified API endpoints.
+// No sample balances or fabricated account statistics.
+document.getElementById("connectionStatus").style.display = "block";
+</script>
 </body>
 </html>

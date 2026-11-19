@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#090817">
+<title>Bid Packages | PrimeTask Admin</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap');
+
+:root{
+ --bg:#090817;--panel:rgba(19,18,42,.82);--line:rgba(160,145,255,.19);
+ --text:#f5f2ff;--muted:#aaa5c5;--purple:#a78bfa;--blue:#55b9ff;
+ --pink:#f18bda;--green:#57e5b0;--red:#ff758e;
+}
+*{box-sizing:border-box}
+body{
+ margin:0;min-height:100vh;color:var(--text);
+ font-family:'DM Sans',sans-serif;
+ background:
+ radial-gradient(ellipse at 15% 15%,rgba(116,67,255,.20),transparent 38%),
+ radial-gradient(ellipse at 90% 75%,rgba(27,154,255,.16),transparent 35%),
+ linear-gradient(125deg,rgba(8,7,22,.94),rgba(13,12,34,.86)),
+ url('https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=2000&q=85') center/cover fixed;
+}
+body:before{
+ content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;
+ background:linear-gradient(135deg,rgba(11,8,30,.4),rgba(8,8,20,.75));
+}
+header{
+ position:sticky;top:0;z-index:10;
+ background:rgba(9,8,23,.88);
+ backdrop-filter:blur(22px);
+ border-bottom:1px solid var(--line);
+ padding:17px 20px;
+}
+.head,nav{max-width:1280px;margin:auto}
+.head{display:flex;justify-content:space-between;align-items:center;gap:15px;flex-wrap:wrap}
+.brand{font-family:'Space Grotesk',sans-serif;font-size:19px;font-weight:700;letter-spacing:-.5px}
+.brand span{background:linear-gradient(90deg,var(--purple),var(--blue));background-clip:text;color:transparent}
+.admin-label{font-size:11px;color:var(--muted);letter-spacing:1.5px;text-transform:uppercase}
+nav{display:flex;gap:8px;flex-wrap:wrap;margin-top:15px}
+nav a{
+ color:var(--muted);text-decoration:none;font-size:12px;
+ padding:9px 12px;border:1px solid transparent;border-radius:9px;
+ background:rgba(255,255,255,.035);transition:.2s;
+}
+nav a:hover,nav a.active{
+ color:white;border-color:rgba(167,139,250,.4);
+ background:linear-gradient(120deg,rgba(126,87,255,.25),rgba(52,154,255,.13));
+}
+main{max-width:1280px;margin:38px auto;padding:0 18px 60px}
+.hero{
+ position:relative;overflow:hidden;padding:30px;
+ border:1px solid var(--line);border-radius:23px;
+ background:linear-gradient(115deg,rgba(39,26,83,.85),rgba(18,28,62,.78)),
+ url('https://images.unsplash.com/photo-1557683316-973673baf926?auto=format&fit=crop&w=1400&q=85') center/cover;
+ box-shadow:0 20px 70px #0005;
+}
+.hero:after{
+ content:"";position:absolute;width:240px;height:240px;right:-50px;top:-90px;
+ border-radius:50%;background:rgba(123,91,255,.2);filter:blur(30px);
+}
+.hero-content{position:relative;z-index:1}
+.eyebrow{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:#c9baff;font-weight:700}
+h1{font-family:'Space Grotesk',sans-serif;font-size:clamp(28px,5vw,43px);margin:12px 0 8px;letter-spacing:-1.5px}
+.hero p{color:#c1bddb;font-size:14px;max-width:570px;line-height:1.7;margin:0}
+.hero-bottom{display:flex;justify-content:space-between;align-items:end;gap:15px;flex-wrap:wrap;margin-top:23px}
+.hero-note{font-size:12px;color:#c4c0df}
+.button{
+ border:0;border-radius:11px;padding:12px 17px;font:700 13px 'DM Sans',sans-serif;
+ cursor:pointer;color:#100d25;background:linear-gradient(110deg,#b79aff,#68c8ff);
+ box-shadow:0 7px 25px rgba(117,105,255,.22);transition:.2s;
+}
+.button:hover{transform:translateY(-2px);filter:brightness(1.08)}
+.button:disabled{opacity:.5;cursor:wait;transform:none}
+.button.secondary{background:rgba(255,255,255,.08);color:white;border:1px solid var(--line);box-shadow:none}
+.button.danger{background:rgba(255,117,142,.13);color:#ff9eaf;border:1px solid rgba(255,117,142,.3);box-shadow:none}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(175px,1fr));gap:13px;margin:20px 0}
+.stat{
+ padding:19px;border-radius:16px;border:1px solid var(--line);
+ background:rgba(18,17,42,.78);backdrop-filter:blur(15px);
+}
+.stat small{color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:1px}
+.stat strong{display:block;font:700 27px 'Space Grotesk',sans-serif;margin-top:10px}
+.stat:nth-child(1) strong{color:var(--purple)}
+.stat:nth-child(2) strong{color:var(--blue)}
+.stat:nth-child(3) strong{color:var(--green)}
+.layout{display:grid;grid-template-columns:minmax(0,1fr) 350px;gap:18px;align-items:start}
+.panel{
+ border:1px solid var(--line);border-radius:18px;
+ background:rgba(15,14,36,.84);backdrop-filter:blur(18px);
+ box-shadow:0 15px 45px rgba(0,0,0,.17);padding:21px;
+}
+.panel-head{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:18px}
+h2{font:700 18px 'Space Grotesk',sans-serif;margin:0}
+.muted{color:var(--muted);font-size:12px}
+.search{width:100%;max-width:260px}
+input,select{
+ width:100%;padding:12px 13px;color:var(--text);
+ background:rgba(7,7,23,.8);border:1px solid rgba(167,139,250,.22);
+ border-radius:10px;font:13px 'DM Sans',sans-serif;outline:none;
+}
+input:focus,select:focus{border-color:var(--purple);box-shadow:0 0 0 3px #a78bfa20}
+input::placeholder{color:#77728f}
+select option{background:#17142e;color:white}
+label{display:block;font-size:12px;font-weight:600;color:#c9c4e2;margin-bottom:8px}
+.field{margin-bottom:15px}
+.form-title{display:flex;justify-content:space-between;align-items:center;margin-bottom:19px}
+.form-title h2{font-size:19px}
+.form-hint{font-size:11px;color:var(--muted);line-height:1.6;margin:5px 0 17px}
+.form-actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:19px}
+.form-actions button{flex:1}
+.package-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
+.package{
+ position:relative;overflow:hidden;padding:19px;border-radius:16px;
+ border:1px solid rgba(167,139,250,.22);
+ background:linear-gradient(145deg,rgba(38,31,76,.75),rgba(16,20,48,.92));
+ transition:.22s;
+}
+.package:hover{transform:translateY(-4px);border-color:rgba(167,139,250,.6);box-shadow:0 14px 35px #0004}
+.package:before{
+ content:"";position:absolute;right:-45px;top:-55px;width:130px;height:130px;
+ border-radius:50%;background:#8b5cf633;filter:blur(12px);
+}
+.package-top{display:flex;justify-content:space-between;align-items:center;gap:8px;position:relative}
+.package-name{font:700 16px 'Space Grotesk',sans-serif;overflow-wrap:anywhere}
+.status{font-size:10px;padding:5px 8px;border-radius:20px;font-weight:700}
+.status.active{background:#57e5b01c;color:var(--green);border:1px solid #57e5b044}
+.status.inactive{background:#ff758e1c;color:#ff9aaa;border:1px solid #ff758e44}
+.bid-number{font:700 34px 'Space Grotesk',sans-serif;margin:24px 0 2px;color:#c5b3ff}
+.bid-label{font-size:11px;color:var(--muted)}
+.price{font:700 24px 'Space Grotesk',sans-serif;margin-top:18px;color:var(--blue)}
+.price small{font:400 11px 'DM Sans',sans-serif;color:var(--muted)}
+.package-meta{font-size:11px;color:var(--muted);margin-top:10px}
+.package-actions{display:flex;gap:8px;margin-top:18px}
+.package-actions button{flex:1;padding:9px 8px;font-size:11px}
+.empty,.loading{grid-column:1/-1;text-align:center;padding:35px 15px;color:var(--muted);font-size:13px}
+.notice{display:none;padding:12px 14px;border-radius:10px;margin-bottom:15px;font-size:12px;line-height:1.5}
+.notice.show{display:block}
+.notice.error{color:#ff9aaa;background:#ff758e14;border:1px solid #ff758e35}
+.notice.success{color:#75e9bd;background:#57e5b012;border:1px solid #57e5b035}
+.form-panel{position:sticky;top:160px}
+.form-panel.editing{border-color:rgba(85,185,255,.55)}
+.form-panel.editing .form-title h2{color:var(--blue)}
+.price-note{padding:12px;border:1px solid var(--line);border-radius:10px;background:#a78bfa0c;color:#c5bce6;font-size:11px;line-height:1.6}
+@media(max-width:900px){.layout{grid-template-columns:1fr}.form-panel{position:static;grid-row:1}}
+@media(max-width:560px){
+ header{padding:14px}.head{align-items:flex-start}.admin-label{font-size:9px}
+ main{margin-top:20px;padding:0 12px 40px}.hero{padding:23px 19px}
+ .panel{padding:15px}.package-grid{grid-template-columns:1fr}
+ .search{max-width:none}.hero-bottom{align-items:flex-start}
+}
+</style>
+<link rel="icon" type="image/svg+xml" href="/assets/primetask-logo.svg">
+</head>
+<body>
+<header>
+ <div class="head">
+  <div class="brand">PrimeTask <span>Workspace</span> · Admin</div>
+  <div class="admin-label">Data Entry Management</div>
+ </div>
+ <nav>
+  <a href="index">Overview</a>
+  <a href="jobs">Jobs</a>
+  <a href="in-progress">In Progress</a>
+  <a href="submissions">Submissions</a>
+  <a href="withdrawals">Withdrawals</a>
+  <a href="bid-purchases">Bid Purchases</a>
+  <a href="earnings">Earnings</a>
+  <a href="transactions">Transactions</a>
+  <a class="active" href="bid-packages">Bid Packages</a>
+  <a href="reports">Reports</a>
+ </nav>
+</header>
+
+<main>
+ <section class="hero">
+  <div class="hero-content">
+   <div class="eyebrow">PrimeTask · Bid Economy</div>
+   <h1>Bid Package Studio</h1>
+   <p>Design and manage the packages workers use to purchase Data Entry bids. Control bid quantities, KSh prices and package availability from one place.</p>
+   <div class="hero-bottom">
+    <div class="hero-note">PACKAGE MANAGEMENT · KES PRICING · LIVE STATUS CONTROL</div>
+    <button class="button" id="newPackage">＋ Create package</button>
+   </div>
+  </div>
+ </section>
+
+ <section class="stats">
+  <div class="stat"><small>Total packages</small><strong id="totalCount">—</strong></div>
+  <div class="stat"><small>Active packages</small><strong id="activeCount">—</strong></div>
+  <div class="stat"><small>Inactive packages</small><strong id="inactiveCount">—</strong></div>
+ </section>
+
+ <div class="layout">
+  <section class="panel">
+   <div class="panel-head">
+    <div>
+     <h2>Available packages</h2>
+     <div class="muted" style="margin-top:6px">Manage your Data Entry bid offers</div>
+    </div>
+    <input class="search" id="search" placeholder="Search packages..." aria-label="Search packages">
+   </div>
+   <div id="notice" class="notice"></div>
+   <div class="package-grid" id="packageGrid">
+    <div class="loading">Loading bid packages...</div>
+   </div>
+  </section>
+
+  <aside class="panel form-panel" id="formPanel">
+   <div class="form-title">
+    <div>
+     <h2 id="formHeading">Create package</h2>
+     <div class="muted" style="margin-top:5px" id="formSubheading">Add a new bid offer</div>
+    </div>
+    <span style="font-size:22px;color:var(--purple)">✦</span>
+   </div>
+
+   <form id="packageForm">
+    <div class="field">
+     <label for="packageName">Package name</label>
+     <input id="packageName" maxlength="120" placeholder="e.g. Starter Pack" required>
+    </div>
+    <div class="field">
+     <label for="bids">Number of bids</label>
+     <input id="bids" type="number" min="1" max="100000000" step="1" placeholder="e.g. 50" required>
+    </div>
+    <div class="field">
+     <label for="priceKes">Package price (KES)</label>
+     <input id="priceKes" type="number" min="1" max="100000000" step="1" placeholder="e.g. 250" required>
+    </div>
+    <div class="field" id="activeField" hidden>
+     <label for="isActive">Package availability</label>
+     <select id="isActive">
+      <option value="true">Active</option>
+      <option value="false">Inactive</option>
+     </select>
+    </div>
+    <div class="price-note">
+     <strong>Currency rule:</strong> Package prices are stored and charged in Kenyan shillings (KES). Worker earnings remain separate in USD.
+    </div>
+    <div class="form-actions">
+     <button class="button" id="saveButton" type="submit">Create package</button>
+     <button class="button secondary" id="cancelEdit" type="button" hidden>Cancel</button>
+    </div>
+   </form>
+  </aside>
+ </div>
+</main>
+
+<script src="../../../../assets/js/config.js"></script>
+<script>
+"use strict";
+
+const API = String(window.PTW_API_BASE || "").replace(/\/+$/, "");
+const ENDPOINT = `${API}/admin/data-entry/bid-packages`;
+const $ = id => document.getElementById(id);
+
+let packages = [];
+let editingId = null;
+let noticeTimer = null;
+
+function escapeHTML(value) {
+ return String(value ?? "").replace(/[&<>"']/g, char => ({
+  "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+ })[char]);
+}
+function kes(value) {
+ const amount = Number(value);
+ return "KSh " + (Number.isFinite(amount) ? amount.toLocaleString("en-KE") : "0");
+}
+function showNotice(message, type = "success") {
+ const box = $("notice");
+ clearTimeout(noticeTimer);
+ box.textContent = message;
+ box.className = `notice show ${type}`;
+ noticeTimer = setTimeout(() => box.classList.remove("show"), 5500);
+}
+async function api(url, options = {}) {
+ const response = await fetch(url, {
+  credentials: "include",
+  ...options,
+  headers: {
+   Accept: "application/json",
+   ...(options.body ? {"Content-Type":"application/json"} : {}),
+   ...(options.headers || {})
+  }
+ });
+ let data;
+ try { data = await response.json(); }
+ catch { throw new Error("The server returned an invalid response."); }
+ if (!response.ok || data.success === false) {
+  if (response.status === 401) throw new Error("Your session has expired. Sign in again.");
+  if (response.status === 403) throw new Error("Admin or founder access is required.");
+  throw new Error(data.message || "The request could not be completed.");
+ }
+ return data;
+}
+async function checkAdmin() {
+ if (!window.PTW_AUTH_API_ME) throw new Error("Authentication endpoint is not configured.");
+ const response = await fetch(window.PTW_AUTH_API_ME, {
+  credentials:"include",headers:{Accept:"application/json"}
+ });
+ let data;
+ try { data = await response.json(); }
+ catch { throw new Error("Could not verify your account."); }
+ const user = data.user || data;
+ if (!response.ok || !["admin","founder"].includes(user.role)) {
+  document.body.innerHTML = '<main><section class="hero"><h1>Access denied</h1><p>Administrator access is required.</p></section></main>';
+  return false;
+ }
+ return true;
+}
+function updateStats() {
+ $("totalCount").textContent = packages.length;
+ $("activeCount").textContent = packages.filter(p => p.isActive).length;
+ $("inactiveCount").textContent = packages.filter(p => !p.isActive).length;
+}
+function renderPackages() {
+ const query = $("search").value.trim().toLowerCase();
+ const filtered = packages.filter(p =>
+  `${p.name} ${p.bids} ${p.priceKes}`.toLowerCase().includes(query)
+ );
+ if (!filtered.length) {
+  $("packageGrid").innerHTML = `<div class="empty">${packages.length ? "No packages match your search." : "No bid packages have been created yet. Create your first package."}</div>`;
+  return;
+ }
+ $("packageGrid").innerHTML = filtered.map(p => `
+  <article class="package">
+   <div class="package-top">
+    <div class="package-name">${escapeHTML(p.name)}</div>
+    <span class="status ${p.isActive ? "active" : "inactive"}">${p.isActive ? "ACTIVE" : "INACTIVE"}</span>
+   </div>
+   <div class="bid-number">${Number(p.bids).toLocaleString("en-KE")}</div>
+   <div class="bid-label">BIDS INCLUDED</div>
+   <div class="price">${kes(p.priceKes)} <small>/ package</small></div>
+   <div class="package-meta">Created ${escapeHTML(p.createdAt ? new Date(p.createdAt).toLocaleDateString() : "date unavailable")}</div>
+   <div class="package-actions">
+    <button class="button secondary" data-action="edit" data-id="${escapeHTML(p.id)}">Edit</button>
+    <button class="button ${p.isActive ? "danger" : ""}" data-action="toggle" data-id="${escapeHTML(p.id)}">${p.isActive ? "Deactivate" : "Activate"}</button>
+   </div>
+  </article>
+ `).join("");
+}
+async function loadPackages() {
+ $("packageGrid").innerHTML = '<div class="loading">Loading packages...</div>';
+ try {
+  const data = await api(ENDPOINT);
+  packages = Array.isArray(data.packages) ? data.packages : [];
+  updateStats();
+  renderPackages();
+ } catch (error) {
+  $("packageGrid").innerHTML = `<div class="empty" style="color:var(--red)">${escapeHTML(error.message)}</div>`;
+  showNotice(error.message, "error");
+ }
+}
+function resetForm() {
+ editingId = null;
+ $("packageForm").reset();
+ $("formHeading").textContent = "Create package";
+ $("formSubheading").textContent = "Add a new bid offer";
+ $("saveButton").textContent = "Create package";
+ $("cancelEdit").hidden = true;
+ $("activeField").hidden = true;
+ $("formPanel").classList.remove("editing");
+}
+function editPackage(id) {
+ const p = packages.find(item => item.id === id);
+ if (!p) return;
+ editingId = id;
+ $("packageName").value = p.name;
+ $("bids").value = p.bids;
+ $("priceKes").value = p.priceKes;
+ $("isActive").value = String(p.isActive);
+ $("formHeading").textContent = "Edit package";
+ $("formSubheading").textContent = "Update package details";
+ $("saveButton").textContent = "Save changes";
+ $("cancelEdit").hidden = false;
+ $("activeField").hidden = false;
+ $("formPanel").classList.add("editing");
+ $("formPanel").scrollIntoView({behavior:"smooth",block:"start"});
+}
+async function togglePackage(id) {
+ const p = packages.find(item => item.id === id);
+ if (!p) return;
+ const action = p.isActive ? "deactivate" : "activate";
+ if (!confirm(`Are you sure you want to ${action} "${p.name}"?`)) return;
+ try {
+  await api(`${ENDPOINT}/${encodeURIComponent(id)}`, {
+   method:"PATCH",
+   body:JSON.stringify({isActive:!p.isActive})
+  });
+  showNotice(`Package ${action}d successfully.`);
+  await loadPackages();
+ } catch (error) {
+  showNotice(error.message, "error");
+ }
+}
+$("packageGrid").addEventListener("click", event => {
+ const button = event.target.closest("button[data-action]");
+ if (!button) return;
+ const {action,id} = button.dataset;
+ if (action === "edit") editPackage(id);
+ if (action === "toggle") togglePackage(id);
+});
+$("packageForm").addEventListener("submit", async event => {
+ event.preventDefault();
+ const name = $("packageName").value.trim();
+ const bids = Number($("bids").value);
+ const priceKes = Number($("priceKes").value);
+ if (!name || !Number.isSafeInteger(bids) || bids < 1 ||
+     !Number.isSafeInteger(priceKes) || priceKes < 1) {
+  showNotice("Enter a package name, a positive whole-number bid quantity and a positive whole-number KES price.", "error");
+  return;
+ }
+ const payload = {name,bids,priceKes};
+ if (editingId) payload.isActive = $("isActive").value === "true";
+
+ const button = $("saveButton");
+ button.disabled = true;
+ button.textContent = editingId ? "Saving..." : "Creating...";
+ try {
+  if (editingId) {
+   await api(`${ENDPOINT}/${encodeURIComponent(editingId)}`, {
+    method:"PATCH",body:JSON.stringify(payload)
+   });
+   showNotice("Package updated successfully.");
+  } else {
+   await api(ENDPOINT, {
+    method:"POST",body:JSON.stringify(payload)
+   });
+   showNotice("New bid package created successfully.");
+  }
+  resetForm();
+  await loadPackages();
+ } catch (error) {
+  showNotice(error.message, "error");
+ } finally {
+  button.disabled = false;
+  button.textContent = editingId ? "Save changes" : "Create package";
+ }
+});
+$("cancelEdit").addEventListener("click",resetForm);
+$("newPackage").addEventListener("click",() => {
+ resetForm();
+ $("packageName").focus();
+ $("formPanel").scrollIntoView({behavior:"smooth",block:"start"});
+});
+$("search").addEventListener("input",renderPackages);
+
+(async function init() {
+ try {
+  if (await checkAdmin()) await loadPackages();
+ } catch (error) {
+  $("packageGrid").innerHTML = `<div class="empty" style="color:var(--red)">${escapeHTML(error.message)}</div>`;
+ }
+})();
+</script>
+</body>
+</html>

@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  
+  
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#071329">
@@ -77,16 +79,17 @@ footer{max-width:1250px;margin:auto;padding:0 22px 24px;color:var(--muted);font-
  th,td{padding:12px}
 }
 </style>
+<link rel="icon" type="image/svg+xml" href="/assets/primetask-logo.svg">
 </head>
 <body>
 <header>
   <div class="nav">
-    <a class="brand" href="index.html">PrimeTask <span>Workspace</span></a>
+    <a class="brand" href="index">PrimeTask <span>Workspace</span></a>
     <nav aria-label="Main navigation">
-      <a href="index.html">Dashboard</a>
-      <a href="referrals.html">Referrals</a>
-      <a class="active" href="wallet-standalone.html">Wallet</a>
-      <a href="membership.html">Membership</a>
+      <a href="index">Dashboard</a>
+      <a href="my-referrals">Referrals</a>
+      <a class="active" href="wallet-standalone">Wallet</a>
+      <a href="membership">Membership</a>
     </nav>
   </div>
 </header>
@@ -98,7 +101,7 @@ footer{max-width:1250px;margin:auto;padding:0 22px 24px;color:var(--muted);font-
 
   <div class="actions">
     <button class="btn primary" id="refresh" type="button">Refresh wallet</button>
-    <a class="btn" href="referrals.html">Referral activity</a>
+    <a class="btn" href="my-referrals">Referral activity</a>
   </div>
 
   <section class="grid" aria-label="Wallet balances">
@@ -113,10 +116,6 @@ footer{max-width:1250px;margin:auto;padding:0 22px 24px;color:var(--muted);font-
     <article class="card">
       <div class="card-label">Total withdrawals</div>
       <div class="amount orange" id="withdrawn">Loading…</div>
-    </article>
-    <article class="card">
-      <div class="card-label">Pending earnings</div>
-      <div class="amount" id="pending">Loading…</div>
     </article>
   </section>
 
@@ -155,7 +154,7 @@ footer{max-width:1250px;margin:auto;padding:0 22px 24px;color:var(--muted);font-
   </section>
 
   <div class="notice">
-    Wallet records are read from the backend. Pending earnings are shown separately from available funds. This page does not manufacture balances or mark a payment as successful without backend confirmation.
+    Wallet records are read from the backend. This page does not manufacture balances or mark a payment as successful without backend confirmation.
   </div>
 </main>
 
@@ -299,7 +298,6 @@ footer{max-width:1250px;margin:auto;padding:0 22px 24px;color:var(--muted);font-
       $("available").textContent = money(wallet.availableBalanceCents);
       $("earnings").textContent = money(wallet.totalEarningsCents);
       $("withdrawn").textContent = money(wallet.totalWithdrawalsCents);
-      $("pending").textContent = money(wallet.pendingEarningsCents);
 
       const withdrawalPayload = await api("/wallet/withdrawals");
       const withdrawalItems = findList(withdrawalPayload, ["withdrawals", "items", "records"]);

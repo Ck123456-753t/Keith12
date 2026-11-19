@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Transcription Formatting Guide | PrimeTask Workspace</title>
+<style>
+:root{--bg:#050b18;--panel:#0b1426;--panel2:#101d33;--line:#243653;--text:#eaf1ff;--muted:#9fb0ca;--blue:#4ea1ff;--cyan:#67e8f9;--green:#86efac}
+*{box-sizing:border-box}
+body{margin:0;background:radial-gradient(ellipse at top right,#10284b 0%,transparent 38%),var(--bg);color:var(--text);font:15px/1.6 Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
+header{border-bottom:1px solid var(--line);background:rgba(5,11,24,.88);position:sticky;top:0;z-index:5;backdrop-filter:blur(12px)}
+.nav{max-width:1180px;margin:auto;padding:15px 22px;display:flex;justify-content:space-between;align-items:center;gap:16px}
+.brand{font-weight:850;letter-spacing:.04em}.brand span{color:var(--blue)}.tag{color:var(--muted);font-size:.82rem}
+main{max-width:1180px;margin:0 auto;padding:42px 22px 70px}
+.eyebrow{color:var(--cyan);font-weight:750;text-transform:uppercase;letter-spacing:.15em;font-size:.75rem}
+h1{font-size:clamp(2rem,5vw,3.4rem);line-height:1.08;letter-spacing:-.04em;margin:12px 0 16px;max-width:800px}
+.lead{color:var(--muted);font-size:1.05rem;max-width:750px;margin-bottom:28px}
+.pills{display:flex;flex-wrap:wrap;gap:9px;margin:22px 0 34px}.pill{border:1px solid var(--line);border-radius:999px;padding:6px 11px;color:#c8d8ef;background:#0b172a;font-size:.82rem}
+.layout{display:grid;grid-template-columns: .82fr 1.18fr;gap:22px;align-items:start}
+.panel{border:1px solid var(--line);border-radius:18px;background:linear-gradient(180deg,rgba(16,29,51,.96),rgba(8,17,32,.98));overflow:hidden}
+.panel-head{padding:18px 20px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:10px}
+.panel-head h2{font-size:1rem;margin:0}.panel-body{padding:20px}
+.muted{color:var(--muted)}.rule{display:flex;gap:12px;padding:13px 0;border-bottom:1px solid rgba(36,54,83,.7)}.rule:last-child{border-bottom:0}.num{flex:0 0 29px;height:29px;border-radius:9px;background:#132b4b;color:var(--cyan);display:grid;place-items:center;font-weight:800;font-size:.8rem}
+.rule strong{display:block;margin-bottom:3px}.rule p{margin:0;color:var(--muted);font-size:.9rem}
+.controls{display:flex;gap:8px;flex-wrap:wrap}.btn{border:1px solid #36577d;border-radius:10px;background:#132847;color:var(--text);padding:9px 12px;font-weight:700;cursor:pointer;font:inherit;font-size:.85rem}.btn:hover{border-color:var(--blue);background:#19365c}.btn.primary{background:var(--blue);border-color:var(--blue);color:#061224}.btn.active{outline:2px solid var(--cyan);outline-offset:1px}
+.document{background:#f8fafc;color:#172033;border-radius:12px;padding:clamp(17px,3vw,28px);font-family:Georgia,"Times New Roman",serif;box-shadow:0 12px 30px #0003}
+.doc-brand{font:800 .74rem/1.4 system-ui,sans-serif;letter-spacing:.14em;color:#1d4f91;text-transform:uppercase;border-bottom:2px solid #1d4f91;padding-bottom:10px;margin-bottom:17px}
+.doc-title{text-align:center;font-size:1.16rem;line-height:1.4;font-weight:bold;margin:0 0 18px}
+.meta{display:grid;grid-template-columns:1fr 1fr;gap:7px 16px;font: .83rem/1.45 system-ui,sans-serif;border-bottom:1px solid #cbd5e1;padding-bottom:16px;margin-bottom:18px}
+.meta b{color:#334155}.meta span{display:block;color:#64748b;font-size:.72rem;text-transform:uppercase;letter-spacing:.05em}
+.segment{margin:0 0 17px}.speaker{font:800 .82rem/1.4 system-ui,sans-serif;letter-spacing:.04em;color:#1d4f91;margin-bottom:4px}.time{font: .78rem/1.4 ui-monospace,SFMono-Regular,Consolas,monospace;color:#64748b;margin-bottom:5px}.speech{font-size:1rem;line-height:1.65}.speech em{color:#64748b}.footer{text-align:center;border-top:1px solid #cbd5e1;padding-top:13px;margin-top:22px;font:800 .76rem/1.5 system-ui,sans-serif;letter-spacing:.1em;color:#334155}
+.note{margin-top:15px;padding:12px 14px;border-radius:10px;background:#0b1c30;border:1px solid var(--line);color:var(--muted);font-size:.86rem}
+.section{margin-top:32px}.section h2{font-size:1.35rem;margin:0 0 8px}.section-intro{color:var(--muted);margin:0 0 16px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.mini{border:1px solid var(--line);background:var(--panel);border-radius:14px;padding:17px}.mini h3{font-size:.95rem;margin:0 0 6px}.mini p{margin:0;color:var(--muted);font-size:.88rem}
+.code-sample{font: .84rem/1.65 ui-monospace,SFMono-Regular,Consolas,monospace;background:#07101e;color:#d7e8ff;border:1px solid var(--line);border-radius:12px;padding:16px;white-space:pre-wrap;overflow-wrap:anywhere}
+footer{border-top:1px solid var(--line);text-align:center;color:var(--muted);padding:25px 18px;font-size:.82rem}
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#d1fae5;color:#064e3b;padding:10px 16px;border-radius:10px;font-weight:750;box-shadow:0 8px 30px #0005;display:none;z-index:10}
+@media(max-width:850px){.layout{grid-template-columns:1fr}.grid3{grid-template-columns:1fr}.nav{align-items:flex-start;flex-direction:column}.tag{font-size:.78rem}}
+@media print{body{background:white;color:black}.nav,.intro,.rules-panel,.section,.controls,footer{display:none!important}main{padding:0}.layout{display:block}.panel{border:0;background:white}.panel-head{display:none}.panel-body{padding:0}.document{box-shadow:none}}
+</style>
+</head>
+<body>
+<header><div class="nav"><div class="brand">PRIME<span>TASK</span> WORKSPACE</div><div class="tag">Transcription Standards · Learning & Quality Guide</div></div></header>
+<main>
+<section class="intro">
+<div class="eyebrow">Transcription formatting demo</div>
+<h1>From audio to a clean, professional transcript.</h1>
+<p class="lead">A transcript is more than words copied from a recording. It needs consistent speaker labels, accurate timestamps, readable punctuation, correct spelling, and a layout that clients can review without decoding a mess.</p>
+<div class="pills"><span class="pill">Speaker labels</span><span class="pill">Timestamps</span><span class="pill">Punctuation & grammar</span><span class="pill">Verbatim awareness</span><span class="pill">Client-ready layout</span></div>
+</section>
+<div class="layout">
+<section class="panel rules-panel">
+<div class="panel-head"><h2>Formatting checklist</h2><span class="tag">Core standards</span></div>
+<div class="panel-body">
+<div class="rule"><div class="num">01</div><div><strong>Use a clear header</strong><p>Include the transcript title, client ID when provided, company, transcriber, date, and recording duration.</p></div></div>
+<div class="rule"><div class="num">02</div><div><strong>Keep speaker labels consistent</strong><p>Use labels such as Male_1 and Female_1 when names are unknown. Do not switch labels halfway through.</p></div></div>
+<div class="rule"><div class="num">03</div><div><strong>Place timestamps consistently</strong><p>Use the required format, for example <code>[00:00:08 --&gt; 00:00:11]</code>. Match the audio, not a guess.</p></div></div>
+<div class="rule"><div class="num">04</div><div><strong>Proofread punctuation</strong><p>Use sentence boundaries, commas, apostrophes, and capitalization to reflect the speaker's meaning.</p></div></div>
+<div class="rule"><div class="num">05</div><div><strong>Follow the requested style</strong><p>Clean verbatim and strict verbatim are different. Follow the client's instructions for fillers, repetitions, false starts, and grammar.</p></div></div>
+<div class="rule"><div class="num">06</div><div><strong>Finish cleanly</strong><p>Use consistent spacing and the required closing footer. Never invent words to make unclear audio sound complete.</p></div></div>
+<div class="note">Important: “Verbatim” does not mean careless formatting. Preserve the spoken content according to the assigned style while applying the required layout and punctuation conventions.</div>
+</div>
+</section>
+<section class="panel">
+<div class="panel-head"><h2>Live transcript example</h2><div class="controls"><button class="btn" id="styleBtn" type="button">Show strict verbatim</button><button class="btn primary" id="copyBtn" type="button">Copy transcript</button></div></div>
+<div class="panel-body">
+<article class="document" id="transcript">
+<div class="doc-brand">PrimeTask Workspace · Transcript Sample</div>
+<h2 class="doc-title">Carrera v. Carrera: Court Orders Mother to Pay Child Support for Daughter’s Extracurricular Activities</h2>
+<div class="meta">
+<div><span>Client ID</span><b>Not provided</b></div>
+<div><span>Company</span><b>PrimeTask Workspace</b></div>
+<div><span>Transcriber</span><b>Sample Transcript</b></div>
+<div><span>Date</span><b>11 October 2026</b></div>
+<div><span>Duration</span><b>00:05:13</b></div>
+<div><span>Format</span><b id="styleLabel">Clean verbatim</b></div>
+</div>
+<div class="segment"><div class="speaker">MALE_1</div><div class="time">[00:00:08 --&gt; 00:00:11]</div><div class="speech">All rise. Judge Vonda B. Court is now in session.</div></div>
+<div class="segment"><div class="speaker">MALE_1</div><div class="time">[00:00:12 --&gt; 00:00:18]</div><div class="speech" id="speech2">Judge, this is case number JVB 1003, Carrera versus Carrera.</div></div>
+<div class="segment"><div class="speaker">FEMALE_1</div><div class="time">[00:00:19 --&gt; 00:00:22]</div><div class="speech">Thank you. You may all be seated.</div></div>
+<div class="segment"><div class="speaker">FEMALE_1</div><div class="time">[00:00:23 --&gt; 00:00:29]</div><div class="speech" id="speech4">We are here today to discuss the expenses related to the child's extracurricular activities.</div></div>
+<div class="footer">END OF TRANSCRIPT<br><span style="font-weight:500;letter-spacing:0">© PrimeTask Workspace · Sample for training purposes</span></div>
+</article>
+<div class="note">Training sample only. Always verify names, case numbers, wording, and timestamps against the source audio before submitting real work.</div>
+</div>
+</section>
+</div>
+<section class="section">
+<h2>What good formatting looks like</h2>
+<p class="section-intro">The goal is consistency and fidelity, not decorating every sentence until it looks like a wedding invitation.</p>
+<div class="grid3">
+<div class="mini"><h3>Accurate, not guessed</h3><p>Listen again when a word, name, or timestamp is uncertain. Mark unintelligible speech only according to the client’s rules.</p></div>
+<div class="mini"><h3>Readable, not rewritten</h3><p>Correct punctuation and capitalization, but do not silently change a speaker’s meaning or rewrite their words.</p></div>
+<div class="mini"><h3>Consistent from start to end</h3><p>Keep headings, speaker labels, timestamp style, spacing, and footer format uniform throughout the document.</p></div>
+</div>
+</section>
+<section class="section">
+<h2>Plain-text layout</h2>
+<p class="section-intro">A transcript can also be delivered in a simple document format. The same structure should remain clear even without visual styling.</p>
+<div class="code-sample">Transcript title: [Recording or case title]
+Client ID: [Client ID]
+Company: PrimeTask Workspace
+Transcriber: [Transcriber name]
+Date: [Date]
+Duration: [HH:MM:SS]
+
+MALE_1:
+[00:00:08 --> 00:00:11]
+All rise. The court is now in session.
+
+FEMALE_1:
+[00:00:12 --> 00:00:16]
+Thank you. You may all be seated.
+
+END OF TRANSCRIPT
+© PrimeTask Workspace</div>
+</section>
+</main>
+<footer>PrimeTask Workspace · Creating Opportunities and Delivering Excellence.</footer>
+<div class="toast" id="toast" role="status">Transcript copied.</div>
+<script>
+const strictButton=document.getElementById('styleBtn');
+const styleLabel=document.getElementById('styleLabel');
+const speech2=document.getElementById('speech2');
+const speech4=document.getElementById('speech4');
+const copyButton=document.getElementById('copyBtn');
+const toast=document.getElementById('toast');
+let strict=false;
+strictButton.addEventListener('click',()=>{
+  strict=!strict;
+  styleLabel.textContent=strict?'Strict verbatim example':'Clean verbatim';
+  strictButton.textContent=strict?'Show clean verbatim':'Show strict verbatim';
+  speech2.textContent=strict?'Judge, this is, uh, case number JVB 1003, Carrera versus Carrera.':'Judge, this is case number JVB 1003, Carrera versus Carrera.';
+  speech4.textContent=strict?'We are here today to discuss, um, the expenses related to the child’s extracurricular activities.':'We are here today to discuss the expenses related to the child’s extracurricular activities.';
+});
+function transcriptText(){
+  const doc=document.getElementById('transcript');
+  return doc.innerText.replace('PrimeTask Workspace · Transcript Sample','PRIMETASK WORKSPACE').replace('Format\\n'+styleLabel.textContent,'Format\\n'+styleLabel.textContent);
+}
+copyButton.addEventListener('click',async()=>{
+  const text=transcriptText();
+  try{
+    await navigator.clipboard.writeText(text);
+    toast.style.display='block';toast.textContent='Transcript copied to clipboard.';
+  }catch(e){
+    const area=document.createElement('textarea');area.value=text;document.body.appendChild(area);area.select();
+    const ok=document.execCommand('copy');area.remove();
+    toast.style.display='block';toast.textContent=ok?'Transcript copied to clipboard.':'Copy unavailable. Select and copy the sample manually.';
+  }
+  setTimeout(()=>toast.style.display='none',2400);
+});
+</script>
+</body>
+</html>

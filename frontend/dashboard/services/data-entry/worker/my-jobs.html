@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  
+  
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#101d38">
+<title>My Orders | PrimeTask Data Entry</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--navy:#101d38;--blue:#2878e8;--orange:#ff8b35;--ink:#17233b;--muted:#78869b;--line:#e7edf5;--page:#f4f7fc}
+*{box-sizing:border-box}
+body{margin:0;background:var(--page);color:var(--ink);font-family:"DM Sans",sans-serif}
+a{text-decoration:none;color:inherit}
+button,input,select{font:inherit}
+.app{min-height:100vh;display:grid;grid-template-columns:255px minmax(0,1fr)}
+.sidebar{background:var(--navy);color:white;padding:25px 17px;position:sticky;top:0;height:100vh;display:flex;flex-direction:column;z-index:20}
+.brand{display:flex;align-items:center;gap:12px;padding:4px 10px 30px}
+.brand-mark{width:43px;height:43px;border-radius:14px;background:linear-gradient(145deg,#3989ff,#1455bb);display:grid;place-items:center;font:800 19px Manrope}
+.brand-name{font:800 15px Manrope;display:block}.brand-sub{color:#aab9d2;font-size:10px;margin-top:3px;letter-spacing:1.3px;text-transform:uppercase;display:block}
+.nav-label{padding:13px 12px 9px;color:#8294b2;font-size:10px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase}
+.nav-list{display:grid;gap:6px}
+.nav-link{min-height:47px;padding:0 13px;border-radius:11px;display:flex;align-items:center;gap:12px;color:#bdc9dc;font-size:13px;font-weight:600}
+.nav-link:hover{background:#ffffff12;color:white}.nav-link.active{color:white;background:linear-gradient(100deg,#2878e8,#2366c7);box-shadow:0 7px 18px #1767d044}
+.nav-icon{width:21px;text-align:center;font-size:17px}
+.sidebar-bottom{margin-top:auto}.help-card{border:1px solid #ffffff1b;background:#ffffff0b;border-radius:15px;padding:15px;margin:18px 2px 0}
+.help-card strong{font-size:12px}.help-card p{color:#aab9d2;font-size:11px;line-height:1.6;margin:7px 0 12px}.help-card a{color:#ffad70;font-size:11px;font-weight:700}
+.main{min-width:0}.topbar{height:76px;padding:0 34px;background:#ffffffed;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:10;backdrop-filter:blur(12px)}
+.top-left,.top-right{display:flex;align-items:center;gap:13px}.menu-toggle{display:none;width:40px;height:40px;border:1px solid var(--line);background:white;border-radius:10px;font-size:19px}
+.breadcrumb{color:var(--muted);font-size:12px}.breadcrumb strong{color:var(--ink)}.secure{color:#718097;font-size:11px;font-weight:600}
+.avatar{width:39px;height:39px;border-radius:50%;background:#eaf2ff;color:var(--blue);display:grid;place-items:center;font-weight:800}
+.content{max-width:1500px;margin:auto;padding:30px 34px 55px}
+.hero{min-height:220px;border-radius:22px;padding:32px 35px;color:white;display:flex;align-items:center;position:relative;overflow:hidden;background:linear-gradient(90deg,#0d1d3af5 0%,#142e55df 55%,#142e5540 100%),url("https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=1800&q=85") center/cover;box-shadow:0 15px 35px #10264b20}
+.hero:after{content:"";position:absolute;width:270px;height:270px;border:1px solid #ffffff25;border-radius:50%;right:8%;top:-100px;box-shadow:0 0 0 35px #ffffff09,0 0 0 75px #ffffff06}
+.hero-content{position:relative;z-index:1;max-width:650px}.eyebrow{color:#ffb47f;font-size:10px;font-weight:800;letter-spacing:2px;text-transform:uppercase}
+h1{font:800 clamp(27px,3vw,37px) Manrope;margin:13px 0 9px;letter-spacing:-1px}
+.hero p{color:#d2dced;font-size:13px;line-height:1.8;margin:0;max-width:520px}
+.hero-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px}
+.btn{border:0;border-radius:9px;min-height:41px;padding:0 16px;display:inline-flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;cursor:pointer}
+.primary{background:var(--orange);color:#17233b}.secondary{border:1px solid #ffffff55;color:white;background:#ffffff10}
+.heading-row{display:flex;justify-content:space-between;align-items:end;gap:15px;margin:27px 0 15px}
+.heading h2{font:800 17px Manrope;margin:0}.heading p{font-size:11px;color:var(--muted);margin:5px 0 0}
+.filters{display:flex;gap:9px;flex-wrap:wrap}.field{height:40px;border:1px solid var(--line);border-radius:9px;padding:0 12px;color:var(--ink);background:white;outline:none;font-size:11px}
+.search{flex:1;min-width:190px}.field:focus{border-color:var(--blue);box-shadow:0 0 0 3px #2878e817}
+.tabs{display:flex;gap:7px;margin:20px 0 14px;overflow-x:auto}
+.tab{border:1px solid var(--line);background:white;color:#6f7e94;border-radius:9px;padding:10px 14px;font-size:10px;font-weight:800;white-space:nowrap;cursor:pointer}
+.tab.active{background:#eaf2ff;border-color:#c9ddff;color:#2169d0}
+.summary{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:17px 0}
+.summary-card{background:white;border:1px solid var(--line);border-radius:12px;padding:15px}
+.summary-card small{color:var(--muted);font-size:10px}.summary-card strong{display:block;font:800 21px Manrope;margin-top:6px}
+.order-list{display:grid;gap:13px}
+.order-card{background:white;border:1px solid var(--line);border-radius:15px;padding:19px}
+.order-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+.order-title{font:800 14px Manrope;margin:0}.order-id{color:var(--muted);font-size:9px;margin-top:6px}
+.status{padding:7px 10px;border-radius:7px;font-size:9px;font-weight:800;white-space:nowrap}
+.status.active{background:#eaf2ff;color:#246dce}.status.review{background:#fff2e7;color:#c46b24}.status.complete{background:#eaf7f1;color:#27865f}
+.order-description{color:var(--muted);font-size:11px;line-height:1.7;margin:13px 0}
+.order-meta{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;border-top:1px solid var(--line);padding-top:14px}
+.order-meta small{display:block;color:var(--muted);font-size:9px}.order-meta strong{display:block;font-size:11px;margin-top:5px}
+.order-meta .reward{color:#21845b}
+.order-footer{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:15px;padding-top:13px;border-top:1px solid var(--line)}
+.file-types{color:var(--muted);font-size:10px}.actions{display:flex;gap:8px}
+.action{border:1px solid var(--line);background:white;border-radius:8px;padding:9px 12px;color:#50617a;font-size:10px;font-weight:800;cursor:pointer}
+.action.primary-action{background:var(--blue);border-color:var(--blue);color:white}
+.action:disabled{opacity:.5;cursor:not-allowed}
+.empty{background:white;border:1px solid var(--line);border-radius:15px;min-height:250px;display:grid;place-items:center;text-align:center;padding:25px}
+.empty-icon{width:53px;height:53px;border-radius:16px;background:#edf4ff;color:var(--blue);display:grid;place-items:center;font-size:23px;margin:0 auto 12px}
+.empty strong{font:800 14px Manrope}.empty p{font-size:11px;color:var(--muted);line-height:1.7;max-width:350px;margin:8px auto 0}
+.footer{text-align:center;color:#99a4b4;font-size:10px;padding:27px 0 0}
+@media(max-width:1050px){.content{padding:25px 23px 45px}.topbar{padding:0 23px}}
+@media(max-width:760px){
+.app{display:block}.sidebar{position:fixed;left:0;top:0;width:270px;transform:translateX(-105%);transition:transform .25s;box-shadow:15px 0 40px #07152b33}
+.sidebar.open{transform:translateX(0)}.menu-toggle{display:grid;place-items:center}.topbar{height:65px;padding:0 15px}.secure{display:none}
+.content{padding:18px 14px 35px}.hero{min-height:235px;padding:25px 21px;background-position:60% center}
+.heading-row{align-items:flex-start;flex-direction:column}.filters{width:100%}.field{flex:1;min-width:130px}
+.summary{gap:8px}.summary-card{padding:12px}.summary-card strong{font-size:18px}
+.order-meta{grid-template-columns:repeat(2,minmax(0,1fr));row-gap:14px}
+.order-footer{align-items:flex-start;flex-direction:column}.actions{width:100%}.actions .action{flex:1}
+}
+</style>
+<link rel="icon" type="image/svg+xml" href="/assets/primetask-logo.svg">
+</head>
+<body>
+<div class="app">
+<aside class="sidebar" id="sidebar">
+<a class="brand" href="index"><span class="brand-mark">PT</span><span><span class="brand-name">PrimeTask</span><span class="brand-sub">Data Entry Workspace</span></span></a>
+<div class="nav-label">Workspace</div>
+<nav class="nav-list" aria-label="Data Entry navigation">
+<a class="nav-link" href="index"><span class="nav-icon">⌂</span>Dashboard</a>
+<a class="nav-link" href="jobs"><span class="nav-icon">▤</span>Available Orders</a>
+<a class="nav-link active" href="my-jobs"><span class="nav-icon">◷</span>My Orders</a>
+<a class="nav-link" href="bids"><span class="nav-icon">◇</span>My Bids</a>
+<a class="nav-link" href="submissions"><span class="nav-icon">✓</span>Submissions</a>
+</nav>
+<div class="nav-label">Finance</div>
+<nav class="nav-list">
+<a class="nav-link" href="buy-bids"><span class="nav-icon">＋</span>Buy Bids</a>
+<a class="nav-link" href="earnings"><span class="nav-icon">$</span>Earnings & Transactions</a>
+<a class="nav-link" href="withdrawals"><span class="nav-icon">⇧</span>Withdrawals</a>
+</nav>
+<div class="nav-label">Account</div>
+<nav class="nav-list">
+<a class="nav-link" href="profile"><span class="nav-icon">◎</span>My Profile</a>
+<a class="nav-link" href="../../../../data-entry"><span class="nav-icon">▧</span>Learning Guide</a>
+</nav>
+<div class="sidebar-bottom"><div class="help-card"><strong>Need a hand?</strong><p>Review the Data Entry guide for tools, file formats and quality-control practices.</p><a href="../../../../data-entry">Open learning guide →</a></div></div>
+</aside>
+
+<main class="main">
+<header class="topbar">
+<div class="top-left"><button class="menu-toggle" id="menuToggle" type="button" aria-label="Open navigation" aria-expanded="false">☰</button><div class="breadcrumb">Data Entry Workspace / <strong>My Orders</strong></div></div>
+<div class="top-right"><span class="secure">PrimeTask secure workspace</span><div class="avatar" id="userAvatar">PT</div></div>
+</header>
+
+<div class="content">
+<section class="hero">
+<div class="hero-content">
+<div class="eyebrow">Your assigned work</div>
+<h1>Manage your orders.</h1>
+<p>Keep track of orders awarded to you, monitor deadlines and move each assignment through completion and submission.</p>
+<div class="hero-actions">
+<a class="btn primary" href="jobs">Explore orders →</a>
+<a class="btn secondary" href="submissions">My submissions</a>
+</div>
+</div>
+</section>
+
+<div class="summary">
+<div class="summary-card"><small>Active orders</small><strong id="activeCount">--</strong></div>
+<div class="summary-card"><small>Awaiting review</small><strong id="reviewCount">--</strong></div>
+<div class="summary-card"><small>Completed orders</small><strong id="completedCount">--</strong></div>
+</div>
+
+<div class="heading-row">
+<div class="heading"><h2>My assigned orders</h2><p>Orders awarded to your worker account by the Data Entry admin.</p></div>
+<div class="filters">
+<input class="field search" id="searchOrders" type="search" placeholder="Search my orders">
+<select class="field" id="statusFilter" aria-label="Filter orders by status">
+<option value="all">All orders</option>
+<option value="active">In progress</option>
+<option value="review">Submitted</option>
+<option value="complete">Completed</option>
+</select>
+</div>
+</div>
+
+<div class="tabs" role="group" aria-label="Order status filters">
+<button class="tab active" data-filter="all">All orders</button>
+<button class="tab" data-filter="active">In progress</button>
+<button class="tab" data-filter="review">Awaiting review</button>
+<button class="tab" data-filter="complete">Completed</button>
+</div>
+
+<section class="order-list" id="orderList" aria-live="polite">
+<div class="empty"><div><div class="empty-icon">◷</div><strong>No assigned orders yet</strong><p>When the admin selects your bid and awards you an order, its details, deadline, reward and submission requirements will appear here.</p></div></div>
+</section>
+<footer class="footer">PrimeTask Workspace · Data Entry Order Management</footer>
+</div>
+</main>
+</div>
+
+<script src="../../../../assets/js/config.js"></script>
+<script>
+"use strict";
+
+const API = String(window.PTW_API_BASE || "").replace(/\/+$/, "");
+const sidebar = document.getElementById("sidebar");
+const menuToggle = document.getElementById("menuToggle");
+const orderList = document.getElementById("orderList");
+const statusFilter = document.getElementById("statusFilter");
+const searchInput = document.getElementById("searchOrders");
+const tabs = [...document.querySelectorAll(".tab")];
+
+let orders = [];
+
+menuToggle.addEventListener("click", () => {
+  const open = sidebar.classList.toggle("open");
+  menuToggle.setAttribute("aria-expanded", String(open));
+  menuToggle.textContent = open ? "×" : "☰";
+});
+
+document.addEventListener("click", event => {
+  if (
+    window.innerWidth <= 760 &&
+    sidebar.classList.contains("open") &&
+    !sidebar.contains(event.target) &&
+    !menuToggle.contains(event.target)
+  ) {
+    sidebar.classList.remove("open");
+    menuToggle.setAttribute("aria-expanded", "false");
+    menuToggle.textContent = "☰";
+  }
+});
+
+function escapeHtml(value) {
+  return String(value ?? "").replace(/[&<>"']/g, char => ({
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "'": "&#39;"
+  })[char]);
+}
+
+function money(cents) {
+  return "$" + (Number(cents || 0) / 100).toFixed(2);
+}
+
+function dateText(value) {
+  if (!value) return "Not available";
+  const date = new Date(value);
+  return Number.isNaN(date.getTime())
+    ? "Not available"
+    : date.toLocaleString();
+}
+
+function statusInfo(status) {
+  if (status === "assigned") {
+    return { filter: "active", label: "In progress", css: "active" };
+  }
+
+  if (status === "submitted") {
+    return { filter: "review", label: "Submitted", css: "review" };
+  }
+
+  if (status === "revision_requested") {
+    return { filter: "review", label: "Revision requested", css: "review" };
+  }
+
+  if (status === "completed") {
+    return { filter: "complete", label: "Completed", css: "complete" };
+  }
+
+  return { filter: "all", label: status || "Unknown", css: "review" };
+}
+
+function acceptedFormats(order) {
+  return Array.isArray(order.acceptedFileFormats)
+    ? order.acceptedFileFormats.map(value => String(value).toLowerCase())
+        .filter(value => ["xlsx", "csv"].includes(value))
+    : [];
+}
+
+function renderOrder(order) {
+  const info = statusInfo(order.status);
+  const formats = acceptedFormats(order);
+  const canSubmit = order.status === "assigned" ||
+    order.status === "revision_requested";
+
+  const deadline = order.assignmentExpiresAt
+    ? dateText(order.assignmentExpiresAt)
+    : "Not applicable";
+
+  const formatText = formats.length
+    ? formats.map(value => value.toUpperCase()).join(", ")
+    : "No document formats specified";
+
+  return `
+    <article class="order-card" data-status="${info.filter}"
+      data-search="${escapeHtml(
+        `${order.title || ""} ${order.description || ""} ${order.category || ""} ${order._id || ""}`
+      ).toLowerCase()}">
+      <div class="order-head">
+        <div>
+          <div class="order-title">${escapeHtml(order.title || "Untitled order")}</div>
+          <div class="order-id">Order ID: ${escapeHtml(order._id)}</div>
+        </div>
+        <span class="status ${info.css}">${escapeHtml(info.label)}</span>
+      </div>
+
+      <p class="order-description">${escapeHtml(order.description || "No additional description.")}</p>
+
+      ${order.instructions ? `
+        <div class="order-description">
+          <strong>Instructions:</strong><br>
+          ${escapeHtml(order.instructions).replace(/\n/g, "<br>")}
+        </div>
+      ` : ""}
+
+      <div class="order-meta">
+        <span>Category: ${escapeHtml(order.category || "General")}</span>
+        <span>Reward: <strong class="reward">${money(order.rewardCents)}</strong></span>
+        <span>Required bids: ${Number(order.requiredBids || 0)}</span>
+        <span>Time limit: ${Number(order.timeLimitMinutes || 0)} minutes</span>
+      </div>
+
+      <div class="file-types">Accepted documents: ${escapeHtml(formatText)}</div>
+
+      <div class="order-meta">
+        <span>Claimed: ${escapeHtml(dateText(order.claimedAt))}</span>
+        <span>Deadline: ${escapeHtml(deadline)}</span>
+      </div>
+
+      ${order.status === "completed" ? `
+        <div class="order-footer">This order has been completed.</div>
+      ` : ""}
+
+      ${order.status === "submitted" ? `
+        <div class="order-footer">Your work has been submitted and is awaiting admin review.</div>
+      ` : ""}
+
+      ${canSubmit ? `
+        <form class="data-entry-submit-form" data-order-id="${escapeHtml(order._id)}">
+          <h3>${order.status === "revision_requested" ? "Submit requested revision" : "Submit your work"}</h3>
+
+          ${order.status === "revision_requested" ? `
+            <p class="revision-notice">The admin requested changes. Resubmitting this order does not deduct another bid.</p>
+          ` : ""}
+
+          <label>Work / notes</label>
+          <textarea name="submissionText" maxlength="200000"
+            placeholder="Enter your completed work or relevant notes"></textarea>
+
+          <label>HTTPS submission link</label>
+          <input name="submissionLink" type="url"
+            placeholder="https://example.com/your-work">
+
+          <label>Spreadsheet document</label>
+          <input name="document" type="file"
+            accept="${formats.map(value => "." + value).join(",")}"
+            ${formats.length ? "" : "disabled"}>
+
+          <small>Maximum file size: 10 MB. Accepted formats: ${escapeHtml(formatText)}.</small>
+
+          <button class="primary-action" type="submit">
+            ${order.status === "revision_requested" ? "Resubmit work" : "Submit work"}
+          </button>
+          <p class="submission-message" aria-live="polite"></p>
+        </form>
+      ` : ""}
+    </article>
+  `;
+}
+
+function renderOrders() {
+  const active = orders.filter(order => order.status === "assigned").length;
+  const review = orders.filter(order =>
+    ["submitted", "revision_requested"].includes(order.status)
+  ).length;
+  const completed = orders.filter(order => order.status === "completed").length;
+
+  document.getElementById("activeCount").textContent = active;
+  document.getElementById("reviewCount").textContent = review;
+  document.getElementById("completedCount").textContent = completed;
+
+  const filter = statusFilter.value;
+  const search = searchInput.value.trim().toLowerCase();
+
+  const filtered = orders.filter(order => {
+    const info = statusInfo(order.status);
+    const matchesFilter = filter === "all" || info.filter === filter;
+    const searchable = `${order.title || ""} ${order.description || ""} ${order.category || ""} ${order._id || ""}`.toLowerCase();
+    return matchesFilter && searchable.includes(search);
+  });
+
+  if (!filtered.length) {
+    orderList.innerHTML = `
+      <div class="empty">
+        <div>
+          <div class="empty-icon">◷</div>
+          <strong>No matching orders</strong>
+          <p>Your assigned orders and their current statuses will appear here.</p>
+        </div>
+      </div>
+    `;
+    return;
+  }
+
+  orderList.innerHTML = filtered.map(renderOrder).join("");
+}
+
+async function apiRequest(path, options = {}) {
+  const response = await fetch(API + path, {
+    credentials: "include",
+    ...options,
+    headers: {
+      Accept: "application/json",
+      ...(options.body instanceof FormData
+        ? {}
+        : { "Content-Type": "application/json" }),
+      ...(options.headers || {})
+    }
+  });
+
+  let result;
+  try {
+    result = await response.json();
+  } catch {
+    throw new Error("The server returned an invalid response.");
+  }
+
+  if (!response.ok || result.success === false) {
+    throw new Error(result.message || "The request failed.");
+  }
+
+  return result;
+}
+
+async function loadOrders() {
+  orderList.innerHTML = '<div class="empty">Loading your assigned orders...</div>';
+
+  try {
+    const result = await apiRequest("/data-entry/my-jobs");
+    orders = Array.isArray(result.jobs)
+      ? result.jobs
+      : Array.isArray(result.orders)
+        ? result.orders
+        : [];
+
+    renderOrders();
+  } catch (error) {
+    console.error("Data Entry orders loading failed:", error);
+    orderList.innerHTML = `
+      <div class="empty">
+        <div>
+          <strong>Could not load your orders</strong>
+          <p>${escapeHtml(error.message)}</p>
+          <button class="primary-action" type="button" id="retryOrders">Try again</button>
+        </div>
+      </div>
+    `;
+    document.getElementById("retryOrders")?.addEventListener("click", loadOrders);
+  }
+}
+
+async function uploadDocument(orderId, file) {
+  const signatureResult = await apiRequest(
+    `/data-entry/jobs/${encodeURIComponent(orderId)}/submissions/document-signature`,
+    {
+      method: "POST",
+      body: JSON.stringify({
+        originalName: file.name,
+        size: file.size
+      })
+    }
+  );
+
+  const uploadData = new FormData();
+
+  Object.entries(signatureResult.params || {}).forEach(([key, value]) => {
+    uploadData.append(key, String(value));
+  });
+
+  uploadData.append("api_key", signatureResult.apiKey);
+  uploadData.append("signature", signatureResult.signature);
+  uploadData.append("file", file);
+
+  const uploadResponse = await fetch(
+    `https://api.cloudinary.com/v1_1/${encodeURIComponent(signatureResult.cloudName)}/raw/upload`,
+    { method: "POST", body: uploadData }
+  );
+
+  let uploadResult;
+  try {
+    uploadResult = await uploadResponse.json();
+  } catch {
+    throw new Error("Cloudinary returned an invalid upload response.");
+  }
+
+  if (!uploadResponse.ok || !uploadResult.public_id) {
+    throw new Error(uploadResult.error?.message || "Document upload failed.");
+  }
+
+  return uploadResult.public_id;
+}
+
+orderList.addEventListener("submit", async event => {
+  const form = event.target.closest(".data-entry-submit-form");
+  if (!form) return;
+
+  event.preventDefault();
+
+  const orderId = form.dataset.orderId;
+  const button = form.querySelector('button[type="submit"]');
+  const message = form.querySelector(".submission-message");
+  const file = form.elements.document?.files?.[0] || null;
+  const submissionText = form.elements.submissionText.value.trim();
+  const submissionLink = form.elements.submissionLink.value.trim();
+
+  if (!submissionText && !submissionLink && !file) {
+    message.textContent = "Provide work text, an HTTPS link or a document.";
+    return;
+  }
+
+  if (file) {
+    const extension = file.name.split(".").pop().toLowerCase();
+    const order = orders.find(item => String(item._id) === String(orderId));
+    const allowed = acceptedFormats(order || {});
+
+    if (!allowed.includes(extension)) {
+      message.textContent = "This order does not accept that document format.";
+      return;
+    }
+
+    if (file.size < 1 || file.size > 10 * 1024 * 1024) {
+      message.textContent = "The document must be no larger than 10 MB.";
+      return;
+    }
+  }
+
+  button.disabled = true;
+  message.textContent = file
+    ? "Uploading document and submitting work..."
+    : "Submitting your work...";
+
+  try {
+    let documentPublicId = "";
+
+    if (file) {
+      documentPublicId = await uploadDocument(orderId, file);
+    }
+
+    const result = await apiRequest(
+      `/data-entry/jobs/${encodeURIComponent(orderId)}/submissions`,
+      {
+        method: "POST",
+        body: JSON.stringify({
+          submissionText,
+          submissionLink,
+          documentPublicId,
+          documentOriginalName: file?.name || ""
+        })
+      }
+    );
+
+    message.textContent = result.message || "Submission sent successfully.";
+    await loadOrders();
+  } catch (error) {
+    console.error("Data Entry submission failed:", error);
+    message.textContent = error.message;
+    button.disabled = false;
+  }
+});
+
+tabs.forEach(tab => {
+  tab.addEventListener("click", () => {
+    tabs.forEach(item => item.classList.remove("active"));
+    tab.classList.add("active");
+    statusFilter.value = tab.dataset.filter;
+    renderOrders();
+  });
+});
+
+statusFilter.addEventListener("change", () => {
+  tabs.forEach(tab =>
+    tab.classList.toggle("active", tab.dataset.filter === statusFilter.value)
+  );
+  renderOrders();
+});
+
+searchInput.addEventListener("input", renderOrders);
+
+async function loadWorkerIdentity() {
+  if (typeof window.PTW_AUTH_API_ME !== "string") return;
+
+  try {
+    const response = await fetch(window.PTW_AUTH_API_ME, {
+      credentials: "include",
+      headers: { Accept: "application/json" }
+    });
+
+    if (!response.ok) return;
+
+    const result = await response.json();
+    const user = result.user || result.data?.user || result;
+
+    if (user.role !== "user") return;
+
+    const first = String(user.firstName || "").trim();
+    const last = String(user.lastName || "").trim();
+
+    document.getElementById("userAvatar").textContent =
+      (first.charAt(0) || "P").toUpperCase() +
+      (last.charAt(0) || "").toUpperCase();
+  } catch (error) {
+    console.error("Data Entry account check failed:", error);
+  }
+}
+
+const extraStyles = document.createElement("style");
+extraStyles.textContent = `
+.data-entry-submit-form {
+  margin-top: 20px;
+  padding: 18px;
+  border: 1px solid rgba(100,120,150,.25);
+  border-radius: 12px;
+  display: grid;
+  gap: 10px;
+}
+.data-entry-submit-form h3 { margin: 0 0 5px; }
+.data-entry-submit-form label { font-weight: 600; }
+.data-entry-submit-form textarea,
+.data-entry-submit-form input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 11px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  font: inherit;
+}
+.data-entry-submit-form textarea { min-height: 110px; resize: vertical; }
+.data-entry-submit-form small,
+.data-entry-submit-form .submission-message { color: inherit; opacity: .8; }
+.data-entry-submit-form button:disabled { opacity: .6; cursor: wait; }
+.revision-notice { padding: 10px; border-radius: 8px; background: rgba(245,158,11,.12); }
+`;
+document.head.appendChild(extraStyles);
+
+loadWorkerIdentity();
+loadOrders();
+</script>
+</body>
+</html>

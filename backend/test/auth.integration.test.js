@@ -32,6 +32,7 @@ process.env.JWT_SECRET =
 
 const User = require("../src/models/User");
 const EmailVerification = require("../src/models/EmailVerification");
+const EmailVerificationThrottle = require("../src/models/EmailVerificationThrottle");
 const SecurityEvent = require("../src/models/SecurityEvent");
 const SecurityEventChain = require("../src/models/SecurityEventChain");
 const Device = require("../src/models/Device");
@@ -175,6 +176,7 @@ before(async () => {
 
   await User.init();
   await EmailVerification.init();
+  await EmailVerificationThrottle.init();
   await SecurityEvent.init();
   await SecurityEventChain.init();
   await Device.init();
@@ -205,6 +207,7 @@ beforeEach(async () => {
   if (enabled && mongoose.connection.readyState === 1) {
     await User.deleteMany({});
     await EmailVerification.deleteMany({});
+    await EmailVerificationThrottle.deleteMany({});
     deliveredOtp = null;
     await SecurityEvent.deleteMany({});
     await SecurityEventChain.deleteMany({});

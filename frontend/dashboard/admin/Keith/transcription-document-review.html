@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<link rel="icon" type="image/jpeg" href="../../../assets/primetask-favicon.svg">
+
   <link rel="stylesheet" href="/dashboard/admin/Keith/assets/admin-navigation.css">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -85,22 +85,6 @@ a{color:var(--blue);overflow-wrap:anywhere}
 .audio-player{width:100%;margin-top:10px;border-radius:10px}
 .audio-unavailable{padding:18px;background:#f6f8fc;border:1px dashed var(--line);border-radius:11px;color:var(--muted);font-size:12px}
 .comparison-panel .transcript{max-height:430px;min-height:180px}
-.reference-panel{margin-top:18px}
-.reference-toolbar{display:flex;gap:7px;flex-wrap:wrap;margin:10px 0}
-.reference-toolbar .btn{padding:8px 11px}
-.editor-surface{min-height:300px;max-height:600px;overflow:auto;padding:16px;border:1px solid #cbd6e5;border-radius:11px;background:#fff;color:var(--ink);font:14px/1.75 system-ui,sans-serif;white-space:pre-wrap;overflow-wrap:anywhere;outline:none}
-.editor-surface:focus{border-color:var(--blue);box-shadow:0 0 0 3px #3268cf1c}
-.editor-surface:empty:before{content:attr(data-placeholder);color:#8995a6}
-.editor-help{font-size:11px;color:var(--muted);margin:8px 0}
-.verification-box{margin-top:14px;padding:14px;border:1px solid var(--line);border-radius:11px;background:#f8faff}
-.verification-heading{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
-.verification-status{font-weight:900;color:var(--navy)}
-.verification-checks{display:grid;gap:8px;margin-top:12px}
-.verification-check{padding:10px 12px;border-radius:9px;font-size:12px;background:#fff;border:1px solid var(--line)}
-.verification-check.pass{border-left:4px solid var(--green)}
-.verification-check.fail{border-left:4px solid var(--red)}
-.verify-actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:12px}
-@media(max-width:600px){.editor-surface{min-height:240px}.reference-toolbar .btn{flex:1}}
 @media(max-width:1100px){.member-stats{grid-template-columns:repeat(3,minmax(0,1fr))}}
 @media(max-width:900px){.workspace{grid-template-columns:1fr}.queue{max-height:350px}.comparison-grid{grid-template-columns:1fr}}
 
@@ -117,6 +101,7 @@ a{color:var(--blue);overflow-wrap:anywhere}
 }
 
 </style>
+<link rel="icon" type="image/svg+xml" href="/assets/primetask-logo.svg">
 </head>
 <body>
 <main class="shell">
@@ -166,6 +151,11 @@ a{color:var(--blue);overflow-wrap:anywhere}
         <div class="meta"><div class="meta-label">Current status</div><div id="currentStatus" class="meta-value">—</div></div>
         <div class="meta"><div class="meta-label">Job duration</div><div id="jobDuration" class="meta-value">—</div></div>
         <div class="meta"><div class="meta-label">Document</div><div id="documentInfo" class="meta-value">—</div></div>
+        <div class="meta">
+          <div class="meta-label">Available minutes at submission</div>
+          <div id="submissionMinutes" class="meta-value">Not recorded</div>
+          <div id="submissionMinutesCapturedAt" class="muted"></div>
+        </div>
       </div>
 
       <div class="section">
@@ -187,7 +177,7 @@ a{color:var(--blue);overflow-wrap:anywhere}
 
       <div class="comparison-grid section">
         <section class="comparison-panel">
-          <div class="section-head"><h3>Original audio</h3><span class="muted">Reference recording</span></div>
+          <div class="section-head"><h3>Original audio</h3><span class="muted">Original recording</span></div>
           <audio id="audioPlayer" class="audio-player" controls preload="metadata"
             crossOrigin="use-credentials" aria-label="Original transcription audio"></audio>
           <div id="audioUnavailable" class="audio-unavailable hidden">Original audio is not available for this job.</div>
@@ -198,47 +188,6 @@ a{color:var(--blue);overflow-wrap:anywhere}
           <div id="transcript" class="transcript">No transcript text supplied.</div>
         </section>
       </div>
-
-      <section class="section reference-panel" id="referenceSection">
-        <div class="section-head">
-          <div>
-            <h3>Admin reference transcript</h3>
-            <p class="sub">Paste or type your reference transcript here. Format, select and copy the text as needed.</p>
-          </div>
-          <span class="muted">Admin only</span>
-        </div>
-
-        <div class="reference-toolbar" role="toolbar" aria-label="Reference transcript formatting">
-          <button class="btn soft" type="button" data-command="bold"><strong>B</strong></button>
-          <button class="btn soft" type="button" data-command="italic"><em>I</em></button>
-          <button class="btn soft" type="button" data-command="underline"><u>U</u></button>
-          <button class="btn soft" type="button" data-command="formatBlock" data-value="p">Paragraph</button>
-          <button class="btn soft" type="button" id="selectReference">Select all</button>
-        </div>
-
-        <div id="referenceEditor" class="editor-surface" contenteditable="true"
-          role="textbox" aria-label="Admin reference transcript editor"
-          aria-multiline="true" spellcheck="false"
-          data-placeholder="Paste or type the reference transcript here..."></div>
-
-        <p class="editor-help">You can edit the text directly. Pasted content is inserted as plain text. Formatting controls apply to selected text.</p>
-
-        <div class="verify-actions">
-          <button id="copyWorkerTranscript" class="btn soft" type="button">Copy worker transcript</button>
-          <button id="copyReferenceTranscript" class="btn soft" type="button">Copy reference transcript</button>
-          <button id="verifySubmission" class="btn primary" type="button">Verify submission</button>
-        </div>
-
-        <div id="verificationBox" class="verification-box" aria-live="polite">
-          <div class="verification-heading">
-            <strong>Structural verification</strong>
-            <span id="verificationStatus" class="verification-status">Pending verification</span>
-          </div>
-          <div id="verificationChecks" class="verification-checks">
-            <div class="muted">Enter the reference transcript and run verification.</div>
-          </div>
-        </div>
-      </section>
 
       <div id="linkSection" class="section hidden">
         <h3>External submission link</h3><p id="submissionLink"></p>
@@ -264,20 +213,25 @@ a{color:var(--blue);overflow-wrap:anywhere}
 <p class="muted" style="margin-top:18px">Administrator access is enforced by the backend. This page does not expose Cloudinary document URLs or initiate M-Pesa payouts.</p>
 </main>
 
+<script src="/assets/js/config.js"></script>
 <script src="assets/admin-navigation.js"></script>
 <script>
 "use strict";
 (() => {
   const $ = id => document.getElementById(id);
-  const API_BASE = ["localhost","127.0.0.1"].includes(location.hostname)
-    ? "http://127.0.0.1:5001/api"
-    : "https://primetask-mdcx.onrender.com/api";
+  const API_BASE = String(window.PTW_API_BASE || "").replace(/\/+$/, "");
+
+  if (!API_BASE) {
+    throw new Error("PrimeTask API is not configured. Check /assets/js/config.js.");
+  }
 
   let submissions = [];
   let selectedId = null;
   let busy = false;
   let downloading = false;
   let summaryUserId = null;
+  let detailRequestId = 0;
+  let detailLoadingId = null;
 
   function esc(value) {
     return String(value ?? "").replace(/[&<>"']/g, c => ({
@@ -332,12 +286,47 @@ a{color:var(--blue);overflow-wrap:anywhere}
     return submissions.find(item => item.id === selectedId) || null;
   }
 
-  function referenceText() {
-    return $("referenceEditor").innerText
-      .replace(/\\u00a0/g, " ")
-      .replace(/\\r\\n?/g, "\\n")
-      .replace(/\\n{3,}/g, "\\n\\n")
-      .trim();
+  async function loadSubmissionDetails(id) {
+    if (!id) return;
+
+    const requestId = ++detailRequestId;
+    detailLoadingId = id;
+    renderDetail();
+
+    try {
+      const {data} = await request(
+        "/admin/transcription/submissions/" + encodeURIComponent(id)
+      );
+
+      if (requestId !== detailRequestId || selectedId !== id) return;
+
+      if (!data || data.success !== true || !data.submission) {
+        throw new Error("The server did not return full submission details.");
+      }
+
+      const detail = data.submission;
+
+      submissions = submissions.map(item =>
+        item.id === id
+          ? {...item, ...detail, detailsLoaded: true}
+          : item
+      );
+
+      detailLoadingId = null;
+      renderQueue();
+      renderDetail();
+
+    } catch (error) {
+      if (requestId !== detailRequestId || selectedId !== id) return;
+
+      detailLoadingId = null;
+      renderDetail();
+      showMessage(
+        "Could not load the submitted transcript: " + error.message,
+        "error"
+      );
+      console.error("Submission detail loading failed:", error);
+    }
   }
 
   async function copyText(value, label) {
@@ -365,30 +354,6 @@ a{color:var(--blue);overflow-wrap:anywhere}
     } catch (error) {
       showMessage("Could not copy text: " + error.message, "error");
     }
-  }
-
-  function renderVerification(item) {
-    const status = item.verificationStatus || "pending";
-    const labels = {
-      passed: "PASSED",
-      failed: "FAILED",
-      pending: "PENDING"
-    };
-
-    $("verificationStatus").textContent = labels[status] || status.toUpperCase();
-
-    const checks = Array.isArray(item.verificationResults)
-      ? item.verificationResults
-      : [];
-
-    $("verificationChecks").innerHTML = checks.length
-      ? checks.map(check => {
-          const passed = Boolean(check.passed);
-          return '<div class="verification-check ' + (passed ? "pass" : "fail") + '">' +
-            '<strong>' + (passed ? "✓ " : "✗ ") + esc(check.check || "Check") + '</strong>' +
-            '<div>' + esc(check.message || "") + '</div></div>';
-        }).join("")
-      : '<div class="muted">No verification results recorded yet.</div>';
   }
 
   function renderQueue() {
@@ -490,6 +455,15 @@ a{color:var(--blue);overflow-wrap:anywhere}
     $("memberName").textContent = memberName(item);
     $("memberEmail").textContent = item.user && item.user.email || "Not recorded";
     $("submittedAt").textContent = date(item.createdAt);
+    const submissionMinutes = item.availableMinutesAtSubmission;
+    $("submissionMinutes").textContent =
+      Number.isSafeInteger(submissionMinutes) && submissionMinutes >= 0
+        ? submissionMinutes.toLocaleString() + " minutes"
+        : "Not recorded";
+    $("submissionMinutesCapturedAt").textContent =
+      item.minuteBalanceCapturedAt
+        ? "Captured: " + date(item.minuteBalanceCapturedAt)
+        : "Capture time unavailable";
     $("currentStatus").textContent = item.status || "Unknown";
     const durationMinutes = item.job?.durationMinutes;
     $("jobDuration").textContent =
@@ -503,15 +477,20 @@ a{color:var(--blue);overflow-wrap:anywhere}
     $("downloadDoc").disabled = !item.documentAvailable || downloading;
     $("downloadDoc").textContent = downloading ? "Preparing download…" : "↓ Download DOCX";
     $("documentActions").classList.toggle("hidden",!item.documentAvailable);
-    $("transcript").textContent = item.transcriptText || "No transcript text supplied. Review the attached document if available.";
-    $("textLength").textContent = item.transcriptText ? item.transcriptText.length.toLocaleString() + " characters" : "No text";
+    const hasDetails = item.detailsLoaded === true;
+    const transcript = typeof item.transcriptText === "string"
+      ? item.transcriptText
+      : "";
 
-    const editor = $("referenceEditor");
-    if (editor.dataset.submissionId !== item.id) {
-      editor.textContent = item.referenceTranscript || "";
-      editor.dataset.submissionId = item.id;
-    }
-    renderVerification(item);
+    $("transcript").textContent = hasDetails
+      ? (transcript || "This submission contains no transcript text.")
+      : (detailLoadingId === item.id
+          ? "Loading submitted transcript..."
+          : "Submission details have not been loaded.");
+
+    $("textLength").textContent = hasDetails
+      ? (transcript ? transcript.length.toLocaleString() + " characters" : "No text")
+      : "Loading...";
 
     $("linkSection").classList.toggle("hidden",!item.submissionLink);
     if (item.submissionLink) {
@@ -525,11 +504,10 @@ a{color:var(--blue);overflow-wrap:anywhere}
     $("previousReview").classList.toggle("hidden",!item.reviewNote);
     $("previousNote").textContent = item.reviewNote || "";
     const canReview = item.status === "submitted";
-    const canApprove = canReview && item.verificationStatus === "passed";
+    const canApprove = canReview;
     $("decisionSection").classList.toggle("hidden",!canReview);
     $("approve").disabled = busy || !canApprove;
     $("reject").disabled = busy || !canReview;
-    $("verifySubmission").disabled = busy || !canReview;
     if (!canReview) $("reviewNote").value = item.reviewNote || "";
   }
   async function load() {
@@ -554,6 +532,10 @@ a{color:var(--blue);overflow-wrap:anywhere}
       }
       renderQueue();
       renderDetail();
+
+      if (selectedId) {
+        loadSubmissionDetails(selectedId);
+      }
     } catch (error) {
       submissions = [];
       selectedId = null;
@@ -605,83 +587,9 @@ a{color:var(--blue);overflow-wrap:anywhere}
       renderDetail();
     }
   }
-  async function verifySubmission() {
-    const item = currentItem();
-    if (!item || item.status !== "submitted" || busy) return;
-
-    const referenceTranscript = referenceText();
-    if (!referenceTranscript) {
-      showMessage("Enter the admin reference transcript before verification.", "error");
-      $("referenceEditor").focus();
-      return;
-    }
-
-    if (referenceTranscript.length > 200000) {
-      showMessage("The reference transcript exceeds the 200,000-character limit.", "error");
-      return;
-    }
-
-    busy = true;
-    $("verifySubmission").disabled = true;
-    $("approve").disabled = true;
-    $("reject").disabled = true;
-    $("refresh").disabled = true;
-    $("verifySubmission").textContent = "Verifying...";
-    clearMessage();
-
-    try {
-      const {data} = await request(
-        "/admin/transcription/submissions/" + encodeURIComponent(item.id) + "/verify",
-        {
-          method: "POST",
-          headers: {"Content-Type": "application/json"},
-          body: JSON.stringify({referenceTranscript})
-        }
-      );
-
-      if (!data || data.success !== true) {
-        throw new Error(data?.message || "Verification request failed.");
-      }
-
-      item.referenceTranscript = referenceTranscript;
-      item.verificationStatus = data.verificationStatus || (data.passed ? "passed" : "failed");
-      item.verificationResults = Array.isArray(data.checks) ? data.checks : [];
-      item.verifiedAt = new Date().toISOString();
-
-      if (!data.passed) {
-        item.status = "rejected";
-        item.reviewNote = item.verificationResults
-          .filter(check => !check.passed)
-          .map(check => check.message)
-          .join(" ")
-          .slice(0, 2000);
-      }
-
-      renderVerification(item);
-      renderQueue();
-      renderDetail();
-
-      showMessage(data.message || (data.passed
-        ? "Verification passed. Approval is now available."
-        : "Verification failed. The submission was returned for revision."), data.passed ? "success" : "error");
-    } catch (error) {
-      showMessage(error.message, "error");
-    } finally {
-      busy = false;
-      $("verifySubmission").textContent = "Verify submission";
-      $("refresh").disabled = false;
-      renderQueue();
-      renderDetail();
-    }
-  }
-
   async function decide(decision) {
     const item = currentItem();
     if (!item || item.status !== "submitted" || busy) return;
-    if (decision === "approve" && item.verificationStatus !== "passed") {
-      showMessage("Verification must pass before this submission can be approved.", "error");
-      return;
-    }
     const note = $("reviewNote").value.trim();
     if (decision === "reject" && !note) {
       showMessage("A review note is required when rejecting a submission.", "error");
@@ -722,9 +630,11 @@ a{color:var(--blue);overflow-wrap:anywhere}
     const button = event.target.closest("[data-id]");
     if (!button) return;
     selectedId = button.dataset.id;
+    detailLoadingId = null;
     renderQueue();
     renderDetail();
     clearMessage();
+    loadSubmissionDetails(selectedId);
   });
   $("refresh").addEventListener("click",load);
   $("search").addEventListener("input",renderQueue);
@@ -735,42 +645,6 @@ a{color:var(--blue);overflow-wrap:anywhere}
   });
   $("downloadDoc").addEventListener("click",downloadDocument);
 
-  document.querySelectorAll("[data-command]").forEach(button => {
-    button.addEventListener("click", () => {
-      const editor = $("referenceEditor");
-      editor.focus();
-      const command = button.dataset.command;
-      const value = button.dataset.value || null;
-      document.execCommand(command, false, value);
-    });
-  });
-
-  $("referenceEditor").addEventListener("paste", event => {
-    event.preventDefault();
-    const text = event.clipboardData?.getData("text/plain") || "";
-    document.execCommand("insertText", false, text);
-  });
-
-  $("selectReference").addEventListener("click", () => {
-    const editor = $("referenceEditor");
-    editor.focus();
-    const selection = window.getSelection();
-    const range = document.createRange();
-    range.selectNodeContents(editor);
-    selection.removeAllRanges();
-    selection.addRange(range);
-  });
-
-  $("copyWorkerTranscript").addEventListener("click", () => {
-    const item = currentItem();
-    copyText(item?.transcriptText || "", "Worker transcript");
-  });
-
-  $("copyReferenceTranscript").addEventListener("click", () => {
-    copyText(referenceText(), "Reference transcript");
-  });
-
-  $("verifySubmission").addEventListener("click", verifySubmission);
   $("approve").addEventListener("click",() => decide("approve"));
   $("reject").addEventListener("click",() => decide("reject"));
   load();

@@ -179,7 +179,7 @@ async function claimNextBatch() {
   const batch = await BulkEmailBatch.findOneAndUpdate(
     { status: "queued" },
     { $set: { status: "sending", lockToken: randomToken(), lockedAt: new Date() } },
-    { sort: { createdAt: 1 }, new: true }
+    { sort: { createdAt: 1 }, returnDocument: 'after' }
   );
   if (batch) await BulkEmailCampaign.findByIdAndUpdate(batch.campaignId, { $set: { status: "sending" } });
   return batch;
@@ -382,7 +382,7 @@ router.post("/send", sendLimiter, async (req, res, next) => {
       audience,
       usedAt: null,
       expiresAt: { $gt: new Date() }
-    }, { $set: { usedAt: new Date() } }, { new: true });
+    }, { $set: { usedAt: new Date() } }, { returnDocument: 'after' });
     if (!preview) return res.status(409).json({ success: false, message: "This preview is expired, already used, or does not match the selected audience. Preview again." });
     if (preview.recipientIds.length > MAX_CAMPAIGN_RECIPIENTS) return res.status(413).json({ success: false, message: "This campaign exceeds the recipient limit." });
 

@@ -2,6 +2,7 @@
 
 const express = require("express");
 const User = require("../models/User");
+const Membership = require("../models/Membership");
 const requireAuth = require("../middleware/requireAuth");
 
 const router = express.Router();
@@ -162,23 +163,52 @@ router.get("/network", requireAuth, async (req, res) => {
       const [total, scannedMembers] = await Promise.all([
         User.countDocuments(filter),
         User.find(filter)
-          .select("_id firstName lastName username status createdAt referredBy")
+          .select("_id firstName lastName username phone status createdAt referredBy")
           .sort({ createdAt: -1, _id: -1 })
           .limit(MAX_LEVEL_SCAN + 1)
           .lean()
       ]);
 
       const scanLimitReached = total > MAX_LEVEL_SCAN;
-      const members = scannedMembers
-        .slice(0, MAX_DISPLAY_PER_LEVEL)
-        .map((member) => ({
+      const displayMembers = scannedMembers.slice(0, MAX_DISPLAY_PER_LEVEL);
+      const activeMemberships = displayMembers.length
+        ? await Membership.find({
+            userId: { $in: displayMembers.map(member => member._id) },
+            status: "active",
+            startsAt: { $lte: new Date() },
+            expiresAt: { $gt: new Date() }
+          })
+            .select("userId planKey planId")
+            .populate({ path: "planId", select: "name" })
+            .sort({ expiresAt: -1, _id: -1 })
+            .lean()
+        : [];
+      const membershipByUserId = new Map();
+      for (const membership of activeMemberships) {
+        const userId = String(membership.userId);
+        if (!membershipByUserId.has(userId)) {
+          membershipByUserId.set(userId, membership);
+        }
+      }
+
+      const members = displayMembers.map((member) => {
+        const membership = membershipByUserId.get(String(member._id));
+        return {
           id: member._id,
           firstName: member.firstName,
           lastName: member.lastName,
           username: member.username,
+          phone: member.phone,
           status: member.status,
-          joinedAt: member.createdAt
-        }));
+          joinedAt: member.createdAt,
+          membership: membership
+            ? {
+                status: "active",
+                planName: membership.planId?.name || membership.planKey
+              }
+            : { status: "inactive", planName: null }
+        };
+      });
 
       levels.push({
         level: depth,

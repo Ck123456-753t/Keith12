@@ -387,3 +387,367 @@ body .topbar .brand .brand-mark img {
   max-height: 100% !important;
   object-fit: contain !important;
 }
+
+
+/* Compact full-width wallet cards on small screens */
+@media (max-width: 480px) {
+  main {
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+
+  .grid[aria-label="Wallet overview"] {
+    width: 100%;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 8px;
+    margin-left: 0;
+    margin-right: 0;
+  }
+
+  .grid[aria-label="Wallet overview"] > .card {
+    display: grid;
+    grid-template-columns: 34px minmax(0, 1fr);
+    column-gap: 10px;
+    align-items: center;
+    min-width: 0;
+    padding: 12px;
+    border-radius: 10px;
+  }
+
+  .grid[aria-label="Wallet overview"] > .card .card-icon {
+    grid-column: 1;
+    grid-row: 1 / span 4;
+    width: 34px;
+    height: 34px;
+    margin: 0;
+    border-radius: 9px;
+    font-size: 17px;
+  }
+
+  .grid[aria-label="Wallet overview"] > .card h2,
+  .grid[aria-label="Wallet overview"] > .card .metric,
+  .grid[aria-label="Wallet overview"] > .card p,
+  .grid[aria-label="Wallet overview"] > .card .btn {
+    grid-column: 2;
+    min-width: 0;
+  }
+
+  .grid[aria-label="Wallet overview"] > .card h2 {
+    margin: 0 0 3px;
+    font-size: 13px;
+  }
+
+  .grid[aria-label="Wallet overview"] > .card .metric {
+    margin: 2px 0;
+    font-size: 21px;
+    overflow-wrap: anywhere;
+  }
+
+  .grid[aria-label="Wallet overview"] > .card p {
+    min-height: 0;
+    margin: 2px 0 8px;
+    font-size: 11px;
+    line-height: 1.45;
+  }
+
+  .grid[aria-label="Wallet overview"] > .card .btn {
+    justify-self: start;
+    max-width: 100%;
+    padding: 7px 10px;
+    font-size: 11px;
+  }
+
+  .content-grid {
+    gap: 8px;
+    margin-top: 10px;
+  }
+
+  .content-grid > .panel {
+    min-width: 0;
+    padding: 12px;
+    border-radius: 10px;
+  }
+}
+
+
+/* Individual transcription minute package cards */
+body.page-minutes .minute-phone-entry {
+  margin: 18px 0;
+  padding: 14px;
+  border: 1px solid var(--page-border);
+  border-radius: 12px;
+  background: rgba(7, 19, 34, .65);
+}
+
+body.page-minutes .minute-phone-entry p {
+  margin: 4px 0 0;
+}
+
+body.page-minutes .minute-package-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  align-items: stretch;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+body.page-minutes .minute-package-card {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 16px;
+}
+
+body.page-minutes .minute-package-card h3 {
+  margin: 0;
+  font-size: 15px;
+  overflow-wrap: anywhere;
+}
+
+body.page-minutes .minute-package-card p {
+  min-height: 0;
+  margin: 0;
+  font-size: 12px;
+}
+
+body.page-minutes .minute-package-price {
+  font-size: 25px;
+  font-weight: 900;
+  color: var(--page-accent);
+  overflow-wrap: anywhere;
+}
+
+body.page-minutes .minute-package-mpesa {
+  margin-bottom: 8px !important;
+}
+
+body.page-minutes .minute-package-button {
+  width: 100%;
+  margin-top: auto;
+}
+
+body.page-minutes .minute-package-button:disabled {
+  cursor: wait;
+  opacity: .65;
+}
+
+@media (max-width: 800px) {
+  body.page-minutes .minute-package-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 480px) {
+  body.page-minutes .minute-package-grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 9px;
+  }
+
+  body.page-minutes .minute-package-card {
+    padding: 14px;
+  }
+
+  body.page-minutes .minute-package-price {
+    font-size: 22px;
+  }
+}
+
+/* Available transcription jobs */
+body.page-jobs .available-jobs-content {
+  min-width: 0;
+}
+
+body.page-jobs .available-jobs-content > div {
+  max-width: 100%;
+}
+
+body.page-jobs .available-jobs-content table {
+  min-width: 860px;
+}
+
+body.page-jobs .available-jobs-content th {
+  background: rgba(20, 42, 69, 0.92);
+}
+
+body.page-jobs .available-jobs-content td {
+  vertical-align: middle;
+}
+
+body.page-jobs .job-row-description {
+  margin: 6px 0 0;
+  max-width: 250px;
+  color: var(--muted, #aabbd0);
+  line-height: 1.5;
+}
+
+body.page-jobs .available-jobs-content .btn {
+  white-space: nowrap;
+}
+
+body.page-jobs .job-details-panel {
+  margin-top: 18px;
+  padding: 22px;
+  border: 1px solid rgba(56, 145, 224, 0.45);
+  border-radius: 16px;
+  background: linear-gradient(145deg, #0d2038, #071426);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.2);
+}
+
+body.page-jobs .job-details-panel[hidden] {
+  display: none;
+}
+
+body.page-jobs .job-details-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  margin-bottom: 12px;
+}
+
+body.page-jobs .job-details-heading h3 {
+  margin: 8px 0;
+  overflow-wrap: anywhere;
+}
+
+body.page-jobs .job-details-title-wrap {
+  min-width: 0;
+}
+
+body.page-jobs .job-detail-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(145px, 1fr));
+  gap: 10px;
+  margin: 18px 0;
+}
+
+body.page-jobs .job-detail-item {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 14px;
+  border: 1px solid var(--page-border, #243b56);
+  border-radius: 12px;
+  background: rgba(16, 37, 62, 0.78);
+  overflow-wrap: anywhere;
+}
+
+body.page-jobs .job-detail-label {
+  color: var(--muted, #aabbd0);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+body.page-jobs .job-detail-item strong {
+  color: var(--page-accent, #55b5ff);
+}
+
+body.page-jobs .job-instructions,
+body.page-jobs .job-audio-panel {
+  margin-top: 16px;
+  padding: 16px;
+  border-radius: 12px;
+  background: rgba(3, 13, 27, 0.6);
+}
+
+body.page-jobs .job-instructions h4,
+body.page-jobs .job-audio-panel h4 {
+  margin: 0 0 10px;
+}
+
+body.page-jobs .job-instructions p,
+body.page-jobs .job-audio-panel p {
+  line-height: 1.7;
+  overflow-wrap: anywhere;
+}
+
+body.page-jobs .job-source-audio {
+  display: block;
+  width: 100%;
+  margin-top: 12px;
+}
+
+@media (max-width: 600px) {
+  body.page-jobs .job-details-panel {
+    padding: 15px;
+  }
+
+  body.page-jobs .job-details-heading {
+    flex-direction: column;
+  }
+}
+
+/* Engraved horizontal available-job list */
+body.page-jobs .available-jobs-content table {
+  min-width: 900px;
+  border-collapse: separate;
+  border-spacing: 0;
+  background: transparent;
+}
+
+body.page-jobs .available-jobs-content thead th {
+  background: transparent;
+  border-bottom: 1px solid #34516e;
+  color: #55b5ff;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  font-size: 10px;
+  padding: 14px 12px;
+}
+
+body.page-jobs .available-jobs-content tbody tr {
+  background: transparent;
+  box-shadow: inset 0 1px rgba(255,255,255,0.025),
+              inset 0 -1px rgba(0,0,0,0.25);
+}
+
+body.page-jobs .available-jobs-content tbody td {
+  background: transparent;
+  border-bottom: 1px solid #1d344d;
+  padding: 18px 12px;
+}
+
+body.page-jobs .available-jobs-content tbody tr:hover td {
+  background: rgba(49, 111, 164, 0.07);
+}
+
+body.page-jobs .job-row-description {
+  max-width: 240px;
+  font-size: 11px;
+  line-height: 1.55;
+  color: #91a8c2;
+}
+
+body.page-jobs .available-jobs-content .btn {
+  border-radius: 5px;
+  padding: 9px 11px;
+  font-size: 11px;
+  box-shadow: none;
+}
+
+body.page-jobs .job-details-panel {
+  border-radius: 5px;
+  box-shadow: none;
+  background: #09182a;
+  border: 1px solid #29415d;
+}
+
+body.page-jobs .job-detail-item {
+  border-radius: 4px;
+  box-shadow: inset 0 1px rgba(255,255,255,0.025);
+}
+
+body.page-jobs .job-instructions,
+body.page-jobs .job-audio-panel {
+  border-radius: 4px;
+  border: 1px solid #1d344d;
+}
+
+/* PTW: remove outer panels on My Jobs only */
+body.page-my-jobs main > .panel {
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  backdrop-filter: none;
+  padding: 0;
+}

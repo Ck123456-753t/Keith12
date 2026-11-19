@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#ffffff">
+<meta name="description" content="Explore PrimeTask Arcade. Play action, adventure, racing, puzzle, sports and strategy games.">
+<title>PrimeTask Arcade | Explore Games</title>
+
+<style>
+:root {
+  --navy:#101c32;
+  --navy2:#192b48;
+  --blue:#2878e8;
+  --orange:#f28c28;
+  --ink:#17243a;
+  --muted:#64748b;
+  --line:#e5eaf1;
+  --bg:#f5f7fb;
+  --white:#fff;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;background:var(--bg);color:var(--ink);
+  font-family:Inter,system-ui,-apple-system,Segoe UI,sans-serif;
+}
+button,input{font:inherit}
+button,a{-webkit-tap-highlight-color:transparent}
+a{text-decoration:none;color:inherit}
+.topbar{
+  background:#fff;border-bottom:1px solid var(--line);
+  position:sticky;top:0;z-index:20;
+}
+.nav{
+  max-width:1250px;margin:auto;padding:13px 20px;
+  display:flex;align-items:center;justify-content:space-between;gap:15px;
+}
+.brand{display:flex;align-items:center;gap:10px;font-weight:900;letter-spacing:.3px}
+.brand-mark{
+  width:42px;height:42px;border-radius:12px;background:var(--navy);
+  display:grid;place-items:center;color:white;font-size:19px;font-weight:950;
+}
+.brand small{display:block;color:var(--muted);font-size:9px;letter-spacing:1.5px}
+.nav-links{display:flex;gap:22px;align-items:center;font-size:13px;font-weight:700}
+.nav-links a:hover{color:var(--blue)}
+.nav-cta{
+  background:var(--blue);color:white;padding:11px 17px;
+  border-radius:10px;font-weight:800;font-size:12px;
+}
+main{max-width:1250px;margin:auto;padding:22px 20px 60px}
+.hero{
+  background:linear-gradient(115deg,#101c32 0%,#1b365b 65%,#174c82 100%);
+  color:#fff;border-radius:23px;overflow:hidden;position:relative;
+  min-height:290px;display:flex;align-items:center;padding:36px;
+}
+.hero:after{
+  content:"";position:absolute;width:330px;height:330px;border-radius:50%;
+  border:55px solid #ffffff0b;right:8%;top:-110px;
+}
+.hero-content{max-width:580px;position:relative;z-index:2}
+.eyebrow{
+  display:inline-flex;background:#ffffff16;color:#ffbd70;
+  border:1px solid #ffffff25;border-radius:30px;padding:7px 12px;
+  font-size:10px;font-weight:900;letter-spacing:1.5px;
+}
+.hero h1{font-size:clamp(34px,6vw,59px);line-height:1.02;margin:18px 0 12px;letter-spacing:-2px}
+.hero h1 span{color:#73b5ff}
+.hero p{color:#d1dced;line-height:1.7;font-size:14px;max-width:470px}
+.hero-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:22px}
+.primary-btn,.secondary-btn{
+  display:inline-flex;align-items:center;justify-content:center;
+  padding:13px 19px;border-radius:10px;font-size:12px;font-weight:900;
+}
+.primary-btn{background:var(--orange);color:#17243a}
+.secondary-btn{border:1px solid #ffffff60;color:white}
+.section{margin-top:34px}
+.section-head{
+  display:flex;justify-content:space-between;align-items:end;
+  gap:12px;margin-bottom:15px;
+}
+.section-head h2{margin:0;font-size:21px;letter-spacing:-.5px}
+.section-head p{margin:5px 0 0;color:var(--muted);font-size:12px}
+.search-wrap{display:flex;gap:10px;margin-top:25px}
+.search-box{
+  flex:1;min-width:0;background:#fff;border:1px solid var(--line);
+  border-radius:12px;padding:0 15px;display:flex;align-items:center;gap:10px;
+}
+.search-box input{
+  width:100%;border:0;outline:0;padding:14px 0;color:var(--ink);
+  background:transparent;font-size:13px;
+}
+.search-box span{color:var(--muted)}
+.search-button{
+  border:0;background:var(--navy);color:white;border-radius:11px;
+  padding:0 20px;font-weight:800;font-size:12px;
+}
+.categories{display:flex;gap:9px;flex-wrap:wrap}
+.category{
+  border:1px solid var(--line);background:#fff;color:#46556c;
+  padding:9px 14px;border-radius:30px;font-size:11px;font-weight:800;
+  cursor:pointer;
+}
+.category.active,.category:hover{
+  background:var(--navy);color:white;border-color:var(--navy);
+}
+.game-grid{
+  display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:17px;
+}
+.game-card{
+  background:white;border:1px solid var(--line);border-radius:16px;
+  overflow:hidden;transition:transform .2s,box-shadow .2s;
+}
+.game-card:hover{transform:translateY(-4px);box-shadow:0 12px 30px #17243a12}
+.game-image{height:165px;position:relative;background:#dce5f1;overflow:hidden}
+.game-image img{
+  width:100%;height:100%;object-fit:cover;display:block;
+  transition:transform .4s;
+}
+.game-card:hover img{transform:scale(1.045)}
+.game-tag{
+  position:absolute;left:12px;top:12px;background:#101c32e8;
+  color:white;border-radius:6px;padding:6px 9px;font-size:9px;font-weight:900;
+}
+.game-info{padding:15px}
+.game-info h3{font-size:15px;margin:0 0 6px}
+.game-info p{font-size:11px;color:var(--muted);margin:0;line-height:1.5}
+.game-bottom{
+  display:flex;justify-content:space-between;align-items:center;
+  margin-top:14px;gap:8px;
+}
+.game-type{font-size:10px;color:var(--muted);font-weight:800}
+.play-link{
+  background:#edf4ff;color:#1763c5;padding:8px 12px;
+  border-radius:8px;font-size:10px;font-weight:900;
+}
+.play-link.disabled{background:#f0f2f5;color:#778397}
+.play-link.playable{border:0;cursor:pointer;transition:transform .18s,background .18s}
+.play-link.playable:hover{background:#dceaff;transform:translateY(-1px)}
+.game-dialog{width:min(760px,calc(100% - 28px));max-width:none;max-height:min(88vh,850px);padding:0;border:0;border-radius:20px;background:#fff;color:var(--ink);box-shadow:0 28px 100px #07132866;overflow:auto}
+.game-dialog::backdrop{background:#071328bf;backdrop-filter:blur(5px)}
+.dialog-head{position:sticky;top:0;z-index:3;display:flex;justify-content:space-between;align-items:center;gap:15px;padding:18px 21px;background:#fff;border-bottom:1px solid var(--line)}
+.dialog-title{display:flex;align-items:center;gap:11px;min-width:0}.dialog-icon{width:40px;height:40px;flex:0 0 auto;display:grid;place-items:center;border-radius:12px;background:#edf4ff;font-size:20px}.dialog-title h2{font-size:17px;margin:0}.dialog-title p{font-size:10px;color:var(--muted);margin:3px 0 0}.dialog-close{width:36px;height:36px;border:1px solid var(--line);border-radius:10px;background:#fff;color:#52627a;font-size:20px;cursor:pointer}.dialog-close:hover{background:#f1f5fa}.dialog-body{padding:20px;min-height:290px}.game-intro{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:14px}.game-intro p{color:var(--muted);font-size:11px;margin:0;line-height:1.5}.game-stat{background:#f2f6fc;border:1px solid #e5ecf5;border-radius:10px;padding:8px 11px;text-align:center;min-width:76px}.game-stat small{display:block;color:#718198;font-size:8px;font-weight:900;letter-spacing:1px}.game-stat strong{display:block;font-size:16px;margin-top:2px}.game-actions{display:flex;justify-content:center;flex-wrap:wrap;gap:8px;margin-top:14px}.game-btn{border:0;border-radius:9px;background:var(--navy);color:#fff;padding:10px 15px;font-size:11px;font-weight:900;cursor:pointer}.game-btn:hover{background:#263f63}.game-btn.primary{background:var(--blue)}.game-btn.primary:hover{background:#1765ca}.game-btn.light{background:#edf3fb;color:#273852}.game-message{text-align:center;min-height:20px;margin:11px 0 0;color:#62738a;font-size:11px}.game-board{border:1px solid #e5ebf3;background:#f5f8fc;border-radius:13px;padding:12px}.lane-controls{display:flex;justify-content:center;gap:8px;margin-top:11px}.arcade-canvas{display:block;width:100%;max-width:640px;margin:auto;border-radius:11px;background:#0b1629;touch-action:none}.game-dialog button:focus-visible{outline:3px solid #78aaff;outline-offset:2px}
+.racer-track{display:grid;grid-template-columns:repeat(3,minmax(60px,1fr));gap:5px;max-width:430px;height:240px;margin:auto;padding:8px;background:linear-gradient(90deg,#333b47 0 32%,#f3f5f7 32% 33%,#333b47 33% 66%,#f3f5f7 66% 67%,#333b47 67%);border-radius:11px;overflow:hidden}.racer-cell{display:grid;place-items:center;color:#fff;font-size:23px}.racer-cell.player{align-self:end;height:42px;color:#ffbd70;text-shadow:0 3px 8px #000}.racer-cell.obstacle{font-size:21px}
+.memory-board{display:grid;grid-template-columns:repeat(4,minmax(48px,78px));justify-content:center;gap:9px;padding:10px}.memory-tile{aspect-ratio:1;border:1px solid #dce5f1;background:linear-gradient(145deg,#fff,#eaf1fa);border-radius:12px;color:transparent;font-size:clamp(21px,5vw,32px);cursor:pointer}.memory-tile:hover{border-color:#74a7ee}.memory-tile.open,.memory-tile.matched{color:#17243a;background:#e5efff;border-color:#7ba9e9}.memory-tile.matched{background:#e4f8ee;border-color:#68c896}.memory-tile:disabled{cursor:default}
+.shooter-controls{display:flex;justify-content:center;gap:10px;margin-top:10px}.shooter-controls .game-btn{min-width:55px}
+.word-grid{display:grid;grid-template-columns:repeat(9,minmax(28px,43px));justify-content:center;gap:4px;padding:8px}.word-cell{aspect-ratio:1;border:1px solid #e1e8f1;background:#fff;border-radius:7px;color:#26364d;font-weight:850;cursor:pointer}.word-cell.selected{background:#dceaff;border-color:#6b9de7}.word-cell.found{background:#dff6e9;border-color:#73c899;color:#176139}.word-list{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin:10px 0 0}.word-chip{padding:6px 9px;border-radius:20px;background:#edf2f8;color:#586a82;font-size:10px;font-weight:900}.word-chip.found{text-decoration:line-through;background:#e2f5e9;color:#26834c}
+.knight-board{display:grid;grid-template-columns:repeat(5,minmax(42px,66px));justify-content:center;gap:3px;padding:8px}.knight-cell{aspect-ratio:1;border:0;display:grid;place-items:center;font-size:clamp(20px,5vw,31px);color:#344963;cursor:pointer}.knight-cell.light-square{background:#f4f7fb}.knight-cell.dark-square{background:#dce5f0}.knight-cell.visited{background:#dceeff!important;color:#1763c5}.knight-cell.current{background:#2878e8!important;color:#fff}.knight-cell.legal{box-shadow:inset 0 0 0 3px #f28c28}
+.quest-scene{max-width:560px;margin:0 auto;text-align:center;padding:25px 18px;background:linear-gradient(135deg,#172b48,#254e6a);border-radius:15px;color:#fff}.quest-scene .scene-icon{font-size:40px}.quest-scene h3{margin:9px 0 7px}.quest-scene p{margin:0 auto;max-width:420px;color:#e0eaf4;font-size:12px;line-height:1.7}.quest-stats{display:flex;justify-content:center;gap:9px;margin:12px 0}.quest-stats span{padding:7px 10px;background:#f0f4fa;border-radius:9px;color:#374961;font-size:10px;font-weight:900}
+.game-dialog[open]{animation:dialogIn .18s ease-out}@keyframes dialogIn{from{opacity:0;transform:translateY(8px) scale(.99)}to{opacity:1;transform:translateY(0) scale(1)}}
+.empty-state{
+  display:none;text-align:center;padding:35px;background:#fff;
+  border:1px solid var(--line);border-radius:14px;color:var(--muted);
+}
+.info-strip{
+  margin-top:35px;background:#fff;border:1px solid var(--line);
+  border-radius:17px;padding:20px;display:grid;
+  grid-template-columns:repeat(3,1fr);gap:15px;
+}
+.info-item{display:flex;gap:12px;align-items:center}
+.info-icon{
+  width:40px;height:40px;display:grid;place-items:center;
+  border-radius:12px;background:#edf4ff;color:var(--blue);font-size:19px;
+}
+.info-item strong{display:block;font-size:12px}
+.info-item small{color:var(--muted);font-size:10px}
+.footer{
+  background:var(--navy);color:#d1dced;margin-top:30px;
+  padding:28px 20px;text-align:center;font-size:11px;
+}
+.footer strong{color:white}
+@media(max-width:800px){
+  .game-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .nav-links{display:none}
+  .hero{padding:28px;min-height:260px}
+}
+@media(max-width:520px){
+  main{padding:15px 13px 40px}
+  .nav{padding:10px 13px}
+  .brand{font-size:13px}
+  .hero{padding:24px 20px;border-radius:17px}
+  .hero h1{font-size:39px}
+  .hero p{font-size:12px}
+  .game-grid{gap:10px}
+  .game-image{height:120px}
+  .game-info{padding:11px}
+  .game-info h3{font-size:13px}
+  .game-info p{font-size:10px}
+  .game-bottom{align-items:flex-start;flex-direction:column}
+  .play-link{width:100%;text-align:center}
+  .info-strip{grid-template-columns:1fr;padding:15px}
+  .search-button{padding:0 13px}
+  .dialog-head{padding:13px 14px}.dialog-body{padding:13px;min-height:260px}.dialog-title h2{font-size:15px}.dialog-icon{width:36px;height:36px}.game-intro{align-items:flex-start}.racer-track{height:200px}.word-grid{grid-template-columns:repeat(9,minmax(24px,43px));gap:3px;padding:3px}.word-cell{border-radius:5px;font-size:11px}.knight-board{gap:2px;padding:2px}
+}
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{scroll-behavior:auto!important;transition:none!important}
+}
+</style>
+</head>
+
+<body>
+<header class="topbar">
+  <nav class="nav">
+    <a class="brand" href="/arcade/">
+      <span class="brand-mark">PT</span>
+      <span>PRIMETASK ARCADE<small>THE WORLD OF GAMING</small></span>
+    </a>
+    <div class="nav-links">
+      <a href="#discover">Discover</a>
+      <a href="#categories">Categories</a>
+      <a href="#games">Games</a>
+    </div>
+    <a class="nav-cta" href="#games">EXPLORE GAMES</a>
+  </nav>
+</header>
+
+<main>
+  <section class="hero">
+    <div class="hero-content">
+      <span class="eyebrow">WELCOME TO YOUR GAMING WORLD</span>
+      <h1>PLAY YOUR WORLD.<br><span>EXPLORE THE FUN.</span></h1>
+      <p>From intense battles and high-speed racing to brain-teasing puzzles and exciting adventures, discover a world of games in one place.</p>
+      <div class="hero-actions">
+        <a class="primary-btn" href="#games">EXPLORE GAMES ↓</a>
+        <a class="secondary-btn" href="#categories">BROWSE CATEGORIES</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="search-wrap" id="discover">
+    <label class="search-box">
+      <span>⌕</span>
+      <input id="gameSearch" type="search" placeholder="Search games or categories..." autocomplete="off">
+    </label>
+    <button class="search-button" id="searchButton">SEARCH</button>
+  </section>
+
+  <section class="section" id="categories">
+    <div class="section-head">
+      <div><h2>Explore game worlds</h2><p>Choose the kind of fun you're looking for.</p></div>
+    </div>
+    <div class="categories">
+      <button class="category active" data-category="all">All games</button>
+      <button class="category" data-category="adventure">Adventure</button>
+      <button class="category" data-category="fighting">Fighting</button>
+      <button class="category" data-category="racing">Racing</button>
+      <button class="category" data-category="action">Action</button>
+      <button class="category" data-category="puzzle">Puzzle</button>
+      <button class="category" data-category="sports">Sports</button>
+      <button class="category" data-category="strategy">Strategy</button>
+    </div>
+  </section>
+
+  <section class="section" id="games">
+    <div class="section-head">
+      <div><h2>Discover games</h2><p>Pick a game and jump straight into the action.</p></div>
+    </div>
+
+    <div class="game-grid" id="gameGrid">
+
+      <article class="game-card" data-category="adventure" data-search="adventure fantasy exploration">
+        <div class="game-image">
+          <img src="https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=850&q=75" alt="Fantasy adventure landscape" loading="lazy">
+          <span class="game-tag">ADVENTURE</span>
+        </div>
+        <div class="game-info">
+          <h3>Adventure Quest</h3>
+          <p>Explore mysterious worlds and discover new challenges.</p>
+          <div class="game-bottom"><span class="game-type">EXPLORATION</span><button class="play-link playable" type="button" data-play="adventure">PLAY NOW →</button></div>
+        </div>
+      </article>
+
+
+      <article class="game-card" data-category="racing" data-search="racing cars speed driving">
+        <div class="game-image">
+          <img src="https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?auto=format&fit=crop&w=850&q=75" alt="Sports car" loading="lazy">
+          <span class="game-tag">RACING</span>
+        </div>
+        <div class="game-info">
+          <h3>Street Racer</h3>
+          <p>Take the wheel and chase the fastest times.</p>
+          <div class="game-bottom"><span class="game-type">DRIVING</span><button class="play-link playable" type="button" data-play="racing">PLAY NOW →</button></div>
+        </div>
+      </article>
+
+      <article class="game-card" data-category="action" data-search="space shooter action spaceship">
+        <div class="game-image">
+          <img src="https://images.unsplash.com/photo-1462331940025-496dfbfc7564?auto=format&fit=crop&w=850&q=75" alt="Deep space and stars" loading="lazy">
+          <span class="game-tag">ACTION</span>
+        </div>
+        <div class="game-info">
+          <h3>Space Defender</h3>
+          <p>Defend the galaxy through waves of enemies.</p>
+          <div class="game-bottom"><span class="game-type">SPACE SHOOTER</span><button class="play-link playable" type="button" data-play="space">PLAY NOW →</button></div>
+        </div>
+      </article>
+
+      <article class="game-card" data-category="puzzle" data-search="puzzle brain memory logic">
+        <div class="game-image">
+          <img src="https://images.unsplash.com/photo-1606092195730-5d7b9af1efc5?auto=format&fit=crop&w=850&q=75" alt="Board game pieces" loading="lazy">
+          <span class="game-tag">PUZZLE</span>
+        </div>
+        <div class="game-info">
+          <h3>Brain Challenge</h3>
+          <p>Test your memory, logic and problem-solving skills.</p>
+          <div class="game-bottom"><span class="game-type">BRAIN GAMES</span><button class="play-link playable" type="button" data-play="brain">PLAY NOW →</button></div>
+        </div>
+      </article>
+
+      <article class="game-card" data-category="sports" data-search="football soccer sports">
+        <div class="game-image">
+          <img src="https://images.unsplash.com/photo-1522778119026-d647f0596c20?auto=format&fit=crop&w=850&q=75" alt="Football stadium" loading="lazy">
+          <span class="game-tag">SPORTS</span>
+        </div>
+        <div class="game-info">
+          <h3>Sports Arena</h3>
+          <p>Step into the competition and prove your skills.</p>
+          <div class="game-bottom"><span class="game-type">SPORTS</span><button class="play-link playable" type="button" data-play="sports">PLAY NOW →</button></div>
+        </div>
+      </article>
+
+      <article class="game-card" data-category="strategy" data-search="strategy knight tour chess tactical">
+        <div class="game-image">
+          <img src="https://images.unsplash.com/photo-1586165368502-1bad197a6461?auto=format&fit=crop&w=850&q=75" alt="Chess pieces" loading="lazy">
+          <span class="game-tag">STRATEGY</span>
+        </div>
+        <div class="game-info">
+          <h3>Knight’s Tour</h3>
+          <p>Guide your knight across every square without repeating a move.</p>
+          <div class="game-bottom"><span class="game-type">STRATEGY</span><button class="play-link playable" type="button" data-play="chess">PLAY NOW →</button></div>
+        </div>
+      </article>
+
+      <article class="game-card" data-category="action" data-search="classic arcade retro snake">
+        <div class="game-image">
+          <img src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=850&q=75" alt="Retro arcade gaming" loading="lazy">
+          <span class="game-tag">CLASSIC ARCADE</span>
+        </div>
+        <div class="game-info">
+          <h3>Retro Arcade</h3>
+          <p>Enjoy classic-style games and beat your high scores.</p>
+          <div class="game-bottom"><span class="game-type">CLASSIC</span><button class="play-link playable" type="button" data-play="snake">PLAY NOW →</button></div>
+        </div>
+      </article>
+
+      <article class="game-card" data-category="puzzle" data-search="word hunt word search letters">
+        <div class="game-image">
+          <img src="https://images.unsplash.com/photo-1455390582262-044cdead277a?auto=format&fit=crop&w=850&q=75" alt="Writing and word puzzle inspiration" loading="lazy">
+          <span class="game-tag">WORD GAMES</span>
+        </div>
+        <div class="game-info">
+          <h3>Word Hunt</h3>
+          <p>Find hidden words and challenge your vocabulary.</p>
+          <div class="game-bottom"><span class="game-type">WORD PUZZLE</span><button class="play-link playable" type="button" data-play="word">PLAY NOW →</button></div>
+        </div>
+      </article>
+
+    </div>
+
+    <div class="empty-state" id="emptyState">No games match your search. Try another name or category.</div>
+  </section>
+
+  <section class="info-strip">
+    <div class="info-item"><span class="info-icon">🎮</span><div><strong>Play freely</strong><small>Arcade access for everyone.</small></div></div>
+    <div class="info-item"><span class="info-icon">📱</span><div><strong>Mobile friendly</strong><small>Designed for phones and tablets.</small></div></div>
+    <div class="info-item"><span class="info-icon">⭐</span><div><strong>More games ahead</strong><small>New experiences added over time.</small></div></div>
+  </section>
+</main>
+
+<dialog class="game-dialog" id="gameDialog" aria-labelledby="dialogGameTitle">
+  <div class="dialog-head"><div class="dialog-title"><span class="dialog-icon" id="dialogGameIcon" aria-hidden="true">🎮</span><div><h2 id="dialogGameTitle">Game</h2><p id="dialogGameSubtitle">Ready to play</p></div></div><button class="dialog-close" id="closeGame" type="button" aria-label="Close game">×</button></div>
+  <div class="dialog-body" id="dialogGameBody"></div>
+</dialog>
+
+<footer class="footer">
+  <strong>PRIMETASK ARCADE</strong><br>
+  A world of games. One place to explore.<br><br>
+  <a href="/">PrimeTask Workspace</a> · Entertainment only
+</footer>
+
+<script>
+(() => {
+  const search = document.getElementById("gameSearch");
+  const cards = [...document.querySelectorAll(".game-card")];
+  const filters = [...document.querySelectorAll(".category")];
+  const empty = document.getElementById("emptyState");
+  const dialog = document.getElementById("gameDialog");
+  const dialogBody = document.getElementById("dialogGameBody");
+  const dialogTitle = document.getElementById("dialogGameTitle");
+  const dialogSubtitle = document.getElementById("dialogGameSubtitle");
+  const dialogIcon = document.getElementById("dialogGameIcon");
+  const gameNames = {
+    adventure: ["Adventure Quest", "🗺️", "Make choices, find treasure, and make it back to camp."],
+    racing: ["Street Racer", "🏎️", "Dodge traffic and see how far you can drive."],
+    space: ["Space Defender", "🚀", "Protect your ship and blast the incoming asteroids."],
+    brain: ["Brain Challenge", "🧠", "Match every pair of cosmic cards."],
+    sports: ["Sports Arena", "⚽", "Take five shots and aim around the goalie."],
+    chess: ["Knight’s Tour", "♞", "Visit every square in this knight-move challenge."],
+    snake: ["Retro Arcade", "🐍", "Eat the dots, grow your snake, and chase a new high score."],
+    word: ["Word Hunt", "🔤", "Find six hidden words in the letter grid."],
+  };
+  let activeGame = "";
+  let gameOpener = null;
+  let gameTimer = null;
+  let gameKeyHandler = null;
+  let gameState = {};
+
+  function stopGame() {
+    clearInterval(gameTimer);
+    clearTimeout(gameTimer);
+    gameTimer = null;
+    if (gameState.cleanup) gameState.cleanup();
+    if (gameKeyHandler) document.removeEventListener("keydown", gameKeyHandler);
+    gameKeyHandler = null;
+  }
+  function setGame(html) { dialogBody.innerHTML = html; }
+  function stat(label, id, value = "0") {
+    return `<span class="game-stat"><small>${label}</small><strong id="${id}">${value}</strong></span>`;
+  }
+  function message(text) {
+    const node = dialogBody.querySelector(".game-message");
+    if (node) node.textContent = text;
+  }
+  function launchGame(name) {
+    if (!gameNames[name]) return;
+    stopGame(); gameState = {}; activeGame = name; gameOpener = document.activeElement;
+    [dialogTitle.textContent, dialogIcon.textContent, dialogSubtitle.textContent] = gameNames[name];
+    if (!dialog.open) dialog.showModal();
+    ({adventure: startAdventure, racing: startRacing, space: startSpace, brain: startBrain, sports: startSports, chess: startChess, snake: startSnake, word: startWord})[name]();
+  }
+
+  document.querySelectorAll(".play-link[data-play]").forEach(button => button.addEventListener("click", () => launchGame(button.dataset.play)));
+  document.getElementById("closeGame").addEventListener("click", () => dialog.close());
+  dialog.addEventListener("close", () => {
+    stopGame(); activeGame = "";
+    if (gameOpener && gameOpener.isConnected) gameOpener.focus();
+  });
+  dialog.addEventListener("click", event => { if (event.target === dialog) dialog.close(); });
+  dialog.addEventListener("cancel", stopGame);
+
+  function startAdventure() {
+    gameState = { scene: 0, coins: 0, energy: 3 };
+    const scenes = [
+      { icon:"🌲", title:"The Whispering Woods", text:"A map leads you to a fork in the trail. A silver light glimmers between the trees, while a warm lantern glows down the path.", choices:[["Follow the silver glow", "glow"],["Follow the lantern", "lantern"]] },
+      { icon:"🧚", title:"A Helpful Forest Sprite", text:"A tiny sprite offers you a choice: a sparkling coin or a shortcut through a patch of brambles.", choices:[["Take the coin", "coin"],["Try the shortcut", "shortcut"]] },
+      { icon:"🪨", title:"The Old Stone Bridge", text:"The bridge creaks above a bubbling stream. You spot a sturdy stepping-stone route nearby.", choices:[["Cross the bridge carefully", "bridge"],["Hop across the stones", "stones"]] },
+      { icon:"🏰", title:"The Lost Garden", text:"You found the garden! A little chest sits beneath the old oak. What will you do?", choices:[["Open the chest", "treasure"],["Rest under the oak", "rest"]] }
+    ];
+    function render() {
+      const scene = scenes[gameState.scene];
+      setGame(`<div class="game-intro"><p>Choose your path. Your choices shape the story.</p>${stat("COINS", "questCoins", gameState.coins)}</div><div class="quest-stats"><span>💚 Energy: ${gameState.energy}</span><span>📍 Stop ${gameState.scene + 1} of 4</span></div><div class="quest-scene"><div class="scene-icon">${scene.icon}</div><h3>${scene.title}</h3><p>${scene.text}</p><div class="game-actions">${scene.choices.map(([label, action]) => `<button class="game-btn adventure-choice" data-action="${action}">${label}</button>`).join("")}</div></div><p class="game-message">Your adventure is just beginning.</p>`);
+      dialogBody.querySelectorAll(".adventure-choice").forEach(btn => btn.addEventListener("click", () => {
+        if (btn.dataset.action === "coin" || btn.dataset.action === "treasure" || btn.dataset.action === "glow") gameState.coins++;
+        if (btn.dataset.action === "shortcut" || btn.dataset.action === "bridge") gameState.energy = Math.max(1, gameState.energy - 1);
+        if (gameState.scene < scenes.length - 1) { gameState.scene++; render(); }
+        else { const ending = gameState.coins >= 2 ? "You made it home with a pocketful of treasure. A perfect little quest!" : "You made it home safely, with a story worth telling. Adventure complete!"; setGame(`<div class="quest-scene"><div class="scene-icon">${gameState.coins >= 2 ? "🏆" : "🌟"}</div><h3>Quest complete!</h3><p>${ending}</p></div><div class="quest-stats"><span>🪙 Coins found: ${gameState.coins}</span><span>💚 Energy left: ${gameState.energy}</span></div><div class="game-actions"><button class="game-btn primary" id="questAgain">Explore again</button></div><p class="game-message">Thanks for adventuring!</p>`); dialogBody.querySelector("#questAgain").addEventListener("click", startAdventure); }
+      }));
+    }
+    render();
+  }
+
+  function startRacing() {
+    gameState = { lane: 1, score: 0, rows: [], running: false, over: false };
+    let best = 0; try { best = Number(localStorage.getItem("ptw_racer_best")) || 0; } catch (_) {}
+    setGame(`<div class="game-intro"><p>Switch lanes to avoid traffic. Arrow keys, A/D, or tap the lane buttons.</p>${stat("DISTANCE", "raceScore", "0 m")}</div><div class="racer-track" id="racerTrack" aria-label="Three lane racing game"></div><div class="lane-controls"><button class="game-btn light" data-lane="0" aria-label="Left lane">←</button><button class="game-btn primary" id="raceStart">Start driving</button><button class="game-btn light" data-lane="2" aria-label="Right lane">→</button></div><p class="game-message" id="raceMessage">Best distance: ${best} m · Traffic gets faster as you go.</p>`);
+    const track = dialogBody.querySelector("#racerTrack");
+    function draw() {
+      track.replaceChildren();
+      for (let row = 0; row < 6; row++) for (let lane = 0; lane < 3; lane++) {
+        const cell = document.createElement("div"); cell.className = "racer-cell";
+        if (row === 5 && lane === gameState.lane) { cell.classList.add("player"); cell.textContent = "🏎️"; }
+        else if (gameState.rows[row] === lane) { cell.classList.add("obstacle"); cell.textContent = "🚙"; }
+        track.append(cell);
+      }
+      dialogBody.querySelector("#raceScore").textContent = `${gameState.score} m`;
+    }
+    function finish() { stopGame(); gameState.running=false; gameState.over=true; let saved=0;try{saved=Number(localStorage.getItem("ptw_racer_best"))||0;if(gameState.score>saved)localStorage.setItem("ptw_racer_best",String(gameState.score));}catch(_){} message(`Crash! You drove ${gameState.score} m. Best: ${Math.max(saved,gameState.score)} m.`); dialogBody.querySelector("#raceStart").textContent="Race again"; }
+    function step() { gameState.rows.unshift(Math.random()<.63?Math.floor(Math.random()*3):-1); gameState.rows.length=6; gameState.score++; if(gameState.rows[5]===gameState.lane){draw();finish();return;} draw(); if(gameState.score%12===0){clearInterval(gameTimer);gameTimer=setInterval(step,Math.max(115,370-gameState.score*5));} }
+    function move(lane){if(gameState.over){gameState.lane=lane;return;}gameState.lane=Math.max(0,Math.min(2,lane));draw();}
+    dialogBody.querySelectorAll("[data-lane]").forEach(btn=>btn.addEventListener("click",()=>move(Number(btn.dataset.lane))));
+    dialogBody.querySelector("#raceStart").addEventListener("click",()=>{if(gameState.running)return;gameState.rows=[];gameState.score=0;gameState.over=false;gameState.running=true;gameState.lane=1;draw();message("Go! Watch the lanes.");gameTimer=setInterval(step,370);});
+    gameKeyHandler=e=>{if(activeGame!=="racing")return;if(["ArrowLeft","a","A"].includes(e.key)){e.preventDefault();move(gameState.lane-1);}if(["ArrowRight","d","D"].includes(e.key)){e.preventDefault();move(gameState.lane+1);}};
+    document.addEventListener("keydown",gameKeyHandler);draw();
+  }
+
+  function startSpace() {
+    gameState = { x: 300, score: 0, shots: [], rocks: [], tick: 0, running: false, over: false, keys: new Set() };
+    let best=0;try{best=Number(localStorage.getItem("ptw_space_best"))||0;}catch(_){}
+    setGame(`<div class="game-intro"><p>Move with ← → or A/D. Shoot with Space or the FIRE button.</p>${stat("SCORE", "spaceScore", "0")}</div><canvas class="arcade-canvas" id="spaceCanvas" width="600" height="320" aria-label="Space shooter game"></canvas><div class="shooter-controls"><button class="game-btn light" data-space="left">←</button><button class="game-btn primary" id="spaceStart">Launch</button><button class="game-btn" id="spaceFire">FIRE</button><button class="game-btn light" data-space="right">→</button></div><p class="game-message" id="spaceMessage">Best score: ${best} · Destroy asteroids before they reach your ship.</p>`);
+    const canvas=dialogBody.querySelector("#spaceCanvas"),ctx=canvas.getContext("2d");
+    function draw(){ctx.fillStyle="#081426";ctx.fillRect(0,0,600,320);for(let i=0;i<42;i++){const x=(i*97+23)%600,y=(i*53+gameState.tick*1.2)%320;ctx.fillStyle="#ffffff70";ctx.fillRect(x,y,2,2);}ctx.fillStyle="#83bdff";ctx.font="24px sans-serif";ctx.textAlign="center";ctx.fillText("🚀",gameState.x,294);ctx.font="19px sans-serif";gameState.rocks.forEach(r=>ctx.fillText("☄️",r.x,r.y));ctx.fillStyle="#ffbd70";gameState.shots.forEach(s=>{ctx.beginPath();ctx.roundRect(s.x-2,s.y-8,4,12,2);ctx.fill();});dialogBody.querySelector("#spaceScore").textContent=gameState.score;}
+    function finish(){stopGame();gameState.running=false;gameState.over=true;let saved=0;try{saved=Number(localStorage.getItem("ptw_space_best"))||0;if(gameState.score>saved)localStorage.setItem("ptw_space_best",String(gameState.score));}catch(_){}message(`Ship hit! Score: ${gameState.score}. Best: ${Math.max(saved,gameState.score)}.`);dialogBody.querySelector("#spaceStart").textContent="Play again";}
+    function step(){gameState.tick++;if(gameState.keys.has("left"))gameState.x=Math.max(20,gameState.x-6);if(gameState.keys.has("right"))gameState.x=Math.min(580,gameState.x+6);if(gameState.tick%32===0)gameState.rocks.push({x:25+Math.random()*550,y:-5});gameState.rocks.forEach(r=>r.y+=2.3+Math.min(gameState.score*.04,2));gameState.shots.forEach(s=>s.y-=8);gameState.shots=gameState.shots.filter(s=>s.y>0);gameState.rocks=gameState.rocks.filter(r=>{const hit=gameState.shots.some(s=>Math.abs(s.x-r.x)<22&&Math.abs(s.y-r.y)<20);if(hit){gameState.shots=gameState.shots.filter(s=>!(Math.abs(s.x-r.x)<22&&Math.abs(s.y-r.y)<20));gameState.score++;}if(r.y>278&&Math.abs(r.x-gameState.x)<25){finish();return false;}return r.y<335&&!hit;});draw();}
+    function fire(){if(gameState.running)gameState.shots.push({x:gameState.x,y:276});}
+    dialogBody.querySelector("#spaceStart").addEventListener("click",()=>{if(gameState.running)return;gameState.x=300;gameState.score=0;gameState.tick=0;gameState.shots=[];gameState.rocks=[];gameState.over=false;gameState.running=true;gameTimer=setInterval(step,35);message("Defend your ship!");});
+    dialogBody.querySelector("#spaceFire").addEventListener("click",fire);
+    dialogBody.querySelectorAll("[data-space]").forEach(btn=>{const d=btn.dataset.space;btn.addEventListener("pointerdown",()=>gameState.keys.add(d));["pointerup","pointerleave","pointercancel"].forEach(type=>btn.addEventListener(type,()=>gameState.keys.delete(d)));});
+    canvas.addEventListener("pointermove",e=>{if(!gameState.running)return;const r=canvas.getBoundingClientRect();gameState.x=Math.max(20,Math.min(580,(e.clientX-r.left)*600/r.width));});
+    canvas.addEventListener("pointerdown",fire);
+    gameKeyHandler=e=>{if(activeGame!=="space")return;if(["ArrowLeft","a","A"].includes(e.key)){e.preventDefault();gameState.keys.add("left");}if(["ArrowRight","d","D"].includes(e.key)){e.preventDefault();gameState.keys.add("right");}if(e.code==="Space"){e.preventDefault();fire();}};
+    const keyup=e=>{if(["ArrowLeft","a","A"].includes(e.key))gameState.keys.delete("left");if(["ArrowRight","d","D"].includes(e.key))gameState.keys.delete("right");};
+    document.addEventListener("keydown",gameKeyHandler);document.addEventListener("keyup",keyup);gameState.cleanup=()=>document.removeEventListener("keyup",keyup);draw();
+  }
+
+  const memorySymbols=["🌙","🍓","🚀","🌈","🪐","🦊","🎧","⚡"];
+  function startBrain(){gameState={deck:[...memorySymbols,...memorySymbols].sort(()=>Math.random()-.5),flipped:[],matched:new Set(),moves:0,locked:false};setGame(`<div class="game-intro"><p>Flip two cards at a time. Match all eight pairs.</p>${stat("MOVES","brainMoves","0")}</div><div class="game-board"><div class="memory-board" id="memoryBoard"></div></div><p class="game-message" id="brainMessage">Find your first pair!</p><div class="game-actions"><button class="game-btn light" id="brainRestart">Shuffle cards</button></div>`);const board=dialogBody.querySelector("#memoryBoard");gameState.deck.forEach((emoji,i)=>{const b=document.createElement("button");b.className="memory-tile";b.type="button";b.textContent=emoji;b.setAttribute("aria-label",`Hidden card ${i+1}`);b.addEventListener("click",()=>{if(gameState.locked||gameState.matched.has(i)||gameState.flipped.includes(i))return;b.classList.add("open");b.setAttribute("aria-label",`${emoji}`);gameState.flipped.push(i);if(gameState.flipped.length<2)return;gameState.moves++;dialogBody.querySelector("#brainMoves").textContent=gameState.moves;const [a,c]=gameState.flipped;if(gameState.deck[a]===gameState.deck[c]){gameState.matched.add(a);gameState.matched.add(c);[a,c].forEach(n=>{board.children[n].classList.add("matched");board.children[n].disabled=true;});gameState.flipped=[];if(gameState.matched.size===16)message(`Brilliant! All pairs in ${gameState.moves} moves.`);}else{gameState.locked=true;gameTimer=setTimeout(()=>{[a,c].forEach(n=>{board.children[n].classList.remove("open");board.children[n].setAttribute("aria-label",`Hidden card ${n+1}`);});gameState.flipped=[];gameState.locked=false;},700);}});board.append(b);});dialogBody.querySelector("#brainRestart").addEventListener("click",startBrain);}
+
+  function startSports(){gameState={score:0,shot:0,goalie:-1};setGame(`<div class="game-intro"><p>Pick a corner. The keeper will guess too — can you score three?</p>${stat("GOALS","sportsScore","0")}</div><div class="quest-scene" style="background:linear-gradient(145deg,#176643,#279251)"><div class="scene-icon">🥅</div><h3 id="sportsTitle">Penalty shootout!</h3><p id="sportsText">Choose a target to take your first shot.</p><div class="game-actions" id="shotTargets"><button class="game-btn" data-shot="0">↖ Top left</button><button class="game-btn" data-shot="1">↑ Top center</button><button class="game-btn" data-shot="2">↗ Top right</button><button class="game-btn" data-shot="3">↙ Bottom left</button><button class="game-btn" data-shot="4">↓ Bottom center</button><button class="game-btn" data-shot="5">↘ Bottom right</button></div></div><p class="game-message" id="sportsMessage">Shot 1 of 5</p>`);dialogBody.querySelectorAll("[data-shot]").forEach(b=>b.addEventListener("click",()=>{if(gameState.shot>=5)return;const target=Number(b.dataset.shot),keeper=Math.floor(Math.random()*6);gameState.shot++;if(target!==keeper)gameState.score++;dialogBody.querySelector("#sportsScore").textContent=gameState.score;dialogBody.querySelector("#sportsTitle").textContent=target===keeper?"Saved by the keeper!":"GOAL!";dialogBody.querySelector("#sportsText").textContent=target===keeper?"The keeper guessed your shot. Reset and pick another corner.":"Into the back of the net! Take your next shot.";message(gameState.shot<5?`Shot ${gameState.shot+1} of 5 · ${gameState.score} goal${gameState.score===1?"":"s"} so far.`:`Full time! You scored ${gameState.score} out of 5.`);if(gameState.shot===5)dialogBody.querySelectorAll("[data-shot]").forEach(x=>x.disabled=true);}));}
+
+  function startChess(){gameState={visited:[12],current:12,complete:false};setGame(`<div class="game-intro"><p>Move the knight in an L-shape. Visit all 25 squares without repeating one.</p>${stat("SQUARES","knightCount","1 / 25")}</div><div class="game-board"><div class="knight-board" id="knightBoard"></div></div><p class="game-message" id="knightMessage">Start in the center. Orange outlines show legal moves.</p><div class="game-actions"><button class="game-btn light" id="knightReset">Restart tour</button></div>`);const board=dialogBody.querySelector("#knightBoard"),moves=[[1,2],[2,1],[2,-1],[1,-2],[-1,-2],[-2,-1],[-2,1],[-1,2]];function render(){board.replaceChildren();const cx=gameState.current%5,cy=Math.floor(gameState.current/5),legal=new Set(moves.map(([dx,dy])=>[cx+dx,cy+dy]).filter(([x,y])=>x>=0&&x<5&&y>=0&&y<5).map(([x,y])=>y*5+x).filter(n=>!gameState.visited.includes(n)));for(let i=0;i<25;i++){const b=document.createElement("button");b.type="button";b.className=`knight-cell ${(Math.floor(i/5)+i%5)%2?"dark-square":"light-square"}`;b.classList.add((Math.floor(i/5)+i%5)%2?"dark-square":"light-square");if(gameState.visited.includes(i))b.classList.add("visited");if(i===gameState.current){b.classList.add("current");b.textContent="♞";}else if(gameState.visited.includes(i))b.textContent="·";if(legal.has(i))b.classList.add("legal");b.setAttribute("aria-label",`Square ${i+1}${legal.has(i)?", legal move":""}`);b.addEventListener("click",()=>{if(!legal.has(i)||gameState.complete)return;gameState.current=i;gameState.visited.push(i);if(gameState.visited.length===25){gameState.complete=true;message("A perfect knight’s tour! You visited every square.");}else if(!gameState.complete&&gameState.visited.length<25&&!moves.some(([dx,dy])=>{const x=i%5+dx,y=Math.floor(i/5)+dy;return x>=0&&x<5&&y>=0&&y<5&&!gameState.visited.includes(y*5+x);})){message("No moves left — restart and try a new route.");}else message(`${gameState.visited.length} of 25 squares visited. Keep going!`);dialogBody.querySelector("#knightCount").textContent=`${gameState.visited.length} / 25`;render();});board.append(b);}}dialogBody.querySelector("#knightReset").addEventListener("click",startChess);render();}
+
+  function startSnake(){gameState={body:[{x:7,y:6},{x:6,y:6},{x:5,y:6}],dir:{x:1,y:0},next:{x:1,y:0},food:{x:12,y:8},score:0,running:false,over:false};let best=0;try{best=Number(localStorage.getItem("ptw_snake_best"))||0;}catch(_){}setGame(`<div class="game-intro"><p>Arrow keys or WASD to steer. On touch screens, swipe across the game board.</p>${stat("SCORE","snakeScore","0")}</div><div class="game-board"><canvas class="arcade-canvas" id="snakeCanvas" width="480" height="320" aria-label="Snake game board"></canvas></div><div class="game-actions"><button class="game-btn primary" id="snakeStart">Start game</button><button class="game-btn light" id="snakeReset">Restart</button></div><p class="game-message" id="snakeMessage">Best score: ${best} · The edges wrap around.</p>`);const c=dialogBody.querySelector("#snakeCanvas"),ctx=c.getContext("2d");function draw(){ctx.fillStyle="#0b1629";ctx.fillRect(0,0,480,320);ctx.strokeStyle="#ffffff0d";for(let x=0;x<=480;x+=20){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,320);ctx.stroke();}for(let y=0;y<=320;y+=20){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(480,y);ctx.stroke();}ctx.fillStyle="#ffad5c";ctx.beginPath();ctx.arc(gameState.food.x*20+10,gameState.food.y*20+10,7,0,Math.PI*2);ctx.fill();gameState.body.forEach((p,i)=>{ctx.fillStyle=i?"#43be9d":"#91f1d4";ctx.beginPath();ctx.roundRect(p.x*20+2,p.y*20+2,16,16,5);ctx.fill();});}function end(){clearInterval(gameTimer);gameTimer=null;gameState.running=false;gameState.over=true;let saved=0;try{saved=Number(localStorage.getItem("ptw_snake_best"))||0;if(gameState.score>saved)localStorage.setItem("ptw_snake_best",String(gameState.score));}catch(_){}message(`Game over! Score ${gameState.score} · Best ${Math.max(saved,gameState.score)}.`);dialogBody.querySelector("#snakeStart").textContent="Play again";}function tick(){gameState.dir=gameState.next;const head={x:(gameState.body[0].x+gameState.dir.x+24)%24,y:(gameState.body[0].y+gameState.dir.y+16)%16};const ate=head.x===gameState.food.x&&head.y===gameState.food.y;if(gameState.body.slice(0,ate?gameState.body.length:gameState.body.length-1).some(p=>p.x===head.x&&p.y===head.y))return end();gameState.body.unshift(head);if(ate){gameState.score++;dialogBody.querySelector("#snakeScore").textContent=gameState.score;do{gameState.food={x:Math.floor(Math.random()*24),y:Math.floor(Math.random()*16)};}while(gameState.body.some(p=>p.x===gameState.food.x&&p.y===gameState.food.y));}else gameState.body.pop();draw();}function direction(name){const d={up:{x:0,y:-1},down:{x:0,y:1},left:{x:-1,y:0},right:{x:1,y:0}}[name];if(d&&(d.x!==-gameState.dir.x||d.y!==-gameState.dir.y))gameState.next=d;}if(gameKeyHandler)document.removeEventListener("keydown",gameKeyHandler);gameKeyHandler=e=>{if(activeGame!=="snake")return;const keys={ArrowUp:"up",w:"up",W:"up",ArrowDown:"down",s:"down",S:"down",ArrowLeft:"left",a:"left",A:"left",ArrowRight:"right",d:"right",D:"right"};if(keys[e.key]){e.preventDefault();direction(keys[e.key]);}};document.addEventListener("keydown",gameKeyHandler);function start(){if(gameState.running)return;if(gameState.over){gameState.body=[{x:7,y:6},{x:6,y:6},{x:5,y:6}];gameState.dir={x:1,y:0};gameState.next={x:1,y:0};gameState.food={x:12,y:8};gameState.score=0;gameState.over=false;dialogBody.querySelector("#snakeScore").textContent="0";draw();}gameState.running=true;dialogBody.querySelector("#snakeStart").textContent="Running…";message("Collect the orange dots!");gameTimer=setInterval(tick,120);}dialogBody.querySelector("#snakeStart").addEventListener("click",start);dialogBody.querySelector("#snakeReset").addEventListener("click",startSnake);let touchX=0,touchY=0;c.addEventListener("touchstart",e=>{touchX=e.changedTouches[0].clientX;touchY=e.changedTouches[0].clientY;},{passive:true});c.addEventListener("touchend",e=>{const dx=e.changedTouches[0].clientX-touchX,dy=e.changedTouches[0].clientY-touchY;if(Math.max(Math.abs(dx),Math.abs(dy))>15)direction(Math.abs(dx)>Math.abs(dy)?(dx>0?"right":"left"):(dy>0?"down":"up"));},{passive:true});draw();}
+
+  function startWord(){const words=["STAR","MOON","GAME","PLAY","NOVA","SHIP"];const size=9;const grid=Array.from({length:size},()=>Array(size).fill(""));const placements=[["STAR",0,0,0,1],["MOON",0,5,1,0],["GAME",4,0,0,1],["PLAY",7,0,0,1],["NOVA",1,7,1,0],["SHIP",3,5,1,0]];placements.forEach(([w,r,c,dr,dc])=>[...w].forEach((ch,i)=>grid[r+dr*i][c+dc*i]=ch));const letters="ABCDEFGHIJKLMNOPQRSTUVWXYZ";grid.forEach(row=>row.forEach((ch,i)=>{if(!ch)row[i]=letters[Math.floor(Math.random()*letters.length)];}));gameState={grid,words,found:new Set(),foundCells:[],selection:[]};setGame(`<div class="game-intro"><p>Tap letters in order to spell a hidden word. Words run across or down.</p>${stat("FOUND","wordCount","0 / 6")}</div><div class="game-board"><div class="word-grid" id="wordGrid"></div><div class="word-list">${words.map(w=>`<span class="word-chip" data-word="${w}">${w}</span>`).join("")}</div></div><p class="game-message" id="wordMessage">Tap the first letter, then trace the word.</p><div class="game-actions"><button class="game-btn light" id="wordUndo">Undo last letter</button><button class="game-btn light" id="wordClear">Clear selection</button></div>`);const board=dialogBody.querySelector("#wordGrid");function render(){board.replaceChildren();for(let r=0;r<size;r++)for(let c=0;c<size;c++){const b=document.createElement("button");b.type="button";b.className="word-cell";b.textContent=grid[r][c];b.dataset.row=r;b.dataset.col=c;const key=`${r},${c}`;if(gameState.selection.includes(key))b.classList.add("selected");if(gameState.foundCells.some(entry=>entry.cells.includes(key)))b.classList.add("found");b.addEventListener("click",()=>choose(r,c));board.append(b);}}function choose(r,c){const key=`${r},${c}`;if(gameState.selection.includes(key)){gameState.selection=[];render();return;}if(gameState.selection.length){const last=gameState.selection.at(-1).split(",").map(Number);if(Math.abs(last[0]-r)+Math.abs(last[1]-c)!==1){gameState.selection=[];}}gameState.selection.push(key);const text=gameState.selection.map(k=>{const [rr,cc]=k.split(",").map(Number);return grid[rr][cc];}).join("");const match=gameState.words.find(w=>w===text&&!gameState.found.has(w));if(match){const cells=[...gameState.selection];gameState.found.add(match);gameState.foundCells.push({word:match,cells});dialogBody.querySelector(`[data-word="${match}"]`).classList.add("found");dialogBody.querySelector("#wordCount").textContent=`${gameState.found.size} / 6`;message(gameState.found.size===6?"You found every word — word wizard!":`${match} found! Find another.`);gameState.selection=[];}else{const possible=gameState.words.some(w=>!gameState.found.has(w)&&w.startsWith(text))||gameState.words.some(w=>!gameState.found.has(w)&&[...w].reverse().join("").startsWith(text));if(!possible){gameState.selection=[key];message("Not a word yet — keep looking!");}}render();}dialogBody.querySelector("#wordUndo").addEventListener("click",()=>{if(gameState.selection.length)gameState.selection.pop();render();});dialogBody.querySelector("#wordClear").addEventListener("click",()=>{gameState.selection=[];render();});render();}
+
+  let active = "all";
+
+  function applyFilters() {
+    const query = search.value.trim().toLowerCase();
+    let visible = 0;
+
+    cards.forEach(card => {
+      const category = card.dataset.category;
+      const words = (card.dataset.search + " " + card.innerText).toLowerCase();
+      const matchesCategory = active === "all" || category === active;
+      const matchesSearch = !query || words.includes(query);
+      const show = matchesCategory && matchesSearch;
+      card.hidden = !show;
+      if (show) visible++;
+    });
+
+    empty.style.display = visible ? "none" : "block";
+  }
+
+  filters.forEach(button => {
+    button.addEventListener("click", () => {
+      active = button.dataset.category;
+      filters.forEach(item => item.classList.toggle("active", item === button));
+      applyFilters();
+    });
+  });
+
+  search.addEventListener("input", applyFilters);
+  document.getElementById("searchButton").addEventListener("click", applyFilters);
+})();
+</script>
+
+</body>
+</html>

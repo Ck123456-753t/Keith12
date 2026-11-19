@@ -216,7 +216,7 @@ router.patch("/:id", async (req, res) => {
     const tutorial = await NotesTutorial.findByIdAndUpdate(
       req.params.id,
       { $set: updates },
-      { new: true, runValidators: true }
+      { returnDocument: 'after', runValidators: true }
     );
 
     if (!tutorial) {
@@ -261,7 +261,7 @@ router.patch("/:id/unpublish", async (req, res) => {
     const tutorial = await NotesTutorial.findByIdAndUpdate(
       req.params.id,
       { $set: { status: "draft", publishedAt: null } },
-      { new: true }
+      { returnDocument: 'after' }
     );
 
     if (!tutorial) {

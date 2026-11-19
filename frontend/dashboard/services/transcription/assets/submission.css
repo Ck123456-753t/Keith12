@@ -1,0 +1,490 @@
+/* PrimeTask Workspace: minimal submission portal */
+.submission-page {
+  --submit-orange: #ff7a18;
+  --submit-blue: #287cc0;
+  --submit-panel: #0b1729;
+  --submit-border: rgba(148, 163, 184, .17);
+  background: #050b16;
+}
+
+.submission-page .shell {
+  min-height: 100vh;
+}
+
+.submission-page .topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.submission-page .back-link {
+  font-size: 13px;
+  white-space: nowrap;
+}
+
+.submission-page .submission-main {
+  width: min(100% - 28px, 820px);
+  margin: 28px auto;
+}
+
+.submission-page .portal-message,
+.submission-page .job-picker,
+.submission-page .audio-card,
+.submission-page .editor-card,
+.submission-page .deadline-panel {
+  background: var(--submit-panel);
+  border: 1px solid var(--submit-border);
+  border-radius: 16px;
+}
+
+.submission-page .portal-message {
+  padding: 14px 16px;
+  margin-bottom: 14px;
+}
+
+.submission-page .job-picker {
+  padding: 16px;
+  margin-bottom: 14px;
+}
+
+.submission-page .job-picker label {
+  display: block;
+  margin-bottom: 8px;
+}
+
+.submission-page .job-picker select {
+  width: 100%;
+}
+
+.submission-page .assignment-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+  margin: 0 0 18px;
+}
+
+.submission-page .eyebrow {
+  margin: 0 0 6px;
+  color: var(--submit-orange);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: .14em;
+}
+
+.submission-page .assignment-heading h1 {
+  margin: 0;
+  font-size: clamp(22px, 5vw, 32px);
+  line-height: 1.2;
+  overflow-wrap: anywhere;
+}
+
+.submission-page .job-description {
+  margin: 8px 0 0;
+  color: #9eacc0;
+  font-size: 13px;
+}
+
+.submission-page .status-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  padding: 6px 10px;
+  border: 1px solid var(--submit-border);
+  border-radius: 999px;
+  color: #cbd5e1;
+  font-size: 11px;
+}
+
+.submission-page .audio-card {
+  padding: 18px;
+  margin-bottom: 12px;
+}
+
+.submission-page .audio-title {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+}
+
+.submission-page .audio-icon {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+  border-radius: 12px;
+  background: rgba(255, 122, 24, .12);
+  color: var(--submit-orange);
+  font-size: 22px;
+}
+
+.submission-page .audio-title strong,
+.submission-page .audio-title span {
+  display: block;
+}
+
+.submission-page .audio-title strong {
+  font-size: 13px;
+  overflow-wrap: anywhere;
+}
+
+.submission-page .audio-title div span {
+  margin-top: 4px;
+  color: #94a3b8;
+  font-size: 11px;
+}
+
+.submission-page .audio-visualizer {
+  position: relative;
+  height: 46px;
+  overflow: hidden;
+  margin: 16px 0 8px;
+  border-radius: 8px;
+  background: rgba(40, 124, 192, .08);
+  cursor: pointer;
+}
+
+.submission-page .wave-bars {
+  height: 100%;
+}
+
+.submission-page .wave-progress {
+  pointer-events: none;
+}
+
+.submission-page .audio-controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  color: #9eacc0;
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+}
+
+.submission-page .audio-buttons {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.submission-page .audio-control,
+.submission-page .play-button {
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--submit-border);
+  cursor: pointer;
+}
+
+.submission-page .audio-control {
+  width: 38px;
+  height: 34px;
+  border-radius: 9px;
+  background: #111f33;
+  color: #e2e8f0;
+  font-size: 12px;
+}
+
+.submission-page .play-button {
+  width: 42px;
+  height: 42px;
+  border: 0;
+  border-radius: 50%;
+  background: var(--submit-orange);
+  color: #111827;
+  font-size: 17px;
+}
+
+.submission-page .assignment-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px;
+  margin: 0 0 14px;
+  color: #94a3b8;
+  font-size: 12px;
+}
+
+.submission-page .assignment-meta strong {
+  margin-left: 5px;
+  color: #e2e8f0;
+}
+
+.submission-page .deadline-panel {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 16px;
+  padding: 14px 16px;
+  margin-bottom: 14px;
+}
+
+.submission-page .deadline-panel > span {
+  color: #94a3b8;
+  font-size: 10px;
+  letter-spacing: .1em;
+}
+
+.submission-page .deadline-panel > strong {
+  color: var(--submit-orange);
+  font-size: 20px;
+  font-variant-numeric: tabular-nums;
+}
+
+.submission-page .deadline-panel p {
+  width: 100%;
+  margin: 0;
+  color: #94a3b8;
+  font-size: 11px;
+}
+
+.submission-page .editor-card {
+  padding: clamp(14px, 3vw, 22px);
+}
+
+.submission-page .editor-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.submission-page .editor-heading h2 {
+  margin: 0;
+  font-size: 18px;
+}
+
+.submission-page .submission-tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.submission-page .format-tab {
+  flex: 1;
+  padding: 11px 12px;
+  border: 1px solid var(--submit-border);
+  border-radius: 9px;
+  background: #0a1322;
+  color: #aab7c9;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.submission-page .format-tab.active {
+  border-color: rgba(255, 122, 24, .65);
+  background: rgba(255, 122, 24, .09);
+  color: #ff9a4d;
+}
+
+.submission-page .editor-toolbar {
+  display: flex;
+  gap: 6px;
+  padding: 8px;
+  border: 1px solid var(--submit-border);
+  border-bottom: 0;
+  border-radius: 9px 9px 0 0;
+  background: #0a1322;
+}
+
+.submission-page .editor-toolbar button {
+  width: 32px;
+  height: 30px;
+  border: 1px solid var(--submit-border);
+  border-radius: 6px;
+  background: #111f33;
+  color: #e2e8f0;
+  cursor: pointer;
+}
+
+.submission-page .transcript-editor {
+  min-height: 250px;
+  padding: 14px;
+  border: 1px solid var(--submit-border);
+  border-radius: 0 0 9px 9px;
+  outline: none;
+  background: #070f1c;
+  color: #e2e8f0;
+  font-size: 14px;
+  line-height: 1.7;
+  overflow-wrap: anywhere;
+}
+
+.submission-page .transcript-editor:focus {
+  border-color: rgba(40, 124, 192, .8);
+}
+
+.submission-page .transcript-editor:empty::before {
+  content: attr(data-placeholder);
+  color: #64748b;
+  pointer-events: none;
+}
+
+.submission-page .editor-footer {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 8px;
+  color: #78889e;
+  font-size: 10px;
+}
+
+.submission-page #docxWorkspace {
+  margin: 12px 0;
+}
+
+.submission-page .upload-drop {
+  display: flex;
+  min-height: 150px;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 8px;
+  padding: 20px;
+  border: 1px dashed #40516a;
+  border-radius: 10px;
+  background: #080f1c;
+  text-align: center;
+  cursor: pointer;
+}
+
+.submission-page .upload-icon {
+  color: var(--submit-orange);
+  font-size: 26px;
+}
+
+.submission-page .upload-drop strong {
+  color: #e2e8f0;
+  font-size: 13px;
+}
+
+.submission-page .upload-drop > span {
+  color: #94a3b8;
+  font-size: 11px;
+}
+
+.submission-page .upload-drop .selected-file {
+  color: var(--submit-orange);
+  overflow-wrap: anywhere;
+}
+
+.submission-page #docxFile {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+}
+
+.submission-page .link-section {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 8px;
+  margin-top: 18px;
+}
+
+.submission-page .link-section label {
+  grid-column: 1 / -1;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.submission-page .link-section label span {
+  margin-left: 5px;
+  color: #8292a8;
+  font-weight: 400;
+}
+
+.submission-page .link-section input {
+  width: 100%;
+  min-width: 0;
+  padding: 11px 12px;
+  border: 1px solid var(--submit-border);
+  border-radius: 8px;
+  outline: none;
+  background: #070f1c;
+  color: #e2e8f0;
+}
+
+.submission-page .secondary-button {
+  padding: 0 12px;
+  border: 1px solid var(--submit-border);
+  border-radius: 8px;
+  background: #111f33;
+  color: #dbeafe;
+  font-size: 11px;
+  cursor: pointer;
+}
+
+.submission-page .submit-message {
+  margin-top: 12px;
+  font-size: 12px;
+}
+
+.submission-page .submit-button {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 48px;
+  margin-top: 16px;
+  border: 0;
+  border-radius: 10px;
+  background: var(--submit-orange);
+  color: #111827;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.submission-page .submit-button:disabled,
+.submission-page .play-button:disabled {
+  cursor: not-allowed;
+  opacity: .55;
+}
+
+.submission-page footer {
+  padding: 22px 0;
+  color: #64748b;
+  font-size: 11px;
+  text-align: center;
+}
+
+.submission-page .hidden {
+  display: none !important;
+}
+
+@media (max-width: 520px) {
+  .submission-page .submission-main {
+    width: min(100% - 20px, 820px);
+    margin-top: 18px;
+  }
+
+  .submission-page .assignment-heading h1 {
+    font-size: 23px;
+  }
+
+  .submission-page .audio-card {
+    padding: 14px;
+  }
+
+  .submission-page .transcript-editor {
+    min-height: 210px;
+  }
+
+  .submission-page .link-section {
+    grid-template-columns: 1fr;
+  }
+
+  .submission-page .link-section label {
+    grid-column: auto;
+  }
+
+  .submission-page .secondary-button {
+    min-height: 38px;
+  }
+}

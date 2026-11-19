@@ -880,6 +880,8 @@ router.post("/register", async (req, res) => {
       passwordHash,
       emailVerificationRequired: true,
       emailVerified: false,
+      marketingEmailOptIn: req.body.marketingEmailOptIn === true,
+      marketingEmailOptInAt: req.body.marketingEmailOptIn === true ? new Date() : null,
       selectedService: selectedService || null,
       referredBy: sponsor ? sponsor._id : null
     });

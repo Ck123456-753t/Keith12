@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  
+  
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#102b50">
+  <title>Testimonials | PrimeTask Workspace Admin</title>
+  <link rel="stylesheet" href="/dashboard/admin/Keith/assets/admin-navigation.css">
+  <style>
+    :root{--navy:#102b50;--blue:#2563eb;--orange:#f97316;--ink:#17243a;--muted:#64748b;--line:#e2e8f0;--bg:#f3f6fb;--green:#15803d;--red:#dc2626}
+    *{box-sizing:border-box}
+    body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,system-ui,-apple-system,sans-serif}
+    button{font:inherit;cursor:pointer}
+    main{max-width:1250px;margin:auto;padding:25px}
+    .top{display:flex;justify-content:space-between;align-items:center;gap:15px;flex-wrap:wrap;margin-bottom:20px}
+    .eyebrow{font-size:11px;font-weight:800;letter-spacing:2px;color:var(--blue);text-transform:uppercase}
+    h1{font-size:clamp(27px,4vw,38px);letter-spacing:-1px;margin:7px 0}
+    .sub{font-size:13px;color:var(--muted);line-height:1.6}
+    .btn{border:1px solid var(--line);background:white;color:var(--navy);padding:10px 13px;border-radius:9px;font-weight:750;font-size:12px}
+    .btn.primary{background:var(--navy);color:white;border-color:var(--navy)}
+    .btn.approve{background:#ecfdf5;color:#166534;border-color:#bbf7d0}
+    .btn.reject{background:#fef2f2;color:#991b1b;border-color:#fecaca}
+    .btn.feature{background:#eff6ff;color:#1d4ed8;border-color:#bfdbfe}
+    .btn.delete{background:white;color:#b91c1c;border-color:#fecaca}
+    .filters{display:flex;gap:8px;flex-wrap:wrap;margin:20px 0}
+    .filter{border:1px solid var(--line);background:white;color:#475569;padding:9px 13px;border-radius:30px;font-size:12px;font-weight:750}
+    .filter.active{background:var(--navy);border-color:var(--navy);color:white}
+    .statusline{display:flex;align-items:center;gap:9px;background:white;border:1px solid var(--line);border-radius:11px;padding:12px 14px;margin-bottom:15px;color:var(--muted);font-size:12px}
+    .dot{width:8px;height:8px;border-radius:50%;background:#94a3b8}
+    .dot.ok{background:#16a34a}.dot.bad{background:#dc2626}
+    #error{display:none;padding:13px;border-radius:10px;background:#fef2f2;color:#991b1b;border:1px solid #fecaca;font-size:12px;margin-bottom:15px}
+    .list{display:grid;gap:13px}
+    .item{background:white;border:1px solid var(--line);border-radius:15px;padding:18px;box-shadow:0 3px 12px #102b5008}
+    .member{display:flex;align-items:center;gap:12px;min-width:0}
+    .avatar{width:48px;height:48px;border-radius:50%;object-fit:cover;background:#eaf1fb;flex-shrink:0}
+    .avatar-fallback{display:grid;place-items:center;color:var(--blue);font-weight:850}
+    .member strong{display:block;font-size:14px}
+    .member small{display:block;color:var(--muted);font-size:11px;margin-top:4px;overflow-wrap:anywhere}
+    .meta{display:flex;gap:7px;flex-wrap:wrap;margin:13px 0}
+    .pill{padding:5px 9px;border-radius:30px;background:#f1f5f9;color:#475569;font-size:10px;font-weight:800}
+    .pill.pending{background:#fff7ed;color:#9a3412}
+    .pill.approved{background:#ecfdf5;color:#166534}
+    .pill.rejected{background:#fef2f2;color:#991b1b}
+    .pill.featured{background:#eff6ff;color:#1d4ed8}
+    .message{white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.75;font-size:13px;color:#26364c;background:#f8fafc;border:1px solid #edf1f6;border-radius:11px;padding:15px}
+    .details{font-size:11px;color:var(--muted);margin-top:12px}
+    .actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+    .empty{background:white;border:1px dashed #cbd5e1;border-radius:14px;padding:35px;text-align:center;color:var(--muted);font-size:13px}
+    .count{font-size:12px;color:var(--muted);margin-left:auto}
+    @media(max-width:600px){main{padding:15px}.item{padding:14px}.top{align-items:flex-start}}
+  </style>
+<link rel="icon" type="image/svg+xml" href="/assets/primetask-logo.svg">
+</head>
+<body>
+<main>
+  <header class="top">
+    <div>
+      <div class="eyebrow">PrimeTask Workspace / Administration</div>
+      <h1>Testimonials<span style="color:var(--orange)">.</span></h1>
+      <div class="sub">Review member experiences before they appear publicly.</div>
+    </div>
+    <button class="btn primary" id="refresh" type="button">↻ Refresh</button>
+  </header>
+
+  <div class="statusline"><span class="dot" id="dot"></span><span id="connection">Connecting to testimonial records…</span><span class="count" id="count"></span></div>
+  <div id="error" role="alert"></div>
+  <nav class="filters" aria-label="Filter testimonials">
+    <button class="filter active" data-status="pending">Pending</button>
+    <button class="filter" data-status="approved">Approved</button>
+    <button class="filter" data-status="rejected">Rejected</button>
+    <button class="filter" data-status="all">All records</button>
+  </nav>
+  <section class="list" id="list"><div class="empty">Loading submissions…</div></section>
+</main>
+
+<script src="/assets/js/config.js"></script>
+<script src="/dashboard/admin/Keith/assets/admin-navigation.js"></script>
+<script>
+"use strict";
+(() => {
+  const $ = id => document.getElementById(id);
+  const list = $("list");
+  let currentStatus = "pending";
+  let busy = false;
+
+  function apiRoot() {
+    if (!window.PTW_API_BASE) throw new Error("API URL is not configured.");
+    return window.PTW_API_BASE.replace(/\/+$/, "");
+  }
+
+  async function request(path, options = {}) {
+    const response = await fetch(apiRoot() + path, {
+      credentials:"include",
+      ...options,
+      headers:{
+        Accept:"application/json",
+        ...(options.body ? {"Content-Type":"application/json"} : {}),
+        ...(options.headers || {})
+      }
+    });
+    if (response.status === 401 || response.status === 403) {
+      throw new Error("Access denied. Sign in with an authorized administrator or founder account.");
+    }
+    const data = await response.json().catch(() => ({}));
+    if (!response.ok || data.success === false) {
+      throw new Error(data.message || "The request failed.");
+    }
+    return data;
+  }
+
+  function showError(message) {
+    $("error").textContent = message;
+    $("error").style.display = "block";
+    $("dot").className = "dot bad";
+    $("connection").textContent = "Unable to load records";
+  }
+
+  function date(value) {
+    if (!value) return "Date unavailable";
+    const parsed = new Date(value);
+    return Number.isNaN(parsed.getTime()) ? "Date unavailable" : parsed.toLocaleString();
+  }
+
+  function makeButton(label, className, action, id, value) {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "btn " + className;
+    button.textContent = label;
+    button.addEventListener("click", () => act(action, id, value));
+    return button;
+  }
+
+  function render(records) {
+    list.replaceChildren();
+    $("count").textContent = records.length + " record(s)";
+    if (!records.length) {
+      const empty = document.createElement("div");
+      empty.className = "empty";
+      empty.textContent = "No " + (currentStatus === "all" ? "" : currentStatus + " ") + "testimonials found.";
+      list.appendChild(empty);
+      return;
+    }
+
+    records.forEach(record => {
+      const user = record.member || {};
+      const card = document.createElement("article");
+      card.className = "item";
+
+      const header = document.createElement("div");
+      header.className = "member";
+
+      const avatar = document.createElement("img");
+      avatar.className = "avatar";
+      avatar.alt = "";
+      if (user.profilePictureUrl) {
+        avatar.src = user.profilePictureUrl;
+        avatar.onerror = () => {
+          const fallback = document.createElement("div");
+          fallback.className = "avatar avatar-fallback";
+          fallback.textContent = (user.fullName || "P").charAt(0).toUpperCase();
+          avatar.replaceWith(fallback);
+        };
+      } else {
+        avatar.classList.add("avatar-fallback");
+        avatar.alt = "Member";
+        avatar.src = "";
+        avatar.replaceWith(Object.assign(document.createElement("div"), {
+          className:"avatar avatar-fallback",
+          textContent:(user.fullName || "P").charAt(0).toUpperCase()
+        }));
+      }
+
+      const identity = document.createElement("div");
+      const name = document.createElement("strong");
+      name.textContent = user.fullName || "Unknown member";
+      const account = document.createElement("small");
+      account.textContent = [user.username ? "@" + user.username : "", user.email || ""].filter(Boolean).join(" · ") || "Account details unavailable";
+      identity.append(name, account);
+      header.append(avatar, identity);
+      card.appendChild(header);
+
+      const meta = document.createElement("div");
+      meta.className = "meta";
+      const pills = [
+        [record.status || "pending", record.status || "pending"],
+        [user.membershipName || "Community Member", ""],
+        [user.accountStatus ? "Account: " + user.accountStatus : "Account status unavailable", ""]
+      ];
+      if (record.featured) pills.push(["Featured", "featured"]);
+      pills.forEach(([label, cls]) => {
+        const pill = document.createElement("span");
+        pill.className = "pill " + cls;
+        pill.textContent = label;
+        meta.appendChild(pill);
+      });
+      card.appendChild(meta);
+
+      const message = document.createElement("div");
+      message.className = "message";
+      message.textContent = record.message || "";
+      card.appendChild(message);
+
+      const details = document.createElement("div");
+      details.className = "details";
+      details.textContent = "Submitted: " + date(record.createdAt) +
+        (record.reviewedAt ? " · Reviewed: " + date(record.reviewedAt) : "") +
+        (record.reviewedBy?.fullName ? " · Reviewer: " + record.reviewedBy.fullName : "");
+      card.appendChild(details);
+
+      const actions = document.createElement("div");
+      actions.className = "actions";
+      if (record.status !== "approved") {
+        actions.appendChild(makeButton("Approve", "approve", "approve", record._id || record.id));
+      }
+      if (record.status !== "rejected") {
+        actions.appendChild(makeButton("Reject", "reject", "reject", record._id || record.id));
+      }
+      if (record.status === "approved") {
+        actions.appendChild(makeButton(record.featured ? "Unfeature" : "Feature on landing page", "feature", "feature", record._id || record.id, !record.featured));
+      }
+      actions.appendChild(makeButton("Delete", "delete", "delete", record._id || record.id));
+      card.appendChild(actions);
+      list.appendChild(card);
+    });
+  }
+
+  async function load() {
+    if (busy) return;
+    busy = true;
+    $("refresh").disabled = true;
+    $("connection").textContent = "Loading " + currentStatus + " records…";
+    $("error").style.display = "none";
+    list.innerHTML = '<div class="empty">Loading testimonials…</div>';
+    try {
+      const data = await request("/admin/testimonials?status=" + encodeURIComponent(currentStatus));
+      const records = data.testimonials || data.data?.testimonials || data.data || [];
+      if (!Array.isArray(records)) throw new Error("Unexpected response from the testimonial endpoint.");
+      render(records);
+      $("dot").className = "dot ok";
+      $("connection").textContent = "Connected · live testimonial records";
+    } catch (error) {
+      showError(error.message || "Could not load testimonials.");
+      list.innerHTML = '<div class="empty">Records could not be loaded.</div>';
+    } finally {
+      busy = false;
+      $("refresh").disabled = false;
+    }
+  }
+
+  async function act(action, id, value) {
+    if (!id || busy) return;
+    if (action === "delete" && !window.confirm("Permanently delete this testimonial? This cannot be undone.")) return;
+    if (action === "reject" && !window.confirm("Reject this testimonial?")) return;
+
+    busy = true;
+    try {
+      let path = "/admin/testimonials/" + encodeURIComponent(id) + "/" + action;
+      let options = {method:"PATCH"};
+      if (action === "feature") options.body = JSON.stringify({featured:value});
+      if (action === "delete") {
+        path = "/admin/testimonials/" + encodeURIComponent(id);
+        options = {method:"DELETE"};
+      }
+      await request(path, options);
+      await loadAfterAction();
+    } catch (error) {
+      showError(error.message || "The moderation action failed.");
+    } finally {
+      busy = false;
+    }
+  }
+
+  async function loadAfterAction() {
+    const data = await request("/admin/testimonials?status=" + encodeURIComponent(currentStatus));
+    const records = data.testimonials || data.data?.testimonials || data.data || [];
+    if (!Array.isArray(records)) throw new Error("Unexpected response from the testimonial endpoint.");
+    render(records);
+    $("dot").className = "dot ok";
+    $("connection").textContent = "Connected · changes saved";
+  }
+
+  document.querySelectorAll(".filter").forEach(button => {
+    button.addEventListener("click", () => {
+      currentStatus = button.dataset.status;
+      document.querySelectorAll(".filter").forEach(item => item.classList.toggle("active", item === button));
+      load();
+    });
+  });
+  $("refresh").addEventListener("click", load);
+  load();
+})();
+</script>
+</body>
+</html>

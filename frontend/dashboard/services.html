@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  
+  
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#061225">
@@ -294,8 +296,339 @@ h1 { margin: 5px 0; font-size: clamp(27px,4vw,38px); line-height: 1.2; }
   .ptw-menu-toggle { width: 40px; height: 40px; }
   main.main { padding-top: 58px; }
 }
+
+/* Compact rectangular service cards */
+.grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+.grid > .card {
+  min-width: 0;
+  padding: 13px;
+  border-radius: 12px;
+}
+.grid > .card .card-icon {
+  width: 35px;
+  height: 35px;
+  margin-bottom: 9px;
+  border-radius: 10px;
+  font-size: 18px;
+}
+.grid > .card h3 {
+  margin-bottom: 6px;
+  font-size: 15px;
+  line-height: 1.4;
+}
+.grid > .card p {
+  min-height: 0;
+  margin-bottom: 11px;
+  font-size: 12px;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+@media (max-width: 370px) {
+  .grid { grid-template-columns: 1fr; }
+}
+
+
+/* Compact text-only service links */
+.services-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  max-width: 620px;
+  margin-top: 8px;
+}
+.service-link {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  min-width: 0;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: #0c1729;
+  color: var(--text);
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.35;
+}
+.service-link span { color: var(--cyan); }
+.service-link:hover {
+  background: rgba(57,132,255,.12);
+  border-color: rgba(57,132,255,.4);
+}
+.service-link:focus-visible {
+  outline: 2px solid var(--cyan);
+  outline-offset: 2px;
+}
+
+
+/* Compact PrimeTask service cards */
+.service-cards {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  width: 100%;
+  max-width: 760px;
+  margin-top: 16px;
+}
+
+.service-card {
+  --service-accent: #60A5FA;
+  --service-border: #254A76;
+  --service-surface: #10243D;
+  --service-icon-bg: #153456;
+  --service-button: #153456;
+  min-width: 0;
+  padding: 15px;
+  border: 1px solid var(--service-border);
+  border-radius: 13px;
+  background: linear-gradient(145deg, #0c1729, #071426);
+}
+
+.note-writing-card {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  min-height:76px;
+  padding:12px 16px;
+  text-decoration:none;
+  border-radius:10px;
+  cursor:pointer;
+}
+
+.note-writing-card h2 {
+  margin:0;
+  font-size:15px;
+}
+
+.note-writing-arrow {
+  color:var(--service-accent);
+  font-size:20px;
+  font-weight:800;
+}
+
+.note-writing-card:hover {
+  border-color:var(--service-accent);
+  filter:brightness(1.15);
+}
+
+.service-card-notes {
+  --service-accent: #60A5FA;
+  --service-border: #254A76;
+  --service-surface: #10243D;
+  --service-icon-bg: #153456;
+  --service-button: #153456;
+}
+
+.service-card-academic {
+  --service-accent: #D8B4FE;
+  --service-border: #513568;
+  --service-surface: #2A1B36;
+  --service-icon-bg: #3A244C;
+  --service-button: #3A244C;
+  background: linear-gradient(145deg, #21152c, #171020);
+}
+
+.service-card-data {
+  --service-accent: #6EE7B7;
+  --service-border: #285B4C;
+  --service-surface: #102D27;
+  --service-icon-bg: #174438;
+  --service-button: #174438;
+  background: linear-gradient(145deg, #10221f, #071A18);
+}
+
+.service-card-header { display:flex; align-items:center; gap:10px; }
+
+.service-card-icon {
+  display:grid;
+  flex:0 0 38px;
+  width:38px;
+  height:38px;
+  place-items:center;
+  border:1px solid var(--service-border);
+  border-radius:10px;
+  background:var(--service-icon-bg);
+  color:var(--service-accent);
+  font-size:21px;
+  font-weight:800;
+}
+
+.service-card-heading { min-width:0; }
+
+.service-number {
+  color:var(--service-accent);
+  font-size:9px;
+  font-weight:800;
+  letter-spacing:1px;
+}
+
+.service-card h2 {
+  margin:3px 0;
+  color:#fff;
+  font-size:16px;
+  line-height:1.3;
+}
+
+.service-subtitle { margin:0; color:var(--muted); font-size:11px; }
+
+.service-description {
+  margin:12px 0;
+  color:#cbd5e1;
+  font-size:12px;
+  line-height:1.55;
+}
+
+.service-action {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:8px;
+  margin-top:12px;
+  padding:10px 11px;
+  border:1px solid var(--service-border);
+  border-radius:8px;
+  background:var(--service-button);
+  color:#fff;
+  font-size:11px;
+  font-weight:800;
+}
+
+.service-action span { color:var(--service-accent); font-size:16px; }
+.service-action:hover { filter:brightness(1.2); }
+.service-action:focus-visible { outline:2px solid var(--service-accent); outline-offset:2px; }
+
+
+.service-card-transcription {
+  --service-accent: #49D9FF;
+  --service-border: #24546A;
+  --service-surface: #102A38;
+  --service-icon-bg: #153747;
+  --service-button: #153747;
+  background: linear-gradient(145deg, #102535, #071522);
+}
+
+.transcription-live-status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 12px;
+  color: #9FE7F7;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.transcription-live-dot {
+  width: 8px;
+  height: 8px;
+  flex: 0 0 8px;
+  border-radius: 50%;
+  background: #6EE7B7;
+  box-shadow: 0 0 9px rgba(110, 231, 183, .55);
+}
+
+@media(max-width:560px) {
+  .service-cards { grid-template-columns:minmax(0,1fr); gap:10px; }
+  .service-card { padding:13px; }
+  .service-card h2 { font-size:17px; }
+}
+
+
+/* Compact fixed-size service quick links */
+.service-cards {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 12px !important;
+  align-items: stretch;
+  width: 100%;
+}
+
+.quick-service-card {
+  display: grid !important;
+  grid-template-columns: 36px minmax(0, 1fr) 16px;
+  align-items: center;
+  gap: 11px;
+  width: 100%;
+  height: 82px;
+  min-height: 82px;
+  max-height: 82px;
+  padding: 13px 15px !important;
+  margin: 0;
+  border-radius: 12px;
+  overflow: hidden;
+  text-decoration: none;
+  cursor: pointer;
+  transition: border-color .18s ease, filter .18s ease;
+}
+
+.quick-service-card:hover {
+  transform: none !important;
+  filter: brightness(1.12);
+}
+
+.quick-service-card .service-card-icon {
+  width: 35px;
+  height: 35px;
+  min-width: 35px;
+  margin: 0 !important;
+  flex: none;
+  border-radius: 9px;
+  font-size: 18px;
+}
+
+.quick-service-title {
+  min-width: 0;
+  color: #f5f8ff;
+  font-size: 13px;
+  line-height: 1.3;
+  font-weight: 750;
+  overflow-wrap: anywhere;
+}
+
+.quick-service-arrow {
+  justify-self: end;
+  color: var(--service-accent, #49D9FF);
+  font-size: 19px;
+  font-weight: 700;
+}
+
+.quick-service-card:focus-visible {
+  outline: 2px solid #60a5fa;
+  outline-offset: 3px;
+}
+
+@media(max-width:560px) {
+  .service-cards {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 9px !important;
+  }
+
+  .quick-service-card {
+    height: 76px;
+    min-height: 76px;
+    max-height: 76px;
+    padding: 10px !important;
+    grid-template-columns: 30px minmax(0, 1fr) 12px;
+    gap: 7px;
+  }
+
+  .quick-service-card .service-card-icon {
+    width: 30px;
+    height: 30px;
+    min-width: 30px;
+    font-size: 15px;
+  }
+
+  .quick-service-title {
+    font-size: 11px;
+  }
+}
+
 </style>
-  <link rel="icon" type="image/svg+xml" href="../assets/primetask-favicon.svg">
+<link rel="icon" type="image/svg+xml" href="/assets/primetask-logo.svg">
 </head>
 <body>
 
@@ -308,7 +641,7 @@ h1 { margin: 5px 0; font-size: clamp(27px,4vw,38px); line-height: 1.2; }
   <nav id="ptwMenuPanel" class="ptw-menu-panel"
        aria-label="Main navigation" hidden>
     <div class="ptw-menu-heading">PrimeTask Workspace</div>
-    <a class="ptw-menu-link" href="index.html"><span class="ptw-menu-icon" aria-hidden="true">⌂</span><span>Dashboard</span></a><a class="ptw-menu-link" href="services.html" aria-current="page"><span class="ptw-menu-icon" aria-hidden="true">▦</span><span>Services</span></a><a class="ptw-menu-link" href="wallet.html"><span class="ptw-menu-icon" aria-hidden="true">$</span><span>My Wallet</span></a><a class="ptw-menu-link" href="membership.html"><span class="ptw-menu-icon" aria-hidden="true">◇</span><span>Membership</span></a><a class="ptw-menu-link" href="transactions.html"><span class="ptw-menu-icon" aria-hidden="true">↔</span><span>Transactions</span></a><a class="ptw-menu-link" href="referrals.html"><span class="ptw-menu-icon" aria-hidden="true">♧</span><span>My Referrals</span></a><a class="ptw-menu-link" href="profile.html"><span class="ptw-menu-icon" aria-hidden="true">○</span><span>My Profile</span></a>
+    <a class="ptw-menu-link" href="/dashboard"><span class="ptw-menu-icon" aria-hidden="true">⌂</span><span>Dashboard</span></a><a class="ptw-menu-link" href="/dashboard/chat"><span class="ptw-menu-icon" aria-hidden="true">◉</span><span>PRIMECHAT</span></a><a class="ptw-menu-link" href="/dashboard/services" aria-current="page"><span class="ptw-menu-icon" aria-hidden="true">▦</span><span>Services</span></a><a class="ptw-menu-link" href="/dashboard/wallet"><span class="ptw-menu-icon" aria-hidden="true">$</span><span>My Wallet</span></a><a class="ptw-menu-link" href="/dashboard/membership"><span class="ptw-menu-icon" aria-hidden="true">◇</span><span>Membership</span></a><a class="ptw-menu-link" href="/dashboard/transactions"><span class="ptw-menu-icon" aria-hidden="true">↔</span><span>Transactions</span></a><a class="ptw-menu-link" href="/dashboard/my-referrals"><span class="ptw-menu-icon" aria-hidden="true">♧</span><span>My Referrals</span></a><a class="ptw-menu-link" href="/dashboard/profile"><span class="ptw-menu-icon" aria-hidden="true">○</span><span>My Profile</span></a>
     <div class="ptw-menu-divider"></div>
     <button class="ptw-signout" id="logoutBtn" type="button">
       ↪ Sign out
@@ -329,48 +662,43 @@ h1 { margin: 5px 0; font-size: clamp(27px,4vw,38px); line-height: 1.2; }
 
     <div class="notice" id="notice" role="status" aria-live="polite"></div>
 
-    <section class="hero">
-      <div class="eyebrow">Learn · Work · Grow</div>
-      <h2>Your skills have a place here. <span>Start with a service.</span></h2>
-      <p>Explore each work category, build your skills, and follow the instructions provided for available assignments. Access to assignments depends on the tools and opportunities currently enabled for your account.</p>
-    </section>
 
-    <section aria-labelledby="servicesHeading">
-      <div class="section-heading">
-        <h2 id="servicesHeading">Explore services</h2>
-        <p>Choose a category to continue.</p>
-      </div>
-      <div class="grid">
-        <article class="card">
-          <div class="card-icon">🎧</div>
-          <h3>Transcription</h3>
-          <span class="tag">Audio to text</span>
-          <p>Convert spoken audio into accurate, well-formatted written transcripts.</p>
-          <a class="btn" href="https://primetask-workspace.vercel.app/dashboard/services/transcription/index.html">Explore transcription ↗</a>
-        </article>
-        <article class="card">
-          <div class="card-icon">📝</div>
-          <h3>Note Taking</h3>
-          <span class="tag">Lectures and meetings</span>
-          <p>Turn lectures, meetings, and discussions into clear, organized notes.</p>
-          <a class="btn" href="../services.html#note-taking">Explore note taking ↗</a>
-        </article>
-        <article class="card">
-          <div class="card-icon">📊</div>
-          <h3>Data Entry</h3>
-          <span class="tag">Structured information</span>
-          <p>Organize, enter, and check information carefully against task instructions.</p>
-          <a class="btn" href="../services.html#data-entry">Explore data entry ↗</a>
-        </article>
-        <article class="card">
-          <div class="card-icon">✍️</div>
-          <h3>Academic Writing</h3>
-          <span class="tag">Writing support</span>
-          <p>Explore academic writing support, research organization, and document formatting.</p>
-          <a class="btn" href="../services.html#academic-writing">Explore academic support ↗</a>
-        </article>
-      </div>
-    </section>
+    <section class="service-cards" aria-label="PrimeTask services">
+
+  <a class="service-card service-card-notes quick-service-card"
+     href="services/note-taking/dashboard"
+     aria-label="Open Note-writing">
+    <span class="service-card-icon" aria-hidden="true">✎</span>
+    <span class="quick-service-title">Note-writing</span>
+    <span class="quick-service-arrow" aria-hidden="true">→</span>
+  </a>
+
+  <a class="service-card service-card-academic quick-service-card"
+     href="/dashboard/services/academic-writing"
+     aria-label="Open Academic Writing">
+    <span class="service-card-icon" aria-hidden="true">▣</span>
+    <span class="quick-service-title">Academic Writing</span>
+    <span class="quick-service-arrow" aria-hidden="true">→</span>
+  </a>
+
+  <a class="service-card service-card-data quick-service-card"
+     href="services/data-entry/worker/"
+     aria-label="Open Data Entry">
+    <span class="service-card-icon" aria-hidden="true">▦</span>
+    <span class="quick-service-title">Data Entry</span>
+    <span class="quick-service-arrow" aria-hidden="true">→</span>
+  </a>
+
+  <a class="service-card service-card-transcription quick-service-card"
+     href="services/transcription/index"
+     aria-label="Open Transcription">
+    <span class="service-card-icon" aria-hidden="true">♫</span>
+    <span class="quick-service-title">Transcription</span>
+    <span class="quick-service-arrow" aria-hidden="true">→</span>
+  </a>
+
+</section>
+
 
     <footer class="footer">
       © <span id="year"></span> PrimeTask Workspace · Creating Opportunities and delivering excellence.
@@ -403,7 +731,7 @@ async function verifySession() {
     });
 
     if (response.status === 401) {
-      window.location.replace("../auth/login.html");
+      window.location.replace("/auth/login");
       return;
     }
 
@@ -434,7 +762,7 @@ $("logoutBtn").addEventListener("click", async () => {
   } catch (error) {
     console.error("Sign-out request failed:", error);
   } finally {
-    window.location.replace("../auth/login.html");
+    window.location.replace("/auth/login");
   }
 });
 
@@ -480,5 +808,6 @@ verifySession();
 })();
 
 </script>
+
 </body>
 </html>

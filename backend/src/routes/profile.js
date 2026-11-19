@@ -5,6 +5,7 @@ const crypto = require("node:crypto");
 const cloudinary = require("cloudinary").v2;
 const User = require("../models/User");
 const requireAuth = require("../middleware/requireAuth");
+const AdminAuditLog = require("../models/AdminAuditLog");
 
 const router = express.Router();
 
@@ -16,7 +17,8 @@ cloudinary.config({
 
 const PROFILE_FIELDS =
   "firstName lastName username email phone role status emailVerified " +
-  "selectedService profilePictureUrl referredBy createdAt updatedAt";
+  "selectedService profilePictureUrl referredBy createdAt updatedAt " +
+  "marketingEmailOptIn marketingEmailOptInAt bulkEmailUnsubscribedAt";
 
 function publicProfile(user) {
   return {
@@ -28,6 +30,9 @@ function publicProfile(user) {
     role: user.role,
     status: user.status,
     emailVerified: user.emailVerified,
+    marketingEmailOptIn: Boolean(user.marketingEmailOptIn),
+    marketingEmailOptInAt: user.marketingEmailOptInAt || null,
+    bulkEmailUnsubscribedAt: user.bulkEmailUnsubscribedAt || null,
     selectedService: user.selectedService || null,
     profilePictureUrl: user.profilePictureUrl || null,
     sponsor: user.referredBy
@@ -86,6 +91,44 @@ router.get("/", requireAuth, async (req, res) => {
       success: false,
       message: "Unable to load your profile."
     });
+  }
+});
+
+// PATCH /api/profile/marketing-email
+router.patch("/marketing-email", requireAuth, async (req, res) => {
+  if (typeof req.body?.marketingEmailOptIn !== "boolean") {
+    return res.status(400).json({ success: false, message: "marketingEmailOptIn must be true or false." });
+  }
+  const optedIn = req.body.marketingEmailOptIn;
+  const now = new Date();
+  try {
+    const user = await User.findByIdAndUpdate(
+      req.user._id,
+      { $set: {
+        marketingEmailOptIn: optedIn,
+        marketingEmailOptInAt: optedIn ? now : null,
+        bulkEmailUnsubscribedAt: optedIn ? null : now
+      } },
+      { returnDocument: 'after', runValidators: true }
+    ).select("_id marketingEmailOptIn marketingEmailOptInAt bulkEmailUnsubscribedAt").lean();
+    if (!user) return res.status(404).json({ success: false, message: "Member account not found." });
+    try {
+      await AdminAuditLog.create({
+        adminId: req.user._id, targetUserId: req.user._id,
+        action: optedIn ? "marketing_email_opted_in" : "marketing_email_opted_out",
+        reason: optedIn ? "Member enabled PrimeTask bulk email updates." : "Member disabled PrimeTask bulk email updates.",
+        after: { marketingEmailOptIn: optedIn, marketingEmailOptInAt: user.marketingEmailOptInAt || null,
+          bulkEmailUnsubscribedAt: user.bulkEmailUnsubscribedAt || null },
+        ipAddress: String(req.ip || "").slice(0, 100)
+      });
+    } catch (error) { console.error("Marketing preference audit log failed:", error.message); }
+    return res.json({ success: true, marketingEmailOptIn: optedIn,
+      marketingEmailOptInAt: user.marketingEmailOptInAt || null,
+      updatedAt: optedIn ? user.marketingEmailOptInAt || now : user.bulkEmailUnsubscribedAt || now,
+      message: optedIn ? "Email updates enabled." : "Email updates disabled." });
+  } catch (error) {
+    console.error("Marketing email preference update failed:", error.message);
+    return res.status(500).json({ success: false, message: "Unable to update your email preference." });
   }
 });
 

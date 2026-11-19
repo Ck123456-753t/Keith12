@@ -1,7 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <link rel="stylesheet" href="/dashboard/admin/Keith/assets/admin-navigation.css">
+  
+  
+<link rel="stylesheet" href="/dashboard/admin/Keith/assets/admin-navigation.css">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#102b50">
@@ -51,6 +53,7 @@ h1{font-size:clamp(27px,4vw,39px);letter-spacing:-1.2px;margin:7px 0}
 @media(max-width:620px){main{padding:15px}.grid,.two{grid-template-columns:1fr}.card{padding:16px}.panel{padding:17px}.top{align-items:flex-start}}
 @media(prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
+<link rel="icon" type="image/svg+xml" href="/assets/primetask-logo.svg">
 </head>
 <body>
 <main>
@@ -148,15 +151,17 @@ h1{font-size:clamp(27px,4vw,39px);letter-spacing:-1.2px;margin:7px 0}
   </footer>
 </main>
 
+<script src="/assets/js/config.js"></script>
 <script src="assets/admin-navigation.js"></script>
 <script>
 (() => {
   "use strict";
 
-  const API_BASE = location.hostname === "127.0.0.1" ||
-                   location.hostname === "localhost"
-    ? "http://127.0.0.1:5001/api"
-    : "https://primetask-mdcx.onrender.com/api";
+  const API_BASE = String(window.PTW_API_BASE || "").replace(/\/+$/, "");
+
+  if (!API_BASE) {
+    throw new Error("PrimeTask API is not configured. Check /assets/js/config.js.");
+  }
 
   const $ = id => document.getElementById(id);
   let report = null;

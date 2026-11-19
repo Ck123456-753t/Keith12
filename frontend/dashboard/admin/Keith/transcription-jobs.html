@@ -1,7 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <link rel="stylesheet" href="/dashboard/admin/Keith/assets/admin-navigation.css">
+  
+  
+<link rel="stylesheet" href="/dashboard/admin/Keith/assets/admin-navigation.css">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#ffffff">
@@ -24,6 +26,7 @@ h1{font-size:clamp(28px,4vw,39px);line-height:1.1;letter-spacing:-1px;color:var(
 .primary{background:var(--navy);color:white}
 .secondary{background:#e9effb;color:var(--navy)}
 .orange{background:var(--orange);color:#38220e}
+.danger{background:#fde8e8;color:#a72d39;border:1px solid #f1c7cb;border-radius:8px;padding:7px 10px;font-size:12px;font-weight:800}
 button:disabled{opacity:.6;cursor:wait}
 .banner{margin:22px 0;padding:15px 18px;background:#fff;border:1px solid var(--line);border-left:4px solid var(--orange);border-radius:12px;color:#556278;font-size:13px}
 .stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin:20px 0}
@@ -40,7 +43,7 @@ input,select{border:1px solid #dbe2ed;background:white;border-radius:10px;paddin
 input:focus,select:focus{border-color:var(--blue);box-shadow:0 0 0 3px #3569d41a}
 .search{min-width:min(260px,100%)}
 .tablewrap{overflow-x:auto}
-table{border-collapse:collapse;width:100%;min-width:790px}
+table{border-collapse:collapse;width:100%;min-width:900px}
 th{background:#f6f8fc;text-align:left;text-transform:uppercase;letter-spacing:.7px;font-size:10px;color:#758197}
 th,td{padding:14px 12px;border-bottom:1px solid var(--line);vertical-align:top}
 td{font-size:13px}
@@ -58,12 +61,24 @@ td strong{display:block;color:var(--navy);font-size:13px}
 .empty strong{display:block;color:var(--navy);margin-bottom:5px}
 .foot{font-size:12px;color:var(--muted);margin:15px 2px}
 @media(max-width:700px){.shell{padding:13px}.stats{grid-template-columns:1fr;gap:9px}.stat{padding:14px}.stat-value{font-size:25px}.panel{padding:14px}.search,input,select{width:100%;min-width:0}.filters{width:100%}.filters>*{flex:1}}
+
+/* PrimeTask shared logo: preserve the original image proportions. */
+.logo img, .brand-mark img, .brandmark img,
+.brand-orb img, .hero-mark img, .mark img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  border-radius: inherit;
+}
+
 </style>
+<link rel="icon" type="image/svg+xml" href="/assets/primetask-logo.svg">
 </head>
 <body>
 <main class="shell">
   <header class="topline">
-    <div class="brand"><div class="logo">PT</div><div>PRIMETASK WORKSPACE<div class="muted">ADMINISTRATION / TRANSCRIPTION</div></div></div>
+    <div class="brand"><div class="logo">PT<div>PRIMETASK WORKSPACE<div class="muted">ADMINISTRATION / TRANSCRIPTION</div></div></div>
     <button class="btn secondary" id="refresh" type="button">↻ Refresh jobs</button>
   </header>
 
@@ -100,14 +115,15 @@ td strong{display:block;color:var(--navy);font-size:13px}
 
     <div class="tablewrap">
       <table>
-        <thead><tr><th>Job</th><th>Reward</th><th>Status</th><th>Assignment</th><th>Created</th></tr></thead>
-        <tbody id="jobRows"><tr><td colspan="5" class="empty">Loading jobs…</td></tr></tbody>
+        <thead><tr><th>Job</th><th>Reward</th><th>Status</th><th>Assignment</th><th>Created</th><th>Action</th></tr></thead>
+        <tbody id="jobRows"><tr><td colspan="6" class="empty">Loading jobs…</td></tr></tbody>
       </table>
     </div>
   </section>
   <p class="foot">Amounts are shown in USD when a job reward is present. Status labels reflect the returned record and are not inferred from missing data.</p>
 </main>
 
+<script src="/assets/js/config.js"></script>
 <script src="assets/admin-navigation.js"></script>
 <script>
 "use strict";
@@ -118,12 +134,11 @@ td strong{display:block;color:var(--navy);font-size:13px}
   let jobs = [];
   let loading = false;
 
-  const API_BASE = (() => {
-    const host = location.hostname;
-    return host === "localhost" || host === "127.0.0.1"
-      ? "http://127.0.0.1:5001/api"
-      : "https://primetask-mdcx.onrender.com/api";
-  })();
+  const API_BASE = String(window.PTW_API_BASE || "").replace(/\/+$/, "");
+
+  if (!API_BASE) {
+    throw new Error("PrimeTask API is not configured. Check /assets/js/config.js.");
+  }
 
   function esc(value) {
     return String(value ?? "").replace(/[&<>"']/g, c => ({
@@ -176,7 +191,7 @@ td strong{display:block;color:var(--navy);font-size:13px}
       (!query || normalText(job).includes(query))
     );
     if (!filtered.length) {
-      rows.innerHTML = '<tr><td colspan="5"><div class="empty"><strong>No matching jobs</strong>Try another search or status filter.</div></td></tr>';
+      rows.innerHTML = '<tr><td colspan="6"><div class="empty"><strong>No matching jobs</strong>Try another search or status filter.</div></td></tr>';
       return;
     }
     rows.innerHTML = filtered.map(job => {
@@ -190,12 +205,16 @@ td strong{display:block;color:var(--navy);font-size:13px}
       if (["available","open","published"].includes(state)) pillClass = "green";
       else if (["cancelled","rejected","failed"].includes(state)) pillClass = "red";
       else if (["pending","draft","unknown"].includes(state)) pillClass = "orange-pill";
+      const deleteAction = state === "completed" && id !== "ID unavailable"
+        ? '<button class="danger" type="button" data-delete-job="'+esc(id)+'">Delete job</button>'
+        : '<span class="muted">Not available</span>';
       return '<tr><td><strong>'+esc(title)+'</strong><span class="muted">'+esc(id)+'</span>'+
         (desc ? '<div class="muted">'+esc(String(desc).slice(0,150))+'</div>' : '')+
         '</td><td><strong>'+esc(money(job))+'</strong><span class="muted">USD, if supplied</span></td>'+
         '<td><span class="pill '+pillClass+'">'+esc(pretty(state))+'</span></td>'+
         '<td><strong>'+esc(assignee || "No assignee listed")+'</strong></td>'+
-        '<td>'+esc(date(created))+'</td></tr>';
+        '<td>'+esc(date(created))+'</td>'+
+        '<td>'+deleteAction+'</td></tr>';
     }).join("");
   }
 
@@ -204,7 +223,7 @@ td strong{display:block;color:var(--navy);font-size:13px}
     loading = true;
     $("refresh").disabled = true;
     message.className = "message";
-    rows.innerHTML = '<tr><td colspan="5" class="empty">Loading jobs from the server…</td></tr>';
+    rows.innerHTML = '<tr><td colspan="6" class="empty">Loading jobs from the server…</td></tr>';
     try {
       const response = await fetch(API_BASE + "/admin/transcription/jobs", {
         credentials:"include",
@@ -231,13 +250,72 @@ td strong{display:block;color:var(--navy);font-size:13px}
       $("total").textContent = "—";
       $("active").textContent = "—";
       $("other").textContent = "—";
-      rows.innerHTML = '<tr><td colspan="5"><div class="empty"><strong>Jobs could not be loaded</strong>'+esc(error.message)+'<p class="muted">Check the API connection and admin session. Authentication must remain enabled.</p></div></td></tr>';
+      rows.innerHTML = '<tr><td colspan="6"><div class="empty"><strong>Jobs could not be loaded</strong>'+esc(error.message)+'<p class="muted">Check the API connection and admin session. Authentication must remain enabled.</p></div></td></tr>';
       showMessage(error.message,"error");
     } finally {
       loading = false;
       $("refresh").disabled = false;
     }
   }
+  rows.addEventListener("click", async event => {
+    const button = event.target.closest("[data-delete-job]");
+    if (!button || button.disabled) return;
+
+    const id = button.getAttribute("data-delete-job");
+    const job = jobs.find(item =>
+      String(getFirst(item,["_id","id","jobId","reference","referenceCode"]) || "") === id
+    );
+
+    if (!job || statusOf(job) !== "completed") {
+      showMessage("Only completed jobs can be deleted.", "error");
+      return;
+    }
+
+    const title = getFirst(job,["title","name","jobTitle"]) || "this completed job";
+    const confirmed = window.confirm(
+      'Delete "' + title + '"? Only the job record will be removed. Submission records, audio files, and wallet/financial history will be retained.'
+    );
+    if (!confirmed) return;
+
+    button.disabled = true;
+    button.textContent = "Deleting…";
+
+    try {
+      const response = await fetch(
+        API_BASE + "/admin/transcription/jobs/" + encodeURIComponent(id),
+        {
+          method: "DELETE",
+          credentials: "include",
+          headers: { "Accept": "application/json" }
+        }
+      );
+
+      let data = {};
+      try {
+        data = await response.json();
+      } catch {
+        throw new Error("The API returned a response that could not be read.");
+      }
+
+      if (!response.ok || data.success === false) {
+        throw new Error(
+          data.message || data.error ||
+          "Could not delete the completed job (HTTP " + response.status + ")."
+        );
+      }
+
+      await load();
+      showMessage(
+        data.message || "Completed job deleted. Submission and financial records were retained.",
+        "success"
+      );
+    } catch (error) {
+      showMessage(error.message, "error");
+      button.disabled = false;
+      button.textContent = "Delete job";
+    }
+  });
+
   $("refresh").addEventListener("click",load);
   $("search").addEventListener("input",render);
   $("status").addEventListener("change",render);

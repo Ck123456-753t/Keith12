@@ -1,6 +1,8 @@
 <!doctype html>
 <html lang="en">
 <head>
+  
+  
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#061225">
@@ -148,7 +150,7 @@ button:disabled{opacity:.6;cursor:not-allowed}
   main { padding-top: 64px; }
 }
 </style>
-  <link rel="icon" type="image/jpeg" href="../assets/primetask.jpg">
+<link rel="icon" type="image/svg+xml" href="/assets/primetask-logo.svg">
 </head>
 <body>
 
@@ -161,7 +163,7 @@ button:disabled{opacity:.6;cursor:not-allowed}
   <nav id="ptwMenuPanel" class="ptw-menu-panel"
        aria-label="Main navigation" hidden>
     <div class="ptw-menu-heading">PrimeTask Workspace</div>
-    <a class="ptw-menu-link" href="index.html"><span class="ptw-menu-icon" aria-hidden="true">⌂</span><span>Dashboard</span></a><a class="ptw-menu-link" href="services.html"><span class="ptw-menu-icon" aria-hidden="true">▦</span><span>Services</span></a><a class="ptw-menu-link" href="wallet.html"><span class="ptw-menu-icon" aria-hidden="true">$</span><span>My Wallet</span></a><a class="ptw-menu-link" href="membership.html" aria-current="page"><span class="ptw-menu-icon" aria-hidden="true">◇</span><span>Membership</span></a><a class="ptw-menu-link" href="transactions.html"><span class="ptw-menu-icon" aria-hidden="true">↔</span><span>Transactions</span></a><a class="ptw-menu-link" href="referrals.html"><span class="ptw-menu-icon" aria-hidden="true">♧</span><span>My Referrals</span></a><a class="ptw-menu-link" href="profile.html"><span class="ptw-menu-icon" aria-hidden="true">○</span><span>My Profile</span></a>
+    <a class="ptw-menu-link" href="/dashboard"><span class="ptw-menu-icon" aria-hidden="true">⌂</span><span>Dashboard</span></a><a class="ptw-menu-link" href="/dashboard/services"><span class="ptw-menu-icon" aria-hidden="true">▦</span><span>Services</span></a><a class="ptw-menu-link" href="/dashboard/wallet"><span class="ptw-menu-icon" aria-hidden="true">$</span><span>My Wallet</span></a><a class="ptw-menu-link" href="/dashboard/membership" aria-current="page"><span class="ptw-menu-icon" aria-hidden="true">◇</span><span>Membership</span></a><a class="ptw-menu-link" href="/dashboard/transactions"><span class="ptw-menu-icon" aria-hidden="true">↔</span><span>Transactions</span></a><a class="ptw-menu-link" href="/dashboard/my-referrals"><span class="ptw-menu-icon" aria-hidden="true">♧</span><span>My Referrals</span></a><a class="ptw-menu-link" href="/dashboard/profile"><span class="ptw-menu-icon" aria-hidden="true">○</span><span>My Profile</span></a>
     <div class="ptw-menu-divider"></div>
     <button class="ptw-signout" id="signOut" type="button">
       ↪ Sign out
@@ -188,13 +190,8 @@ button:disabled{opacity:.6;cursor:not-allowed}
 <div id="plans" class="plan-grid">
 <p class="muted">Loading plans...</p>
 </div>
-<p class="notice">A payment prompt is not proof of payment. Membership activates only after payment verification and fulfilment.</p>
 </section>
 
-<section class="card" aria-labelledby="historyHeading">
-<h2 id="historyHeading">Membership history</h2>
-<div id="history" class="muted">Loading history...</div>
-</section>
 </main>
 </div>
 
@@ -204,6 +201,7 @@ button:disabled{opacity:.6;cursor:not-allowed}
 
 const $ = id => document.getElementById(id);
 const message = $("pageMessage");
+let authenticatedUser = null;
 
 function apiRoot() {
   const me = window.PTW_AUTH_API_ME;
@@ -226,7 +224,7 @@ async function request(url, options = {}) {
   });
 
   if (response.status === 401) {
-    window.location.replace("../auth/login.html");
+    window.location.replace("/auth/login");
     throw new Error("Your session has expired. Please sign in again.");
   }
 
@@ -255,7 +253,7 @@ function formatPrice(price, currency) {
   if (!Number.isFinite(amount)) return "Price unavailable";
   return new Intl.NumberFormat("en-US", {
     style: "currency",
-    currency: currency || "USD"
+    currency: "USD"
   }).format(amount);
 }
 
@@ -321,13 +319,6 @@ function showPlans(data) {
     addTextElement(card, "p", safeText(plan.durationDays, "Duration unavailable") +
       (plan.durationDays ? " days" : ""));
 
-    const kes = Number(plan.mpesaAmountKes);
-    addTextElement(card, "p",
-      Number.isSafeInteger(kes) && kes > 0
-        ? "M-Pesa payment: KSh " + kes.toLocaleString("en-KE")
-        : "M-Pesa amount is not configured. This plan cannot be purchased."
-    );
-
     if (Array.isArray(plan.services) && plan.services.length) {
       addTextElement(card, "h4", "Included services");
       const list = document.createElement("ul");
@@ -336,51 +327,71 @@ function showPlans(data) {
       card.appendChild(list);
     }
 
-    const form = document.createElement("form");
-    form.className = "membership-checkout";
-    form.dataset.planId = planId;
+    const checkout = document.createElement("div");
+    checkout.className = "membership-checkout";
 
-    const label = addTextElement(form, "label", "M-Pesa phone number");
-    const phone = document.createElement("input");
-    phone.type = "tel";
-    phone.name = "phoneNumber";
-    phone.autocomplete = "tel";
-    phone.inputMode = "tel";
-    phone.placeholder = "0712345678";
-    phone.required = true;
-    phone.pattern = "(?:0[17][0-9]{8}|\\+?254[17][0-9]{8})";
-    phone.setAttribute("aria-label", "M-Pesa phone number");
-    label.htmlFor = "membership-phone-" + (planId || "unavailable");
-    phone.id = label.htmlFor;
-    form.appendChild(phone);
-
-    const button = document.createElement("button");
-    button.type = "submit";
-    button.textContent = "Purchase membership";
-    button.disabled = !planId || !(Number.isSafeInteger(kes) && kes > 0);
-    const walletButton = document.createElement("button");
-    walletButton.type = "button";
-    walletButton.textContent = "Buy with Wallet";
-    walletButton.disabled = !planId;
     const actions = document.createElement("div");
     actions.className = "checkout-actions";
-    actions.append(button, walletButton);
-    form.appendChild(actions);
 
-    const status = addTextElement(form, "p", "", "notice");
+    const walletButton = document.createElement("button");
+    walletButton.type = "button";
+    walletButton.textContent = "Purchase with Wallet";
+    walletButton.disabled = !planId;
+
+    const mpesaButton = document.createElement("button");
+    mpesaButton.type = "button";
+    mpesaButton.textContent = "Pay with M-Pesa";
+    mpesaButton.disabled = !planId;
+
+    const status = addTextElement(checkout, "p", "", "notice");
     status.setAttribute("role", "status");
     status.setAttribute("aria-live", "polite");
 
-    walletButton.addEventListener("click", () => {
-      purchaseMembershipWithWallet(planId, walletButton, status);
+    // Prevent two payment methods from running for the same plan.
+    let checkoutBusy = false;
+
+    walletButton.addEventListener("click", async () => {
+      if (checkoutBusy || walletButton.disabled) return;
+
+      checkoutBusy = true;
+      mpesaButton.disabled = true;
+
+      try {
+        await purchaseMembershipWithWallet(planId, walletButton, status);
+      } finally {
+        checkoutBusy = false;
+
+        if (walletButton.textContent === "Membership activated") {
+          mpesaButton.disabled = true;
+        } else {
+          mpesaButton.disabled = false;
+          mpesaButton.disabled = !planId;
+        }
+      }
     });
 
-    form.addEventListener("submit", event => {
-      event.preventDefault();
-      purchaseMembership(form, button, status);
+    mpesaButton.addEventListener("click", async () => {
+      if (checkoutBusy || mpesaButton.disabled) return;
+
+      checkoutBusy = true;
+      walletButton.disabled = true;
+
+      try {
+        await purchaseMembership(planId, mpesaButton, status);
+      } finally {
+        checkoutBusy = false;
+
+        if (mpesaButton.textContent === "Request submitted") {
+          walletButton.disabled = true;
+        } else {
+          walletButton.disabled = !planId;
+        }
+      }
     });
 
-    card.appendChild(form);
+    actions.append(walletButton, mpesaButton);
+    checkout.append(actions, status);
+    card.appendChild(checkout);
     container.appendChild(card);
   });
 }
@@ -450,8 +461,7 @@ async function purchaseMembershipWithWallet(planId, button, status) {
       refreshWalletBalance(),
       request(apiRoot() + "/membership").then(data => {
         showCurrent(data);
-        showHistory(data);
-      })
+        })
     ]);
 
     if (refreshes.some(item => item.status === "rejected")) {
@@ -475,13 +485,19 @@ async function purchaseMembershipWithWallet(planId, button, status) {
   }
 }
 
-async function purchaseMembership(form, button, status) {
-  const planId = form.dataset.planId;
-  if (!planId || !form.reportValidity()) return;
+async function purchaseMembership(planId, button, status) {
+  if (!planId || button.disabled) return;
 
-  const phoneNumber = form.elements.phoneNumber.value.trim();
-  if (!form.dataset.idempotencyKey) {
-    form.dataset.idempotencyKey = createIdempotencyKey();
+  const phoneNumber = String(authenticatedUser?.phone || "").trim();
+  if (!phoneNumber) {
+    status.className = "notice error";
+    status.textContent =
+      "Your registered phone number could not be loaded. Refresh your session or update your profile before purchasing.";
+    return;
+  }
+
+  if (!button.dataset.idempotencyKey) {
+    button.dataset.idempotencyKey = createIdempotencyKey();
   }
 
   button.disabled = true;
@@ -492,7 +508,7 @@ async function purchaseMembership(form, button, status) {
   try {
     const result = await request(apiRoot() + "/membership/purchases", {
       method: "POST",
-      headers: { "Idempotency-Key": form.dataset.idempotencyKey },
+      headers: { "Idempotency-Key": button.dataset.idempotencyKey },
       body: JSON.stringify({ planId, phoneNumber })
     });
 
@@ -504,9 +520,9 @@ async function purchaseMembership(form, button, status) {
       status.textContent = "Payment outcome needs reconciliation. Do not start another purchase. Reference: " +
         safeText(purchase.purchaseReference, "not available") + ".";
     } else {
-      status.textContent = (result.message || "Purchase request received.") +
-        " Membership activates only after payment verification and fulfilment. Reference: " +
-        safeText(purchase.purchaseReference, "not available") + ".";
+      status.textContent =
+        "STK payment request sent to your phone. Complete the payment when prompted. " +
+        "Your membership will activate after payment verification and fulfilment.";
     }
 
     button.textContent = "Request submitted";
@@ -528,40 +544,11 @@ async function purchaseMembership(form, button, status) {
   }
 }
 
-function showHistory(data) {
-  const container = $("history");
-  container.replaceChildren();
-
-  const history = Array.isArray(data.history) ? data.history :
-    Array.isArray(data.memberships) ? data.memberships : [];
-
-  if (!history.length) {
-    addTextElement(container, "p", "No membership history found.", "muted");
-    return;
-  }
-
-  history.forEach(item => {
-    const row = document.createElement("div");
-    row.className = "row";
-    addTextElement(row, "strong", safeText(item.planKey, "Membership plan"));
-    addTextElement(row, "p", "Status: " + safeText(item.status));
-    addTextElement(row, "p",
-      (item.grantSource || "purchase") === "admin_award"
-        ? "Source: Awarded by administrator"
-        : "Source: Membership purchase");
-    if ((item.grantSource || "purchase") === "admin_award" && item.grantReason) {
-      addTextElement(row, "p", "Award reason: " + item.grantReason, "muted");
-    }
-    addTextElement(row, "p", "Price: " + formatPrice(item.price, item.currency));
-    addTextElement(row, "p", "Period: " + formatDate(item.startsAt) + " to " + formatDate(item.expiresAt));
-    container.appendChild(row);
-  });
-}
-
 async function init() {
   try {
     const root = apiRoot();
-    await request(`${root}/auth/me`);
+    const authResult = await request(`${root}/auth/me`);
+    authenticatedUser = authResult.user || null;
 
     const results = await Promise.allSettled([
       request(`${root}/membership/plans`),
@@ -584,10 +571,8 @@ async function init() {
 
     if (membershipResult.status === "fulfilled") {
       showCurrent(membershipResult.value);
-      showHistory(membershipResult.value);
     } else {
       $("currentMembership").textContent = "Membership status could not be loaded.";
-      $("history").textContent = "Membership history could not be loaded.";
       errors.push("Membership details could not be loaded.");
     }
 
@@ -616,7 +601,7 @@ $("signOut").addEventListener("click", async () => {
   } catch (error) {
     console.error("Sign-out request failed:", error);
   } finally {
-    window.location.replace("../auth/login.html");
+    window.location.replace("/auth/login");
   }
 });
 

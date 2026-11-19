@@ -66,7 +66,7 @@ router.patch("/jobs/:id", async (req, res, next) => {
     const before = await Job.findById(req.params.id).lean();
     if (!before) return res.status(404).json({ success: false, message: "Job not found." });
     if (["closed", "archived"].includes(before.status)) return res.status(409).json({ success: false, message: "Closed or archived jobs cannot be edited." });
-    const job = await Job.findByIdAndUpdate(req.params.id, { $set: input }, { new: true, runValidators: true });
+    const job = await Job.findByIdAndUpdate(req.params.id, { $set: input }, { returnDocument: 'after', runValidators: true });
     await AdminAuditLog.create({ adminId: req.user._id, targetUserId: req.user._id, action: "academic_job_updated", reason: `Updated academic job ${job._id}`, before: { status: before.status }, after: { status: job.status, fields: Object.keys(input) }, ipAddress: String(req.ip || "").slice(0, 100) });
     return res.json({ success: true, job });
   } catch (error) { return next(error); }
@@ -118,7 +118,7 @@ router.post("/applications/:id/award", async (req, res, next) => {
       const job = await Job.findOneAndUpdate(
         { _id: application.jobId, status: { $in: ["published", "paused"] }, $expr: { $lt: ["$awardedCount", "$successfulApplicants"] } },
         { $inc: { awardedCount: 1 } },
-        { new: true, session }
+        { returnDocument: 'after', session }
       );
       if (!job) throw new Error("AWARD_LIMIT_REACHED");
       application.status = "awarded"; application.reviewedBy = req.user._id; application.reviewedAt = new Date(); await application.save({ session });
@@ -155,7 +155,7 @@ router.patch("/bid-packages/:id", async (req, res, next) => {
   if (!req.body || !Object.keys(req.body).length || Object.keys(req.body).some(k => !allowed.includes(k))) return res.status(400).json({ success: false, message: "Unsupported package fields." });
   try {
     const before = await BidPackage.findById(req.params.id).lean();
-    const pack = await BidPackage.findByIdAndUpdate(req.params.id, { $set: req.body }, { new: true, runValidators: true });
+    const pack = await BidPackage.findByIdAndUpdate(req.params.id, { $set: req.body }, { returnDocument: 'after', runValidators: true });
     if (!pack) return res.status(404).json({ success: false, message: "Package not found." });
     await AdminAuditLog.create({ adminId: req.user._id, targetUserId: req.user._id, action: "academic_bid_package_updated", reason: `Updated Academic Writing bid package ${pack._id}`, before: before ? { name: before.name, bids: before.bids, priceKes: before.priceKes, isActive: before.isActive } : null, after: { name: pack.name, bids: pack.bids, priceKes: pack.priceKes, isActive: pack.isActive }, ipAddress: String(req.ip || "").slice(0, 100) });
     return res.json({ success: true, package: pack });
@@ -172,7 +172,7 @@ router.post("/bid-wallets/:userId/adjust", async (req, res, next) => {
     await session.withTransaction(async () => {
       const query = { userId: req.params.userId };
       if (bids < 0) query.balanceBids = { $gte: Math.abs(bids) };
-      wallet = await BidWallet.findOneAndUpdate(query, { $setOnInsert: { userId: req.params.userId }, $inc: { balanceBids: bids, totalAdjustedBids: bids } }, { new: true, upsert: bids > 0, setDefaultsOnInsert: true, runValidators: true, session });
+      wallet = await BidWallet.findOneAndUpdate(query, { $setOnInsert: { userId: req.params.userId }, $inc: { balanceBids: bids, totalAdjustedBids: bids } }, { returnDocument: 'after', upsert: bids > 0, setDefaultsOnInsert: true, runValidators: true, session });
       if (!wallet) throw new Error("INSUFFICIENT_BIDS");
       await BidTransaction.create([{ userId: req.params.userId, walletId: wallet._id, type: bids > 0 ? "ADMIN_CREDIT" : "ADMIN_DEBIT", bids, previousBalance: wallet.balanceBids - bids, newBalance: wallet.balanceBids, reference: `AW-ADMIN-${req.user._id}-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`, description: reason.trim(), metadata: { adminId: String(req.user._id) } }], { session });
       await AdminAuditLog.create([{ adminId: req.user._id, targetUserId: req.params.userId, action: bids > 0 ? "academic_bid_credit" : "academic_bid_debit", reason: reason.trim(), after: { bids, balance: wallet.balanceBids }, ipAddress: String(req.ip || "").slice(0, 100) }], { session });

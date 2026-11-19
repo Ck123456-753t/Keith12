@@ -314,31 +314,18 @@
           const noteInput = element("textarea");
           noteInput.rows = 2;
           noteInput.maxLength = 500;
-          noteInput.placeholder = "Optional for payment; required for rejection.";
+          noteInput.placeholder = "Required when rejecting a withdrawal.";
           noteLabel.append(noteInput);
 
-          const receiptLabel = element("label", "ptw-transcription-note", "M-Pesa receipt reference (required to mark paid)");
-          const receiptInput = element("input");
-          receiptInput.maxLength = 20;
-          receiptInput.autocomplete = "off";
-          receiptInput.placeholder = "e.g. QWE1234567";
-          receiptInput.pattern = "[A-Za-z0-9]{8,20}";
-          receiptLabel.append(receiptInput);
-          card.append(noteLabel, receiptLabel);
+          card.append(noteLabel);
 
           const actions = element("div", "ptw-transcription-actions");
           actions.append(
             makeButton("Record paid", async () => {
-              const receipt = receiptInput.value.trim().toUpperCase();
-              if (!/^[A-Z0-9]{8,20}$/.test(receipt)) {
-                setStatus("Enter a valid M-Pesa receipt reference (8–20 letters or numbers).", "error");
-                receiptInput.focus();
-                return;
-              }
               if (!window.confirm(
-                `Confirm that ${money(withdrawal.amount)} was already paid to ${withdrawal.phoneNumber || "the listed phone"} and that this receipt is correct? This only records the completed payment.`
+                `Confirm that ${money(withdrawal.amount)} was already paid to ${withdrawal.phoneNumber || "the listed phone"}? This records the completed payment only. No M-Pesa transfer will be initiated.`
               )) return;
-              await reviewWithdrawal(withdrawal.id, "paid", noteInput.value, receipt);
+              await reviewWithdrawal(withdrawal.id, "paid", "");
             }, "ptw-admin-button-primary"),
             makeButton("Reject & refund", async () => {
               if (!noteInput.value.trim()) {
@@ -347,7 +334,7 @@
                 return;
               }
               if (!window.confirm("Reject this withdrawal and return the reserved funds to the worker's transcription wallet?")) return;
-              await reviewWithdrawal(withdrawal.id, "reject", noteInput.value, "");
+              await reviewWithdrawal(withdrawal.id, "reject", noteInput.value);
             }, "ptw-transcription-button-danger")
           );
           card.append(actions);
@@ -361,7 +348,7 @@
     }
   }
 
-  async function reviewWithdrawal(id, decision, reviewNote, mpesaReceipt) {
+  async function reviewWithdrawal(id, decision, reviewNote = "") {
     setStatus(`Saving withdrawal decision…`);
     try {
       const payload = await request(
@@ -369,7 +356,9 @@
         {
           method: "PATCH",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ decision, reviewNote: reviewNote.trim(), mpesaReceipt })
+          body: JSON.stringify(decision === "reject"
+            ? { decision, reviewNote: reviewNote.trim() }
+            : { decision })
         }
       );
       setStatus(payload.message || "Withdrawal review saved.", "success");
@@ -380,10 +369,86 @@
   }
 
 
+  const rotationWorkerState = $("#rotationWorkerState");
+  const rotationWorkerResult = $("#rotationWorkerResult");
+  const rotationWorkerToggle = $("#rotationWorkerToggle");
+  let rotationWorkerEnabled = null;
+  let rotationWorkerBusy = false;
+
+  async function loadRotationWorkerState() {
+    rotationWorkerState.textContent = "Loading rotation status…";
+    rotationWorkerToggle.disabled = true;
+
+    try {
+      const payload = await request("/admin/transcription/rotation-worker");
+      rotationWorkerEnabled = payload.enabled !== false;
+      rotationWorkerState.textContent = rotationWorkerEnabled
+        ? "Rotation is ACTIVE. Eligible jobs rotate automatically."
+        : "Rotation is INACTIVE. Automatic archiving is paused.";
+      rotationWorkerToggle.textContent = rotationWorkerEnabled
+        ? "Deactivate rotation"
+        : "Activate rotation";
+      rotationWorkerToggle.classList.toggle(
+        "ptw-admin-button-primary",
+        !rotationWorkerEnabled
+      );
+      rotationWorkerResult.textContent = "Status synced with the backend.";
+      rotationWorkerToggle.disabled = false;
+    } catch (error) {
+      rotationWorkerState.textContent = error.message;
+      rotationWorkerResult.textContent = "Could not load the saved rotation setting.";
+      setStatus(error.message, "error");
+    }
+  }
+
+  rotationWorkerToggle.addEventListener("click", async () => {
+    if (rotationWorkerBusy || rotationWorkerEnabled === null) return;
+
+    const nextEnabled = !rotationWorkerEnabled;
+    const confirmation = nextEnabled
+      ? "Activate automatic job rotation?"
+      : "Deactivate rotation and restore eligible jobs archived by rotation?";
+
+    if (!window.confirm(confirmation)) return;
+
+    rotationWorkerBusy = true;
+    rotationWorkerToggle.disabled = true;
+    rotationWorkerResult.textContent = nextEnabled
+      ? "Activating rotation…"
+      : "Deactivating rotation and restoring eligible jobs…";
+
+    try {
+      const payload = await request("/admin/transcription/rotation-worker", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ enabled: nextEnabled })
+      });
+
+      rotationWorkerEnabled = payload.enabled === true;
+      rotationWorkerState.textContent = rotationWorkerEnabled
+        ? "Rotation is ACTIVE. Eligible jobs rotate automatically."
+        : "Rotation is INACTIVE. Automatic archiving is paused.";
+      rotationWorkerToggle.textContent = rotationWorkerEnabled
+        ? "Deactivate rotation"
+        : "Activate rotation";
+      rotationWorkerToggle.classList.toggle(
+        "ptw-admin-button-primary",
+        !rotationWorkerEnabled
+      );
+      rotationWorkerResult.textContent = payload.message || "Rotation setting saved.";
+      setStatus(payload.message || "Rotation setting saved.", "success");
+    } catch (error) {
+      rotationWorkerResult.textContent = error.message;
+      setStatus(error.message, "error");
+      await loadRotationWorkerState();
+    } finally {
+      rotationWorkerBusy = false;
+      rotationWorkerToggle.disabled = rotationWorkerEnabled === null;
+    }
+  });
+
   const settingsForm = $("#transcriptionSettingsForm");
   const defaultAudioTitleInput = $("#defaultAudioTitle");
-  const rewardRangesEditor = $("#rewardRangesEditor");
-  const addRewardRangeButton = $("#addRewardRangeButton");
   const saveSettingsButton = $("#saveTranscriptionSettingsButton");
   const settingsSaveStatus = $("#settingsSaveStatus");
   const minutePackageForm = $("#minutePackageForm");
@@ -407,54 +472,12 @@
     return { label, input };
   }
 
-  function renderRewardRange(range = {}) {
-    const row = element("div", "ptw-transcription-config-row");
-    const min = makeInput("Minimum minutes", range.minMinutes ?? 1, "number", "1", "10000");
-    const max = makeInput("Maximum minutes", range.maxMinutes ?? 5, "number", "1", "10000");
-    const reward = makeInput("Reward (whole USD)", range.rewardUsd ?? 1, "number", "1", "1000000");
-    row.append(min.label, max.label, reward.label);
-
-    const remove = makeButton("Remove range", () => row.remove(), "ptw-transcription-button-danger");
-    row.append(remove);
-    row._rangeInputs = { min: min.input, max: max.input, reward: reward.input };
-    rewardRangesEditor.append(row);
-  }
-
-  function readRewardRanges() {
-    const rows = [...rewardRangesEditor.querySelectorAll(".ptw-transcription-config-row")];
-    const ranges = rows.map((row) => {
-      const fields = row._rangeInputs;
-      if (!fields) throw new Error("A reward range editor is incomplete. Reload settings and try again.");
-      const minMinutes = Number(fields.min.value);
-      const maxMinutes = Number(fields.max.value);
-      const rewardUsd = Number(fields.reward.value);
-      if (!Number.isSafeInteger(minMinutes) || minMinutes < 1 || minMinutes > 10000 ||
-          !Number.isSafeInteger(maxMinutes) || maxMinutes < minMinutes || maxMinutes > 10000 ||
-          !Number.isSafeInteger(rewardUsd) || rewardUsd < 1 || rewardUsd > 1000000) {
-        throw new Error("Each range needs valid whole-minute limits and a whole-dollar USD reward.");
-      }
-      return { minMinutes, maxMinutes, rewardUsd };
-    }).sort((a, b) => a.minMinutes - b.minMinutes);
-
-    if (!ranges.length) throw new Error("At least one reward range is required.");
-    if (ranges.length > 100) throw new Error("A maximum of 100 reward ranges is allowed.");
-    for (let i = 1; i < ranges.length; i++) {
-      if (ranges[i - 1].maxMinutes >= ranges[i].minMinutes) {
-        throw new Error("Reward ranges overlap. Adjust the boundaries before saving.");
-      }
-    }
-    return ranges;
-  }
-
   async function loadTranscriptionSettings() {
     settingsSaveStatus.textContent = "Loading settings…";
     try {
       const payload = await request("/admin/transcription/config/settings");
       const settings = payload.settings || {};
       defaultAudioTitleInput.value = settings.defaultAudioTitle || "";
-      rewardRangesEditor.replaceChildren();
-      for (const range of (settings.durationRewardRanges || [])) renderRewardRange(range);
-      if (!rewardRangesEditor.children.length) renderRewardRange();
       settingsSaveStatus.textContent = "Settings loaded.";
     } catch (error) {
       settingsSaveStatus.textContent = error.message;
@@ -470,26 +493,16 @@
       return;
     }
 
-    let durationRewardRanges;
-    try {
-      durationRewardRanges = readRewardRanges();
-    } catch (error) {
-      settingsSaveStatus.textContent = error.message;
-      return;
-    }
-
     saveSettingsButton.disabled = true;
     settingsSaveStatus.textContent = "Saving settings…";
     try {
       const payload = await request("/admin/transcription/config/settings", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ defaultAudioTitle: title, durationRewardRanges })
+        body: JSON.stringify({ defaultAudioTitle: title }),
       });
       const saved = payload.settings || {};
       defaultAudioTitleInput.value = saved.defaultAudioTitle || title;
-      rewardRangesEditor.replaceChildren();
-      for (const range of (saved.durationRewardRanges || durationRewardRanges)) renderRewardRange(range);
       settingsSaveStatus.textContent = payload.message || "Settings saved.";
       setStatus("Transcription settings saved.", "success");
     } catch (error) {
@@ -498,14 +511,6 @@
     } finally {
       saveSettingsButton.disabled = false;
     }
-  });
-
-  addRewardRangeButton.addEventListener("click", () => {
-    if (rewardRangesEditor.children.length >= 100) {
-      settingsSaveStatus.textContent = "A maximum of 100 reward ranges is allowed.";
-      return;
-    }
-    renderRewardRange({ minMinutes: 1, maxMinutes: 5, rewardUsd: 1 });
   });
 
   function renderMinutePackage(pkg) {
@@ -644,11 +649,10 @@
     const data = new FormData(jobForm);
     const dueValue = data.get("dueAt");
     const title = String(data.get("title") || "").trim();
-    const description = String(data.get("description") || "").trim();
-    const instructions = String(data.get("instructions") || "").trim();
+    const requiredTranscript = String(data.get("requiredTranscript") || "").trim();
 
-    if (!description || !instructions) {
-      setStatus("Enter the job description and transcription instructions.", "error");
+    if (!requiredTranscript) {
+      setStatus("Enter the required transcript.", "error");
       return;
     }
 
@@ -674,35 +678,22 @@
       const durationMinutes = Math.ceil(durationSeconds / 60);
       const settingsPayload = await request("/admin/transcription/config/settings");
       const settings = settingsPayload.settings || {};
-      const ranges = Array.isArray(settings.durationRewardRanges)
-        ? settings.durationRewardRanges
-        : [];
-      const matching = ranges.filter((range) =>
-        durationMinutes >= Number(range.minMinutes) &&
-        durationMinutes <= Number(range.maxMinutes)
-      );
 
-      if (matching.length !== 1) {
-        throw new Error(`No unique reward rule covers ${durationMinutes} minute(s). Update the admin reward settings.`);
-      }
-
-      const configuredReward = Number(matching[0].rewardUsd);
-      if (!Number.isSafeInteger(configuredReward) || configuredReward < 1) {
-        throw new Error("The configured reward is invalid. No job was created.");
-      }
+      // Mirror the backend calculation for preview only.
+      // The backend response remains authoritative after job creation.
+      const estimatedRewardUsd = Math.max(1, Math.floor(durationSeconds / 300));
 
       if (rewardPreview) {
         rewardPreview.textContent =
-          `Verified duration: ${durationMinutes} minute(s). Configured reward: ${money(configuredReward)} USD.`;
+          `Verified duration: ${durationMinutes} minute(s). Estimated reward: ${money(estimatedRewardUsd)} USD. Final reward is confirmed by the server.`;
       }
 
-      audioState.textContent = "Audio uploaded. Creating job using verified duration and configured reward…";
+      audioState.textContent = "Audio uploaded. Creating job; the server will confirm the final reward…";
       jobButton.textContent = "Creating job…";
 
       const jobPayload = await request("/admin/transcription/jobs", jsonOptions({
         title,
-        description,
-        instructions,
+        requiredTranscript,
         audioPublicId: publicId,
         ...(dueValue ? { dueAt: new Date(dueValue).toISOString() } : {})
       }));
@@ -715,7 +706,7 @@
       audioState.textContent = "Job created and audio asset linked.";
       jobForm.reset();
       if (rewardPreview) {
-        rewardPreview.textContent = "Audio duration and reward will be verified after upload.";
+        rewardPreview.textContent = "Audio duration and estimated reward will be shown after upload.";
       }
     } catch (error) {
       setStatus(error.message, "error");
@@ -730,6 +721,7 @@
   submissionFilter.addEventListener("change", loadSubmissions);
   withdrawalFilter.addEventListener("change", loadWithdrawals);
 
+  loadRotationWorkerState();
   loadTranscriptionSettings();
   loadMinutePackages();
 
