@@ -213,6 +213,7 @@ app.use("/api/admin/transcription/config", adminTranscriptionConfigRoutes);
 app.use("/api/transcription/learning", transcriptionLearningRoutes);
 app.use("/api/transcription", transcriptionRoutes);
 app.use("/api/daraja/callback", darajaCallbackRoutes);
+app.use("/api/payments/daraja/callback", darajaCallbackRoutes);
 app.use("/api/daraja/callback/b2c", darajaB2CCallbackRoutes);
 app.use("/api/wallet/deposits", depositDiagnosticsRoutes);
 app.use("/api/wallet/deposits", depositRoutes);

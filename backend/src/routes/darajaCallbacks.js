@@ -96,7 +96,7 @@ function extractCallbackMetadata(callback) {
   };
 }
 
-router.post("/stk", async (req, res) => {
+router.post(["/stk", "/"], async (req, res) => {
   const callback = req.body?.Body?.stkCallback;
   const checkoutRequestId = boundedString(
     callback?.CheckoutRequestID,

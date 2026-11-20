@@ -13,6 +13,10 @@ test("frontend API config supports explicit production configuration", () => {
 
   assert.match(source, /window\.PTW_API_BASE/);
   assert.match(source, /ptw-api-base/);
+  assert.match(
+    source,
+    /https:\/\/primetask-workspace\.onrender\.com\/api/
+  );
   assert.match(source, /Production cannot use a localhost API URL/);
   assert.match(source, /An HTTPS website requires an HTTPS API URL/);
 });

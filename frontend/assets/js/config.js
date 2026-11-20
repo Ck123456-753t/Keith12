@@ -20,7 +20,7 @@
   } else if (isLocal) {
     apiBase = "http://127.0.0.1:5001/api";
   } else {
-    apiBase = "https://primetask-gvfr.onrender.com/api";
+    apiBase = "https://primetask-workspace.onrender.com/api";
   }
 
   apiBase = apiBase.replace(/\/+$/, "");

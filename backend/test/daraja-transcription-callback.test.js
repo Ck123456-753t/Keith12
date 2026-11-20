@@ -196,6 +196,9 @@ function loadRouteWithMocks() {
     if (request === "../models/DataEntryBidPurchase") {
       return dataEntryBidPurchaseModel;
     }
+    if (request === "../models/AcademicBidPurchase") {
+      return { async findOne() { return null; } };
+    }
     if (request === "../models/DarajaCallbackEvent") return eventModel;
     if (request === "../services/membershipDarajaVerificationService") {
       return membershipVerificationService;
@@ -273,8 +276,8 @@ function prepareNotesPointsPurchase() {
   };
 }
 
-async function sendCallback(payload) {
-  return fetch(`${baseUrl}/stk`, {
+async function sendCallback(payload, callbackPath = "/stk") {
+  return fetch(`${baseUrl}${callbackPath}`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(payload)
@@ -289,6 +292,7 @@ beforeEach(async () => {
   const app = express();
   app.use(express.json());
   app.use("/", router);
+  app.use("/api/payments/daraja/callback", router);
 
   server = http.createServer(app);
   await new Promise(resolve =>
@@ -384,6 +388,19 @@ test("duplicate callback is idempotent and does not duplicate stored events", as
   assert.equal(events.length, 1);
   assert.equal(purchase.paymentStatus, "verification_required");
   assert.equal(purchase.mpesaReceipt, null);
+});
+
+test("configured payments callback URL is mounted and preserves verification", async () => {
+  const response = await sendCallback(
+    callbackPayload(0),
+    "/api/payments/daraja/callback"
+  );
+
+  assert.equal(response.status, 200);
+  assert.equal(purchase.paymentStatus, "verification_required");
+  assert.equal(purchase.mpesaReceipt, null);
+  assert.equal(events.length, 1);
+  assert.equal(events[0].processingStatus, "reconciliation_required");
 });
 
 test("unknown checkout is stored for reconciliation without changing a purchase", async () => {
