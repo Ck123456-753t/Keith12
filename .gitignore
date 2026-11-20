@@ -35,3 +35,4 @@ patch-transcription-admin.py
 .vercel
 .env*
 !backend/.env.transcription.example
+backend/failed-minute-purchases-backup-*.json
