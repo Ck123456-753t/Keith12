@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "node --test --test-concurrency=1 test/*.test.js",
+    "audit:transcription-minute-purchases": "node scripts/audit-transcription-minute-purchases.js",
     "start": "node src/server.js",
     "dev": "node --watch src/server.js",
     "test:integration": "node --test test/auth.integration.test.js"
