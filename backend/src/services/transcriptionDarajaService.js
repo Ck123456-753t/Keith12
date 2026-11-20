@@ -1,33 +1,73 @@
 const crypto = require("crypto");
 require("dotenv").config({ path: require("path").resolve(__dirname, "../../.env.transcription") });
 
-const TRANSCRIPTION_DARAJA_ENV = String(process.env.TRANSCRIPTION_DARAJA_ENV || "sandbox")
+function getSetting(transcriptionName, sharedName, fallback = "") {
+  const transcriptionValue = process.env[transcriptionName];
+
+  if (transcriptionValue !== undefined && transcriptionValue !== "") {
+    return transcriptionValue;
+  }
+
+  return process.env[sharedName] || fallback;
+}
+
+const TRANSCRIPTION_DARAJA_ENV = String(
+  getSetting("TRANSCRIPTION_DARAJA_ENV", "DARAJA_ENV", "sandbox")
+)
   .trim()
   .toLowerCase();
 
-const LIVE_ENABLED =
-  process.env.TRANSCRIPTION_DARAJA_ENABLED === "true";
+const LIVE_ENABLED = getSetting(
+  "TRANSCRIPTION_DARAJA_ENABLED",
+  "DARAJA_LIVE_ENABLED",
+  "false"
+) === "true";
 
 const TRANSACTION_TYPE = String(
-  process.env.TRANSCRIPTION_DARAJA_TRANSACTION_TYPE ||
+  getSetting(
+    "TRANSCRIPTION_DARAJA_TRANSACTION_TYPE",
+    "DARAJA_TRANSACTION_TYPE",
+    ""
+  ) ||
   (TRANSCRIPTION_DARAJA_ENV === "sandbox" ? "CustomerPayBillOnline" : "")
 ).trim();
 
 const REQUEST_TIMEOUT_MS = 15000;
 
 function getConfig() {
-  const consumerKey = process.env.TRANSCRIPTION_DARAJA_CONSUMER_KEY;
-  const consumerSecret = process.env.TRANSCRIPTION_DARAJA_CONSUMER_SECRET;
+  const consumerKey = getSetting(
+    "TRANSCRIPTION_DARAJA_CONSUMER_KEY",
+    "DARAJA_CONSUMER_KEY"
+  );
+  const consumerSecret = getSetting(
+    "TRANSCRIPTION_DARAJA_CONSUMER_SECRET",
+    "DARAJA_CONSUMER_SECRET"
+  );
   const storeNumber = String(
-    process.env.TRANSCRIPTION_DARAJA_STORE_NUMBER ||
-    process.env.TRANSCRIPTION_DARAJA_SHORTCODE ||
+    getSetting(
+      "TRANSCRIPTION_DARAJA_STORE_NUMBER",
+      "DARAJA_STORE_NUMBER"
+    ) ||
+    getSetting(
+      "TRANSCRIPTION_DARAJA_SHORTCODE",
+      "DARAJA_SHORTCODE"
+    ) ||
     ""
   ).trim();
   const tillNumber = String(
-    process.env.TRANSCRIPTION_DARAJA_TILL_NUMBER || ""
+    getSetting(
+      "TRANSCRIPTION_DARAJA_TILL_NUMBER",
+      "DARAJA_TILL_NUMBER"
+    )
   ).trim();
-  const passkey = process.env.TRANSCRIPTION_DARAJA_PASSKEY;
-  const callbackUrl = process.env.TRANSCRIPTION_DARAJA_CALLBACK_URL;
+  const passkey = getSetting(
+    "TRANSCRIPTION_DARAJA_PASSKEY",
+    "DARAJA_PASSKEY"
+  );
+  const callbackUrl = getSetting(
+    "TRANSCRIPTION_DARAJA_CALLBACK_URL",
+    "DARAJA_CALLBACK_URL"
+  );
 
   if (
     !consumerKey ||
@@ -201,7 +241,8 @@ async function getAccessToken() {
 
 /*
  * This function never contacts Safaricom unless all of these are true:
- * 1. TRANSCRIPTION_DARAJA_ENABLED=true
+ * 1. TRANSCRIPTION_DARAJA_ENABLED=true or DARAJA_LIVE_ENABLED=true when no
+ *    transcription-specific enable override is configured
  * 2. TRANSCRIPTION_DARAJA_ENV=sandbox or production
  * 3. Credentials and a public HTTPS callback URL are configured.
  *

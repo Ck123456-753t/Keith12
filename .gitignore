@@ -13,6 +13,7 @@ __pycache__/
 **/.env
 **/.env.*
 !**/.env.example
+!backend/.env.transcription.example
 
 # Local backups and patch helpers
 backups/
@@ -33,3 +34,4 @@ patch-admin-config.py
 patch-transcription-admin.py
 .vercel
 .env*
+!backend/.env.transcription.example

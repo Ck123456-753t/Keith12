@@ -2,7 +2,7 @@
 
 (() => {
   const hostname = window.location.hostname;
-  const isLocal = ["localhost", "127.0.0.1"].includes(hostname);
+  const isLocal = ["localhost", "127.0.0.1", "::1", "::"].includes(hostname);
   const isHttps = window.location.protocol === "https:";
 
   const meta = document.querySelector('meta[name="ptw-api-base"]');

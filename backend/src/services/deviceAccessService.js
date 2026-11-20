@@ -175,21 +175,6 @@ async function authorizeLoginDevice(req, res, user) {
         return;
       }
 
-      // Only Cartel20666 is authorized to initiate device transfers.
-      // First-time device registration remains unaffected.
-      if (
-        registrationForTransfer &&
-        String(user._id) !== "6acf3c35cd675fec9616958b"
-      ) {
-        result = {
-          allowed: false,
-          status: 403,
-          code: "DEVICE_TRANSFER_DISABLED",
-          message: "Device transfer is not enabled for this account. Contact an administrator."
-        };
-        return;
-      }
-
       if (!device) {
         device = new Device({
           deviceKeyHash: credentialHash,

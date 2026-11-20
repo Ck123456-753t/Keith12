@@ -27,12 +27,40 @@ test("Vercel configuration is valid and preserves registration rewrite", () => {
   );
 
   assert.ok(
+    fs.existsSync(path.join(root, "frontend/auth/register.html")),
+    "Registration rewrite target must exist"
+  );
+
+  assert.ok(
     config.rewrites.some(
       item =>
         item.source === "/register/:username" &&
-        item.destination === "/auth/register.html"
+        item.destination === "/auth/register"
     )
   );
+});
+
+test("Vercel API rewrite targets the backend configured by the frontend", () => {
+  const config = JSON.parse(
+    fs.readFileSync(path.join(root, "frontend/vercel.json"), "utf8")
+  );
+  const frontendConfig = fs.readFileSync(
+    path.join(root, "frontend/assets/js/config.js"),
+    "utf8"
+  );
+  const apiRewrite = config.rewrites.find(
+    item => item.source === "/api/:path*"
+  );
+
+  assert.ok(apiRewrite, "Missing API proxy rewrite");
+  const apiBase = frontendConfig.match(/https:\/\/[^"`\s]+\/api/);
+  const rewriteUrl = new URL(
+    apiRewrite.destination.replace(":path*", "health")
+  );
+
+  assert.ok(apiBase, "Missing frontend production API base");
+  assert.equal(new URL(apiBase[0]).origin, rewriteUrl.origin);
+  assert.equal(rewriteUrl.pathname, "/api/health");
 });
 
 test("Vercel includes baseline security headers", () => {
@@ -83,4 +111,27 @@ test("Daraja callbacks do not directly trust callback data for wallet credit", (
   assert.match(verificationService, /verification\.mode !== "live"/);
   assert.match(verificationService, /verification\.resultCode/);
   assert.match(verificationService, /completeVerifiedDeposit/);
+});
+
+test("transcription Daraja environment example documents the mounted STK callback", () => {
+  const example = fs.readFileSync(
+    path.join(root, "backend/.env.transcription.example"),
+    "utf8"
+  );
+  const service = fs.readFileSync(
+    path.join(root, "backend/src/services/transcriptionDarajaService.js"),
+    "utf8"
+  );
+  const server = fs.readFileSync(
+    path.join(root, "backend/src/server.js"),
+    "utf8"
+  );
+
+  assert.match(example, /TRANSCRIPTION_DARAJA_ENABLED=false/);
+  assert.match(service, /"TRANSCRIPTION_DARAJA_ENABLED",\s*"DARAJA_LIVE_ENABLED"/);
+  assert.match(
+    example,
+    /TRANSCRIPTION_DARAJA_CALLBACK_URL=https:\/\/primetask-workspace\.onrender\.com\/api\/payments\/daraja\/callback\/stk/
+  );
+  assert.match(server, /app\.use\("\/api\/payments\/daraja\/callback", darajaCallbackRoutes\)/);
 });
