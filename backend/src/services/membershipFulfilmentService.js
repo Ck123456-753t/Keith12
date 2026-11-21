@@ -8,6 +8,7 @@ const Commission = require("../models/Commission");
 const Wallet = require("../models/Wallet");
 const WalletTransaction = require("../models/WalletTransaction");
 const { sendCommissionEmail } = require("./achievementNotificationEmailService");
+const { createAccountNotification } = require("./accountNotificationService");
 
 function codedError(code) {
   const error = new Error(code);
@@ -156,6 +157,17 @@ async function fulfilMembershipPurchase(purchaseId, options = {}) {
 
       await membership.save({ session });
 
+      await createAccountNotification({
+        recipientId: purchaser._id,
+        type: "membership_activated",
+        title: "Membership activated",
+        body: "Your PrimeTask membership is now active. Sign in to access your membership services.",
+        category: "membership",
+        url: "/dashboard/",
+        dedupeKey: `membership:${purchase._id}:activated`,
+        session
+      });
+
       let commissionsCreated = 0;
       let totalCommissionCents = 0;
 
@@ -238,6 +250,17 @@ async function fulfilMembershipPurchase(purchaseId, options = {}) {
             { $set: { walletTransactionId: walletTransaction._id } },
             { session }
           );
+
+          await createAccountNotification({
+            recipientId: sponsor._id,
+            type: "commission_received",
+            title: "Referral commission received",
+            body: "A referral commission has been credited to your PrimeTask wallet.",
+            category: "earnings",
+            url: "/dashboard/wallet.html",
+            dedupeKey: `commission:${membership._id}:${sponsor._id}:${level}`,
+            session
+          });
 
           commissionsCreated += 1;
           totalCommissionCents += amountCents;

@@ -77,5 +77,99 @@
   window.PTW_AUTH_API_RESEND_VERIFICATION = `${apiBase}/auth/resend-verification`;
   window.PTW_AUTH_API_ME = `${apiBase}/auth/me`;
   window.PTW_AUTH_API_LOGOUT = `${apiBase}/auth/logout`;
+
   window.PTW_REFERRAL_API_ME = `${apiBase}/referrals/me`;
+
+  function pushBase64UrlToBytes(value) {
+    const padding = "=".repeat((4 - value.length % 4) % 4);
+    const base64 = (value + padding).replace(/-/g, "+").replace(/_/g, "/");
+    const raw = window.atob(base64);
+    return Uint8Array.from(raw, character => character.charCodeAt(0));
+  }
+
+  async function registerPtwServiceWorker() {
+    if (!("serviceWorker" in navigator) || !("PushManager" in window)) {
+      throw new Error("This browser does not support background notifications.");
+    }
+
+    const registration = await navigator.serviceWorker.register("/sw.js", {
+      scope: "/"
+    });
+
+    if ("Notification" in window && Notification.permission === "granted") {
+      const existing = await registration.pushManager.getSubscription();
+      if (existing) {
+        fetch(`${apiBase}/notifications/push/subscriptions`, {
+          method: "POST",
+          credentials: "include",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(existing.toJSON())
+        }).catch(() => {});
+      }
+    }
+
+    return registration;
+  }
+
+  window.PTWEnablePushNotifications = async function () {
+    if (!("Notification" in window) || !("PushManager" in window)) {
+      throw new Error("This browser does not support push notifications.");
+    }
+
+    const permission = await Notification.requestPermission();
+    if (permission !== "granted") {
+      throw new Error(
+        permission === "denied"
+          ? "Notifications are blocked. Change this site's permission in browser settings."
+          : "Notification permission was not granted."
+      );
+    }
+
+    const registration = await registerPtwServiceWorker();
+    const keyResponse = await fetch(`${apiBase}/notifications/push/public-key`, {
+      credentials: "omit",
+      headers: { Accept: "application/json" }
+    });
+    const keyData = await keyResponse.json().catch(() => ({}));
+
+    if (!keyResponse.ok || !keyData.enabled || !keyData.publicKey) {
+      throw new Error(keyData.message || "Push notifications are not configured on the server.");
+    }
+
+    let subscription = await registration.pushManager.getSubscription();
+    if (!subscription) {
+      subscription = await registration.pushManager.subscribe({
+        userVisibleOnly: true,
+        applicationServerKey: pushBase64UrlToBytes(keyData.publicKey)
+      });
+    }
+
+    const saveResponse = await fetch(`${apiBase}/notifications/push/subscriptions`, {
+      method: "POST",
+      credentials: "include",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(subscription.toJSON())
+    });
+    const saveData = await saveResponse.json().catch(() => ({}));
+
+    if (!saveResponse.ok || saveData.success === false) {
+      throw new Error(saveData.message || "Could not register this device for notifications.");
+    }
+
+    return saveData;
+  };
+
+  if ("serviceWorker" in navigator) {
+    window.addEventListener("load", () => {
+      registerPtwServiceWorker().catch(error => {
+        console.warn("PrimeTask background notifications unavailable:", error.message);
+      });
+    }, { once: true });
+  }
 })();

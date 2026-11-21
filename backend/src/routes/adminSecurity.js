@@ -6,6 +6,7 @@ const net = require("node:net");
 
 const requireAuth = require("../middleware/requireAuth");
 const securityChain = require("../services/securityEventChainService");
+const { createAccountNotification } = require("../services/accountNotificationService");
 
 const Device = require("../models/Device");
 const DeviceRegistration = require("../models/DeviceRegistration");
@@ -387,6 +388,17 @@ router.post("/devices/transfers/:requestId/approve", async (req, res) => {
         message: `Administrator approved a browser transfer. Reason: ${reason}`
       }, { session });
 
+      await createAccountNotification({
+        recipientId: transfer.userId,
+        type: "account_security",
+        title: "Device transfer approved",
+        body: "An administrator approved the new browser for your account.",
+        category: "security",
+        url: "/dashboard/profile.html",
+        dedupeKey: `security:device-transfer:${transfer._id}:approved`,
+        session
+      });
+
       approved = {
         requestId: transfer._id,
         userId: transfer.userId,
@@ -488,6 +500,17 @@ router.post("/devices/transfers/:requestId/reject", async (req, res) => {
         ...requestMetadata(req),
         message: `Administrator rejected a browser transfer. Reason: ${reason}`
       }, { session });
+
+      await createAccountNotification({
+        recipientId: transfer.userId,
+        type: "account_security",
+        title: "Device transfer rejected",
+        body: "An administrator rejected the new browser access request. Your existing device registration was not replaced.",
+        category: "security",
+        url: "/dashboard/profile.html",
+        dedupeKey: `security:device-transfer:${transfer._id}:rejected`,
+        session
+      });
 
       rejected = {
         requestId: transfer._id,

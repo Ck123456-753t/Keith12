@@ -12,6 +12,7 @@ const authRoutes = require("./routes/auth");
 const profileRoutes = require("./routes/profile");
 const chatRoutes = require("./routes/chat");
 const notificationsRoutes = require("./routes/notifications");
+const pushSubscriptionsRoutes = require("./routes/pushSubscriptions");
 const announcementRoutes = require("./routes/announcements");
 const marketingWalletRoutes = require("./routes/marketingWallet");
 const walletRoutes = require("./routes/wallet");
@@ -42,6 +43,10 @@ const {
   startTranscriptionJobRotationWorker,
   stopTranscriptionJobRotationWorker
 } = require("./services/transcriptionJobRotationWorker");
+const {
+  startPushOutboxWorker,
+  stopPushOutboxWorker
+} = require("./services/pushOutboxWorker");
 const depositDiagnosticsRoutes = require("./routes/depositDiagnostics");
 const darajaCallbackRoutes = require("./routes/darajaCallbacks");
 const darajaB2CCallbackRoutes = require("./routes/darajaB2CCallbacks");
@@ -180,6 +185,7 @@ const authLimiter = rateLimit({
 app.use("/api/auth", authLimiter, authRoutes);
 app.use("/api/profile", profileRoutes);
 app.use("/api/chat", chatRoutes);
+app.use("/api/notifications/push", pushSubscriptionsRoutes);
 app.use("/api/notifications", notificationsRoutes);
 app.use("/api/announcements", announcementRoutes.user);
 app.use("/api/admin/announcements", announcementRoutes.admin);
@@ -310,6 +316,7 @@ async function startServer() {
 
     console.log("MongoDB connected successfully.");
 
+    startPushOutboxWorker();
     startDepositRecoveryWorker();
     startTranscriptionMinuteRecoveryWorker();
     startMembershipRecoveryWorker();
@@ -352,6 +359,7 @@ async function shutdown(signal) {
 
   try {
     await stopTranscriptionJobRotationWorker();
+    stopPushOutboxWorker();
     stopDepositRecoveryWorker();
     stopTranscriptionMinuteRecoveryWorker();
     stopMembershipRecoveryWorker();

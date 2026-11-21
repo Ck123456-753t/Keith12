@@ -213,6 +213,13 @@ input:focus{outline:2px solid #3b82f6;outline-offset:1px}
   <p id="emailPreferenceMessage" role="status" aria-live="polite"></p>
 </section>
 
+<section class="profile-preference" aria-labelledby="pushPreferenceHeading">
+  <h2 id="pushPreferenceHeading">Account notifications</h2>
+  <p>Receive account activity alerts on this device, including deposit, withdrawal, membership and security updates. Notifications can arrive when you are signed out, provided this browser and device allow background notifications.</p>
+  <button id="enablePushNotifications" class="action" type="button">Enable device notifications</button>
+  <p id="pushPreferenceMessage" role="status" aria-live="polite"></p>
+</section>
+
 <div class="actions">
 <button id="editButton" class="action primary" type="button" hidden>
 Edit profile
@@ -619,6 +626,46 @@ document.getElementById("signOut").addEventListener("click", async () => {
 });
 
 loadProfile();
+</script>
+
+<script>
+(function () {
+  const button = document.getElementById("enablePushNotifications");
+  const status = document.getElementById("pushPreferenceMessage");
+  if (!button || !status) return;
+
+  if (!("Notification" in window)) {
+    button.disabled = true;
+    status.textContent = "This browser does not support notifications.";
+    return;
+  }
+
+  if (Notification.permission === "granted") {
+    status.textContent = "Notification permission is already enabled for this browser.";
+    button.textContent = "Register this device";
+  } else if (Notification.permission === "denied") {
+    status.textContent = "Notifications are blocked. Change this site's permission in browser settings.";
+  }
+
+  button.addEventListener("click", async function () {
+    if (typeof window.PTWEnablePushNotifications !== "function") {
+      status.textContent = "Notification setup is unavailable. Refresh the page and try again.";
+      return;
+    }
+
+    button.disabled = true;
+    status.textContent = "Registering this device…";
+    try {
+      const result = await window.PTWEnablePushNotifications();
+      status.textContent = result.message || "This device is registered for account notifications.";
+      button.textContent = "Device notifications enabled";
+    } catch (error) {
+      status.textContent = error.message || "Could not enable notifications on this device.";
+    } finally {
+      button.disabled = false;
+    }
+  });
+})();
 </script>
 
 <script>

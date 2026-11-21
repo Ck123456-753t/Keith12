@@ -1,0 +1,403 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#061225">
+<title>Notifications | PrimeTask Workspace</title>
+<link rel="icon" type="image/jpeg" href="../assets/primetask.jpg">
+<script src="../assets/js/config.js"></script>
+<style>
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;background:#061225;color:#e8eef8;font:15px/1.55 system-ui,Arial,sans-serif}
+[hidden]{display:none!important}
+main{width:min(1050px,100%);margin:auto;padding:38px 22px 60px}
+h1{font-size:28px;margin:0 0 5px}
+h2{font-size:17px;margin:0}
+p{margin:0}
+.muted{color:#9aacc4}
+.ptw-menu-wrap{position:fixed;top:18px;right:20px;z-index:9999}
+.ptw-menu-toggle{width:42px;height:42px;border:1px solid #29415f;border-radius:12px;background:#0b1a30;color:#e8eef8;font-size:21px;cursor:pointer}
+.ptw-menu-panel{position:absolute;top:calc(100% + 9px);right:0;width:min(270px,calc(100vw - 32px));max-height:75vh;overflow:auto;padding:9px;border:1px solid #20334d;border-radius:15px;background:#0b1a30;box-shadow:0 14px 38px #0006}
+.ptw-menu-heading{padding:9px 11px;color:#9aacc4;font-size:11px;font-weight:800;letter-spacing:.12em;text-transform:uppercase}
+.ptw-menu-link,.ptw-signout{display:flex;align-items:center;gap:11px;width:100%;padding:11px 12px;margin:2px 0;border:0;border-radius:9px;background:transparent;color:#c5d2e4;text-decoration:none;text-align:left;font:600 14px system-ui;cursor:pointer}
+.ptw-menu-link:hover,.ptw-signout:hover{background:#122642}
+.ptw-menu-link[aria-current=page]{background:#17365d;color:#8ab4ff}
+.ptw-menu-icon{width:23px;text-align:center;color:#9aacc4}
+.ptw-menu-divider{height:1px;margin:8px 4px;background:#20334d}
+.ptw-signout{color:#ffaaa4}
+.hero{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap;margin:12px 0 25px;padding-right:55px}
+.hero p{margin-top:5px}
+.actions{display:flex;gap:9px;flex-wrap:wrap}
+button{font:inherit}
+.action{padding:10px 14px;border:1px solid #29415f;border-radius:10px;background:#142944;color:#e8eef8;cursor:pointer}
+.action.primary{background:#2563eb;border-color:#2563eb}
+.action:disabled{opacity:.5;cursor:not-allowed}
+.summary{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-bottom:20px}
+.stat{padding:17px;border:1px solid #20334d;border-radius:14px;background:#0b1a30}
+.stat small{display:block;color:#9aacc4;font-size:12px}
+.stat strong{display:block;margin-top:4px;font-size:25px;font-weight:750}
+.filters{display:flex;gap:8px;overflow-x:auto;padding:2px 0 13px;margin-bottom:5px}
+.filter{flex:0 0 auto;padding:8px 13px;border:1px solid #29415f;border-radius:30px;background:#0b1a30;color:#b8c8dd;cursor:pointer}
+.filter[aria-pressed=true]{background:#17365d;border-color:#3975bd;color:#fff}
+.status{min-height:25px;margin:8px 0 12px;color:#93c5fd}
+.status.error{color:#fca5a5}
+.list{display:grid;gap:10px}
+.notification{display:flex;gap:14px;align-items:flex-start;padding:17px;border:1px solid #20334d;border-radius:14px;background:#0b1a30;cursor:pointer;transition:border-color .15s,background .15s}
+.notification:hover{border-color:#3975bd;background:#10223b}
+.notification.unread{border-left:4px solid #3b82f6;background:#0e2038}
+.notification:focus-visible{outline:2px solid #8ab4ff;outline-offset:3px}
+.notice-icon{display:grid;place-items:center;flex:0 0 39px;width:39px;height:39px;border-radius:12px;background:#17365d;color:#9cc4ff;font-size:18px}
+.notice-copy{flex:1;min-width:0}
+.notice-heading{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}
+.notice-heading strong{font-size:15px;color:#f1f5fb}
+.notice-time{flex:0 0 auto;color:#8da3bf;font-size:12px}
+.notice-body{margin-top:5px;color:#b6c5d9;overflow-wrap:anywhere}
+.notice-meta{display:flex;gap:9px;align-items:center;margin-top:9px;color:#8da3bf;font-size:11px;text-transform:uppercase;letter-spacing:.06em}
+.unread-dot{width:7px;height:7px;border-radius:50%;background:#60a5fa}
+.empty{padding:48px 20px;text-align:center;border:1px dashed #29415f;border-radius:15px;background:#0b1a30}
+.empty strong{display:block;font-size:17px;margin-bottom:5px}
+@media(max-width:600px){main{padding:70px 14px 35px}.hero{padding-right:0}.summary{gap:8px}.stat{padding:13px}.stat strong{font-size:21px}.notification{padding:13px;gap:10px}.notice-icon{width:34px;height:34px;flex-basis:34px}.notice-heading{display:block}.notice-time{display:block;margin-top:3px}.actions{width:100%}}
+</style>
+</head>
+<body>
+<div class="ptw-menu-wrap">
+  <button id="menuToggle" class="ptw-menu-toggle" type="button"
+    aria-label="Open navigation menu" aria-controls="menuPanel" aria-expanded="false">☰</button>
+  <nav id="menuPanel" class="ptw-menu-panel" aria-label="Main navigation" hidden>
+    <div class="ptw-menu-heading">PrimeTask Workspace</div>
+    <a class="ptw-menu-link" href="/dashboard/"><span class="ptw-menu-icon">⌂</span>Dashboard</a>
+    <a class="ptw-menu-link" href="/dashboard/services"><span class="ptw-menu-icon">▦</span>Services</a>
+    <a class="ptw-menu-link" href="/dashboard/chat"><span class="ptw-menu-icon">◉</span>PRIMECHAT</a>
+    <a class="ptw-menu-link" href="/dashboard/notifications" aria-current="page"><span class="ptw-menu-icon">♧</span>Notifications</a>
+    <a class="ptw-menu-link" href="/dashboard/wallet"><span class="ptw-menu-icon">◈</span>My Wallet</a>
+    <a class="ptw-menu-link" href="/dashboard/membership"><span class="ptw-menu-icon">▣</span>Membership</a>
+    <a class="ptw-menu-link" href="/dashboard/transactions"><span class="ptw-menu-icon">↕</span>Transactions</a>
+    <a class="ptw-menu-link" href="/dashboard/my-referrals"><span class="ptw-menu-icon">♧</span>My Referrals</a>
+    <a class="ptw-menu-link" href="/dashboard/profile"><span class="ptw-menu-icon">◉</span>My Profile</a>
+    <div class="ptw-menu-divider"></div>
+    <button class="ptw-signout" id="signOut" type="button">↪ Sign out</button>
+  </nav>
+</div>
+
+<main>
+  <header class="hero">
+    <div>
+      <h1>Notifications</h1>
+      <p class="muted">Your account activity and important workspace updates.</p>
+    </div>
+    <div class="actions">
+      <button class="action" id="refreshButton" type="button">↻ Refresh</button>
+      <button class="action primary" id="markAllButton" type="button">Mark all as read</button>
+    </div>
+  </header>
+
+  <section class="summary" aria-label="Notification summary">
+    <article class="stat"><small>Unread notifications</small><strong id="unreadCount">—</strong></article>
+    <article class="stat"><small>Total notifications</small><strong id="totalCount">—</strong></article>
+    <article class="stat"><small>Currently viewing</small><strong id="viewCount">—</strong></article>
+  </section>
+
+  <nav class="filters" aria-label="Filter notifications">
+    <button class="filter" data-filter="all" aria-pressed="true">All</button>
+    <button class="filter" data-filter="unread" aria-pressed="false">Unread</button>
+    <button class="filter" data-filter="payments" aria-pressed="false">Payments</button>
+    <button class="filter" data-filter="membership" aria-pressed="false">Membership</button>
+    <button class="filter" data-filter="earnings" aria-pressed="false">Earnings</button>
+    <button class="filter" data-filter="security" aria-pressed="false">Security</button>
+  </nav>
+
+  <p class="status" id="statusMessage" role="status" aria-live="polite">Loading your notifications…</p>
+  <section class="list" id="notificationList" aria-label="Your notifications"></section>
+  <section class="empty" id="emptyState" hidden>
+    <strong id="emptyTitle">No notifications</strong>
+    <p class="muted" id="emptyDescription">New account updates will appear here.</p>
+  </section>
+</main>
+
+<script>
+"use strict";
+
+(() => {
+  const $ = id => document.getElementById(id);
+  const state = { notifications: [], unreadCount: 0, filter: "all", loading: false };
+  const apiBase = String(window.PTW_API_BASE || "").replace(/\/+$/, "");
+
+  function setStatus(message, error = false) {
+    $("statusMessage").textContent = message;
+    $("statusMessage").className = "status" + (error ? " error" : "");
+  }
+
+  async function api(path, options = {}) {
+    if (!apiBase) throw new Error("API configuration is unavailable. Refresh the page.");
+    const response = await fetch(apiBase + path, {
+      credentials: "include",
+      ...options,
+      headers: {
+        Accept: "application/json",
+        ...(options.body ? { "Content-Type": "application/json" } : {}),
+        ...(options.headers || {})
+      }
+    });
+    const data = await response.json().catch(() => ({}));
+    if (response.status === 401) {
+      window.location.replace("/auth/login");
+      throw new Error("Your session has expired. Please sign in again.");
+    }
+    if (!response.ok || data.success === false) {
+      throw new Error(data.message || "The request could not be completed.");
+    }
+    return data;
+  }
+
+  function safeDestination(value) {
+    if (typeof value !== "string" || !value.startsWith("/") || value.startsWith("//")) {
+      return "/dashboard/";
+    }
+    try {
+      const target = new URL(value, window.location.origin);
+      return target.origin === window.location.origin
+        ? target.pathname + target.search + target.hash
+        : "/dashboard/";
+    } catch {
+      return "/dashboard/";
+    }
+  }
+
+  function categoryLabel(category) {
+    const labels = {
+      payments: "Payments",
+      membership: "Membership",
+      earnings: "Earnings",
+      security: "Security",
+      account: "Account"
+    };
+    return labels[category] || "Account";
+  }
+
+  function iconFor(item) {
+    if (item.category === "payments") return "◈";
+    if (item.category === "membership") return "▣";
+    if (item.category === "earnings") return "↗";
+    if (item.category === "security") return "⌑";
+    return item.type && item.type.startsWith("chat_") ? "◉" : "♧";
+  }
+
+  function formatDate(value) {
+    const date = new Date(value);
+    if (Number.isNaN(date.getTime())) return "Date unavailable";
+    return date.toLocaleString(undefined, {
+      year: "numeric", month: "short", day: "numeric",
+      hour: "numeric", minute: "2-digit"
+    });
+  }
+
+  function filteredNotifications() {
+    return state.notifications.filter(item => {
+      if (state.filter === "unread") return !item.readAt;
+      if (state.filter === "all") return true;
+      return item.category === state.filter;
+    });
+  }
+
+  function render() {
+    const list = $("notificationList");
+    const items = filteredNotifications();
+    list.replaceChildren();
+
+    $("unreadCount").textContent = String(state.unreadCount);
+    $("totalCount").textContent = String(state.notifications.length);
+    $("viewCount").textContent = String(items.length);
+    $("markAllButton").disabled = state.unreadCount === 0;
+
+    for (const item of items) {
+      const card = document.createElement("article");
+      card.className = "notification" + (item.readAt ? "" : " unread");
+      card.tabIndex = 0;
+      card.setAttribute("role", "button");
+      card.setAttribute("aria-label",
+        (item.readAt ? "" : "Unread: ") + (item.title || "PrimeTask Workspace") +
+        ". " + (item.body || "Open notification"));
+
+      const icon = document.createElement("div");
+      icon.className = "notice-icon";
+      icon.setAttribute("aria-hidden", "true");
+      icon.textContent = iconFor(item);
+
+      const copy = document.createElement("div");
+      copy.className = "notice-copy";
+
+      const heading = document.createElement("div");
+      heading.className = "notice-heading";
+
+      const title = document.createElement("strong");
+      title.textContent = item.title || "PrimeTask Workspace";
+
+      const time = document.createElement("time");
+      time.className = "notice-time";
+      time.dateTime = item.createdAt || "";
+      time.textContent = formatDate(item.createdAt);
+
+      heading.append(title, time);
+
+      const body = document.createElement("p");
+      body.className = "notice-body";
+      body.textContent = item.body || "You have a new account notification.";
+
+      const meta = document.createElement("div");
+      meta.className = "notice-meta";
+      if (!item.readAt) {
+        const dot = document.createElement("span");
+        dot.className = "unread-dot";
+        dot.setAttribute("aria-label", "Unread");
+        meta.append(dot);
+        meta.append(document.createTextNode("Unread"));
+      } else {
+        meta.textContent = "Read";
+      }
+      const category = document.createElement("span");
+      category.textContent = "· " + categoryLabel(item.category);
+      meta.append(category);
+
+      copy.append(heading, body, meta);
+      card.append(icon, copy);
+
+      const open = () => openNotification(item);
+      card.addEventListener("click", open);
+      card.addEventListener("keydown", event => {
+        if (event.key === "Enter" || event.key === " ") {
+          event.preventDefault();
+          open();
+        }
+      });
+      list.append(card);
+    }
+
+    $("emptyState").hidden = items.length > 0;
+    if (items.length === 0) {
+      $("emptyTitle").textContent = state.notifications.length === 0
+        ? "No notifications yet"
+        : "Nothing in this filter";
+      $("emptyDescription").textContent = state.notifications.length === 0
+        ? "New account updates will appear here."
+        : "Try another filter to see your notifications.";
+    }
+  }
+
+  async function loadNotifications() {
+    if (state.loading) return;
+    state.loading = true;
+    $("refreshButton").disabled = true;
+    setStatus("Loading your notifications…");
+    try {
+      const data = await api("/notifications?limit=100");
+      state.notifications = Array.isArray(data.notifications) ? data.notifications : [];
+      state.unreadCount = Number.isFinite(Number(data.unreadCount))
+        ? Math.max(0, Number(data.unreadCount))
+        : state.notifications.filter(item => !item.readAt).length;
+      render();
+      setStatus("Your notifications are up to date.");
+    } catch (error) {
+      setStatus(error.message || "Unable to load notifications.", true);
+    } finally {
+      state.loading = false;
+      $("refreshButton").disabled = false;
+    }
+  }
+
+  async function openNotification(item) {
+    try {
+      if (!item.readAt) {
+        await api("/notifications/" + encodeURIComponent(item.id) + "/read", {
+          method: "PATCH"
+        });
+        item.readAt = new Date().toISOString();
+        state.unreadCount = Math.max(0, state.unreadCount - 1);
+        render();
+      }
+      window.location.assign(safeDestination(item.url));
+    } catch (error) {
+      setStatus(error.message || "Could not open this notification.", true);
+    }
+  }
+
+  async function markAllRead() {
+    if (state.unreadCount === 0) return;
+    $("markAllButton").disabled = true;
+    try {
+      await api("/notifications/read-all", { method: "PATCH" });
+      const now = new Date().toISOString();
+      state.notifications.forEach(item => {
+        if (!item.readAt) item.readAt = now;
+      });
+      state.unreadCount = 0;
+      render();
+      setStatus("All notifications marked as read.");
+    } catch (error) {
+      setStatus(error.message || "Could not update notifications.", true);
+      $("markAllButton").disabled = false;
+    }
+  }
+
+  document.querySelectorAll("[data-filter]").forEach(button => {
+    button.addEventListener("click", () => {
+      state.filter = button.dataset.filter;
+      document.querySelectorAll("[data-filter]").forEach(item => {
+        item.setAttribute("aria-pressed", String(item === button));
+      });
+      render();
+    });
+  });
+
+  $("refreshButton").addEventListener("click", loadNotifications);
+  $("markAllButton").addEventListener("click", markAllRead);
+
+  const toggle = $("menuToggle");
+  const panel = $("menuPanel");
+  function closeMenu() {
+    panel.hidden = true;
+    toggle.setAttribute("aria-expanded", "false");
+  }
+  toggle.addEventListener("click", event => {
+    event.stopPropagation();
+    panel.hidden = !panel.hidden;
+    toggle.setAttribute("aria-expanded", String(!panel.hidden));
+  });
+  document.addEventListener("click", event => {
+    if (!event.target.closest(".ptw-menu-wrap")) closeMenu();
+  });
+  document.addEventListener("keydown", event => {
+    if (event.key === "Escape") {
+      closeMenu();
+      toggle.focus();
+    }
+  });
+
+  $("signOut").addEventListener("click", async () => {
+    try {
+      if (typeof window.PTW_AUTH_API_LOGOUT === "string") {
+        await fetch(window.PTW_AUTH_API_LOGOUT, {
+          method: "POST",
+          credentials: "include"
+        });
+      }
+    } catch (_) {}
+    window.location.replace("/auth/login");
+  });
+
+  async function init() {
+    try {
+      await api("/auth/me");
+      await loadNotifications();
+    } catch (error) {
+      if (!String(error.message).toLowerCase().includes("session")) {
+        setStatus(error.message || "Unable to verify your account.", true);
+      }
+    }
+  }
+
+  init();
+})();
+</script>
+</body>
+</html>

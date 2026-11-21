@@ -9,6 +9,7 @@ const DeviceTransferRequest = require("../models/DeviceTransferRequest");
 const { identifyDevice } = require("./deviceIdentityService");
 
 const securityChain = require("./securityEventChainService");
+const { createAccountNotification } = require("./accountNotificationService");
 const {
   DEVICE_COOKIE_NAME,
   createDeviceCredential,
@@ -298,6 +299,17 @@ async function authorizeLoginDevice(req, res, user) {
         requestId: req.id || null,
         message: "New browser blocked pending administrator device-transfer review."
       }, { session });
+
+      await createAccountNotification({
+        recipientId: user._id,
+        type: "account_security",
+        title: "New device transfer request",
+        body: "A new browser requested access to your account. Administrator review is required.",
+        category: "security",
+        url: "/dashboard/profile.html",
+        dedupeKey: `security:device-transfer:${transferRequest._id}:requested`,
+        session
+      });
 
       result = {
         allowed: false,

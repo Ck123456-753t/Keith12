@@ -14,18 +14,30 @@ router.get("/", requireAuth, async (req, res) => {
       ? Math.max(1, Math.min(requestedLimit, 100))
       : 50;
 
-    const notifications = await Notification.find({
-      recipientId: req.user._id
-    })
-      .sort({ createdAt: -1 })
-      .limit(limit)
-      .lean();
+    const [notifications, unreadCount] = await Promise.all([
+      Notification.find({
+        recipientId: req.user._id
+      })
+        .sort({ createdAt: -1 })
+        .limit(limit)
+        .lean(),
+
+      Notification.countDocuments({
+        recipientId: req.user._id,
+        readAt: null
+      })
+    ]);
 
     return res.json({
       success: true,
+      unreadCount,
       notifications: notifications.map((item) => ({
         id: String(item._id),
         type: item.type,
+        title: item.title || "PrimeTask Workspace",
+        body: item.body || "You have a new account notification.",
+        category: item.category || "account",
+        url: item.url || "/dashboard/",
         conversationId: item.conversationId
           ? String(item.conversationId)
           : null,
