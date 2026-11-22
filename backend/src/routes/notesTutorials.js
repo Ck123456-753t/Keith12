@@ -2,12 +2,11 @@
 
 const express = require("express");
 const requireAuth = require("../middleware/requireAuth");
-const requireNotesMembership = require("../middleware/requireNotesMembership");
 const NotesTutorial = require("../models/NotesTutorial");
 
 const router = express.Router();
 
-router.use(requireAuth, requireNotesMembership);
+router.use(requireAuth);
 
 router.get("/", async (req, res) => {
   try {

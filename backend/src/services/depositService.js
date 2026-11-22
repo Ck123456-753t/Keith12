@@ -5,6 +5,7 @@ const Wallet = require("../models/Wallet");
 const WalletTransaction = require("../models/WalletTransaction");
 const MpesaReceiptClaim = require("../models/MpesaReceiptClaim");
 const AdminAuditLog = require("../models/AdminAuditLog");
+const { createAccountNotification } = require("./accountNotificationService");
 
 const KES_PER_USD = 130;
 
@@ -46,11 +47,20 @@ async function createPendingDeposit({
   userId,
   amountCents,
   phoneNumber,
-  paymentMode = "daraja"
+  paymentMode = "daraja",
+  paymentReason,
+  paymentReference = "",
+  supportingDetails = ""
 }) {
-  const expectedAmountKes = calculateExpectedKes(amountCents);
+  if (!Number.isSafeInteger(amountCents) || amountCents < 10) {
+    throw new Error("Deposit amount must be at least $0.10.");
+  }
+
+  const expectedAmountKes = paymentMode === "manual"
+    ? null
+    : calculateExpectedKes(amountCents);
   if (!["daraja", "simulation"].includes(paymentMode)) {
-    throw new Error("Invalid deposit payment mode.");
+    if (paymentMode !== "manual") throw new Error("Invalid deposit payment mode.");
   }
 
   if (!mongoose.isValidObjectId(userId)) {
@@ -72,11 +82,19 @@ async function createPendingDeposit({
     throw new Error("Invalid deposit idempotency key.");
   }
 
-  if (
+  if (paymentMode !== "manual" && (
     typeof phoneNumber !== "string" ||
     !/^254[17]\d{8}$/.test(phoneNumber)
-  ) {
+  )) {
     throw new Error("Invalid normalized Kenyan phone number.");
+  }
+
+  if (paymentMode === "manual" && (
+    typeof paymentReason !== "string" ||
+    paymentReason.trim().length < 3 ||
+    paymentReason.trim().length > 300
+  )) {
+    throw new Error("A payment reason between 3 and 300 characters is required.");
   }
 
   try {
@@ -87,8 +105,13 @@ async function createPendingDeposit({
       amountCents,
       currency: "USD",
       expectedAmountKes,
-      phoneNumber,
+      phoneNumber: paymentMode === "manual" ? null : phoneNumber,
       paymentMode,
+      ...(paymentMode === "manual" ? {
+        paymentReason: paymentReason.trim(),
+        paymentReference: String(paymentReference || "").trim(),
+        supportingDetails: String(supportingDetails || "").trim()
+      } : {}),
       stkInitiatedAt: paymentMode === "daraja" ? new Date() : null,
       status: "pending"
     });
@@ -107,8 +130,13 @@ async function createPendingDeposit({
       if (existing) {
         if (
           existing.amountCents !== amountCents ||
-          existing.phoneNumber !== phoneNumber ||
-          existing.paymentMode !== paymentMode
+          existing.paymentMode !== paymentMode ||
+          (paymentMode === "manual" && (
+            existing.paymentReason !== paymentReason.trim() ||
+            (existing.paymentReference || "") !== String(paymentReference || "").trim() ||
+            (existing.supportingDetails || "") !== String(supportingDetails || "").trim()
+          )) ||
+          (paymentMode !== "manual" && existing.phoneNumber !== phoneNumber)
         ) {
           throw new Error(
             "Idempotency key was already used with different deposit details."
@@ -371,6 +399,17 @@ async function completeVerifiedDeposit(verifiedPayment) {
         );
       }
 
+      await createAccountNotification({
+        recipientId: deposit.userId,
+        type: "deposit_completed",
+        title: "Deposit received",
+        body: "Your deposit has been credited to your PrimeTask wallet.",
+        category: "payments",
+        url: "/dashboard/wallet.html",
+        dedupeKey: `deposit:daraja:${deposit.requestId}:completed`,
+        session
+      });
+
       outcome = {
         alreadyCredited: false,
         requestId: deposit.requestId,
@@ -562,9 +601,177 @@ async function completeSimulatedDeposit({ requestId, outcome }) {
   }
 }
 
+async function reviewManualDeposit({ requestId, adminId, decision, reason, ipAddress }) {
+  if (!["approve", "reject"].includes(decision)) {
+    throw new Error("Invalid manual deposit review decision.");
+  }
+
+  const normalizedReason = String(reason || "").trim();
+  if (decision === "reject" && (normalizedReason.length < 3 || normalizedReason.length > 300)) {
+    throw new Error("A rejection reason between 3 and 300 characters is required.");
+  }
+  if (decision === "approve" && normalizedReason.length > 300) {
+    throw new Error("Approval note must be no more than 300 characters.");
+  }
+  if (!mongoose.isValidObjectId(adminId)) {
+    throw new Error("Invalid administrator.");
+  }
+
+  const session = await mongoose.startSession();
+  try {
+    let result;
+
+    await session.withTransaction(async () => {
+      const deposit = await Deposit.findOne({
+        requestId,
+        paymentMode: "manual",
+        status: "pending"
+      }).session(session);
+
+      if (!deposit) {
+        const error = new Error("Manual deposit was not found or has already been reviewed.");
+        error.code = "MANUAL_DEPOSIT_NOT_PENDING";
+        throw error;
+      }
+
+      if (String(deposit.userId) === String(adminId)) {
+        const error = new Error("Administrators cannot review their own manual deposit requests.");
+        error.code = "MANUAL_DEPOSIT_SELF_REVIEW";
+        throw error;
+      }
+
+      if (!Number.isSafeInteger(deposit.amountCents) || deposit.amountCents < 10) {
+        throw new Error("Stored manual deposit amount is invalid.");
+      }
+
+      const reviewedAt = new Date();
+      const finalStatus = decision === "approve" ? "approved" : "rejected";
+      const updated = await Deposit.findOneAndUpdate(
+        {
+          _id: deposit._id,
+          paymentMode: "manual",
+          status: "pending"
+        },
+        {
+          $set: {
+            status: finalStatus,
+            reviewedBy: adminId,
+            reviewedAt,
+            ...(decision === "reject" ? { rejectionReason: normalizedReason } : {})
+          }
+        },
+        { returnDocument: "after", runValidators: true, session }
+      );
+
+      if (!updated) {
+        const error = new Error("Manual deposit was already reviewed.");
+        error.code = "MANUAL_DEPOSIT_NOT_PENDING";
+        throw error;
+      }
+
+      let walletTransactionId = null;
+      let availableBalanceCents = null;
+
+      if (decision === "approve") {
+        const wallet = await Wallet.findOneAndUpdate(
+          { userId: deposit.userId, currency: "USD" },
+          {
+            $inc: { availableBalanceCents: deposit.amountCents },
+            $setOnInsert: {
+              userId: deposit.userId,
+              currency: "USD",
+              pendingEarningsCents: 0,
+              totalEarningsCents: 0,
+              totalWithdrawalsCents: 0
+            }
+          },
+          {
+            upsert: true,
+            returnDocument: "after",
+            setDefaultsOnInsert: true,
+            runValidators: true,
+            session
+          }
+        );
+
+        const [transaction] = await WalletTransaction.create([{
+          depositId: deposit._id,
+          userId: deposit.userId,
+          type: "deposit",
+          amountCents: deposit.amountCents,
+          currency: "USD",
+          status: "completed",
+          reference: `MANUAL-${deposit.requestId}`,
+          description: `Approved manual/offline deposit${deposit.paymentReference ? ` (${deposit.paymentReference})` : ""}`,
+          completedAt: reviewedAt
+        }], { session });
+
+        updated.walletTransactionId = transaction._id;
+        await updated.save({ session });
+        walletTransactionId = transaction._id;
+        availableBalanceCents = wallet.availableBalanceCents;
+      }
+
+      await AdminAuditLog.create([{
+        adminId,
+        targetUserId: deposit.userId,
+        action: decision === "approve" ? "manual_deposit_approved" : "manual_deposit_rejected",
+        reason: decision === "reject"
+          ? normalizedReason
+          : normalizedReason || "Payment verified by administrator.",
+        before: {
+          requestId: deposit.requestId,
+          status: "pending",
+          amountCents: deposit.amountCents,
+          currency: "USD"
+        },
+        after: {
+          requestId: deposit.requestId,
+          status: finalStatus,
+          amountCents: deposit.amountCents,
+          currency: "USD",
+          walletTransactionId
+        },
+        ipAddress: typeof ipAddress === "string" ? ipAddress.slice(0, 100) : null
+      }], { session });
+
+      await createAccountNotification({
+        recipientId: deposit.userId,
+        type: decision === "approve" ? "deposit_completed" : "deposit_rejected",
+        title: decision === "approve" ? "Deposit received" : "Deposit not approved",
+        body: decision === "approve"
+          ? "Your deposit has been credited to your PrimeTask wallet."
+          : "Your deposit request was not approved. Sign in to view the details.",
+        category: "payments",
+        url: "/dashboard/wallet.html",
+        dedupeKey: `deposit:manual:${deposit.requestId}:${finalStatus}`,
+        session
+      });
+
+      result = {
+        requestId: deposit.requestId,
+        status: finalStatus,
+        amount: centsToUSD(deposit.amountCents),
+        currency: "USD",
+        reviewedAt,
+        walletTransactionId,
+        ...(availableBalanceCents === null
+          ? {}
+          : { availableBalance: centsToUSD(availableBalanceCents) }),
+        ...(decision === "reject" ? { rejectionReason: normalizedReason } : {})
+      };
+    });
+
+    return result;
+  } finally {
+    await session.endSession();
+  }
+}
+
 module.exports = {
   calculateExpectedKes,
   createPendingDeposit,
   completeVerifiedDeposit,
-  completeSimulatedDeposit
+  completeSimulatedDeposit,
+  reviewManualDeposit
 };

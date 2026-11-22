@@ -10,6 +10,7 @@ const WalletTransaction = require("../models/WalletTransaction");
 const AdminAuditLog = require("../models/AdminAuditLog");
 const requireAuth = require("../middleware/requireAuth");
 const { initiateB2CPayment } = require("../services/darajaB2CService");
+const { createAccountNotification } = require("../services/accountNotificationService");
 
 const router = express.Router();
 router.use(requireAuth);
@@ -492,6 +493,17 @@ router.post("/:requestId/approve", async (req, res) => {
         },
         ipAddress: req.ip
       }], { session });
+      await createAccountNotification({
+        recipientId: withdrawal.userId,
+        type: "withdrawal_approved",
+        title: "Withdrawal approved",
+        body: "Your withdrawal request has been approved. Payment has not yet been sent.",
+        category: "payments",
+        url: "/dashboard/wallet.html",
+        dedupeKey: `withdrawal:${withdrawal.requestId}:approved`,
+        session
+      });
+
 result = { requestId: withdrawal.requestId };
     });
 
@@ -723,23 +735,45 @@ router.post("/:requestId/initiate-b2c", async (req, res) => {
 
     // A callback can arrive before this response is handled. Only update
     // a still-submitting attempt; never overwrite callback success.
-    await Withdrawal.updateOne(
-      {
-        requestId: attempt.requestId,
-        b2cOriginatorConversationId: attempt.originatorConversationId,
-        status: "processing",
-        b2cInitiationState: "submitting"
-      },
-      {
-        $set: {
-          b2cInitiationState: "accepted",
-          b2cConversationId: providerResult.conversationId || null,
-          b2cResultDescription: String(
-            providerResult.responseDescription || "Provider accepted the request."
-          ).slice(0, 500)
+    const acceptanceSession = await mongoose.startSession();
+
+    try {
+      await acceptanceSession.withTransaction(async () => {
+        const accepted = await Withdrawal.updateOne(
+          {
+            requestId: attempt.requestId,
+            b2cOriginatorConversationId: attempt.originatorConversationId,
+            status: "processing",
+            b2cInitiationState: "submitting"
+          },
+          {
+            $set: {
+              b2cInitiationState: "accepted",
+              b2cConversationId: providerResult.conversationId || null,
+              b2cResultDescription: String(
+                providerResult.responseDescription || "Provider accepted the request."
+              ).slice(0, 500)
+            }
+          },
+          { session: acceptanceSession }
+        );
+
+        if (accepted.modifiedCount === 1) {
+          await createAccountNotification({
+            recipientId: attempt.userId,
+            type: "withdrawal_processing",
+            title: "Withdrawal processing",
+            body: "Your withdrawal has been accepted for processing. Final payment confirmation is still pending.",
+            category: "payments",
+            url: "/dashboard/wallet.html",
+            dedupeKey: `withdrawal:${attempt.requestId}:processing`,
+            session: acceptanceSession
+          });
         }
-      }
-    );
+      });
+    } finally {
+      await acceptanceSession.endSession();
+    }
 
     return res.status(202).json({
       success: true,
@@ -918,6 +952,17 @@ router.post("/:requestId/paid", async (req, res) => {
         ipAddress: req.ip
       }], { session });
 
+      await createAccountNotification({
+        recipientId: withdrawal.userId,
+        type: "withdrawal_paid",
+        title: "Withdrawal paid",
+        body: "Your withdrawal has been recorded as paid. Sign in to view the transaction details.",
+        category: "payments",
+        url: "/dashboard/wallet.html",
+        dedupeKey: `withdrawal:${withdrawal.requestId}:paid`,
+        session
+      });
+
       result = {
         requestId: withdrawal.requestId,
         receipt
@@ -1076,6 +1121,17 @@ router.post("/:requestId/reject", async (req, res) => {
         },
         ipAddress: req.ip
       }], { session });
+
+      await createAccountNotification({
+        recipientId: withdrawal.userId,
+        type: "withdrawal_rejected",
+        title: "Withdrawal rejected",
+        body: "Your withdrawal request was rejected and the reserved balance has been released.",
+        category: "payments",
+        url: "/dashboard/wallet.html",
+        dedupeKey: `withdrawal:${withdrawal.requestId}:rejected`,
+        session
+      });
 
       result = { requestId: withdrawal.requestId };
     });

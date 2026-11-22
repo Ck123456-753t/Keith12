@@ -21,15 +21,12 @@ function canUsePortal(portal, role) {
   return Boolean(roles && roles.includes(normalizeRole(role)));
 }
 
-function matchesOperatorCredentials(user, { email, accountId } = {}) {
+function matchesOperatorCredentials(user, { email } = {}) {
   if (!user?._id || !canUsePortal("operator", user.role)) return false;
   const normalizedEmail = String(email || "").trim().toLowerCase();
-  const normalizedAccountId = String(accountId || "").trim().toLowerCase();
   return Boolean(
     normalizedEmail &&
-    normalizedAccountId &&
-    String(user.email || "").trim().toLowerCase() === normalizedEmail &&
-    String(user._id).toLowerCase() === normalizedAccountId
+    String(user.email || "").trim().toLowerCase() === normalizedEmail
   );
 }
 

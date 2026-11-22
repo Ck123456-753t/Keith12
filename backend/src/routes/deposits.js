@@ -18,6 +18,23 @@ const router = express.Router();
 
 router.use(requireAuth);
 
+function paymentLog(event, details = {}) {
+  const safeMessage = typeof details.message === "string"
+    ? details.message.slice(0, 240)
+    : null;
+
+  console.info("Payment diagnostic:", JSON.stringify({
+    event,
+    requestId: details.requestId || null,
+    traceId: details.traceId || null,
+    stage: details.stage || null,
+    httpStatus: details.httpStatus || null,
+    code: details.code || null,
+    providerCode: details.providerCode || null,
+    message: safeMessage
+  }));
+}
+
 function normalizePhoneNumber(value) {
   if (typeof value !== "string") {
     throw new Error("Enter a valid Kenyan phone number.");
@@ -205,6 +222,10 @@ router.post("/simulate", async (req, res) => {
 });
 
 router.post("/", async (req, res) => {
+  const traceId = randomUUID();
+
+  res.set("X-Request-Id", traceId);
+
   try {
     const idempotencyKey = req.get("Idempotency-Key");
 
@@ -257,10 +278,18 @@ router.post("/", async (req, res) => {
      * is disabled. This avoids leaving new, unusable records.
      */
     if (process.env.DARAJA_LIVE_ENABLED !== "true") {
+      paymentLog("stk_disabled", {
+        traceId,
+        stage: "feature_gate",
+        message: "DARAJA_LIVE_ENABLED is not exactly true."
+      });
+
       return res.status(503).json({
         success: false,
-        code: "DAR AJA_DISABLED".replace(" ", ""),
-        message: "STK payments are temporarily unavailable."
+        code: "DARAJA_DISABLED",
+        message: "STK payments are temporarily unavailable. Check the backend payment configuration.",
+        requestId: traceId,
+        traceId
       });
     }
 
@@ -326,6 +355,12 @@ router.post("/", async (req, res) => {
 
     const deposit = created.deposit;
 
+    paymentLog("stk_initiation_started", {
+      requestId: deposit.requestId,
+      traceId,
+      stage: "stk_push"
+    });
+
     let stkResult;
 
     try {
@@ -352,20 +387,21 @@ router.post("/", async (req, res) => {
 
       const providerError = error.providerResponse || {};
 
-      console.error("STK initiation diagnostic:", JSON.stringify({
+      paymentLog("stk_initiation_error", {
+        requestId: deposit.requestId,
+        traceId,
+        stage: error.stage || "unknown",
         code: error.code || null,
         httpStatus: error.statusCode || null,
-        message: error.message || null,
-        providerErrorCode:
-          providerError.errorCode ||
-          providerError.error ||
-          null,
-        providerErrorMessage:
+        providerCode:
+          providerError.errorCode || providerError.error || providerError.code || null,
+        message:
           providerError.errorMessage ||
           providerError.error_description ||
           providerError.message ||
+          error.message ||
           null
-      }));
+      });
 
       return res.status(202).json({
         success: true,
@@ -375,18 +411,20 @@ router.post("/", async (req, res) => {
           currency: "USD",
           status: "pending"
         },
-        message: "Payment initiation requires status reconciliation. Do not submit another payment request."
+        message: "Payment initiation requires status reconciliation. Do not submit another payment request.",
+        requestId: traceId,
+        traceId
       });
     }
 
     if (!stkResult.accepted) {
-      console.error("STK provider rejection:", JSON.stringify({
-        responseCode: stkResult.responseCode || null,
-        responseDescription: stkResult.responseDescription || null,
-        customerMessage: stkResult.customerMessage || null,
-        merchantRequestId: stkResult.merchantRequestId || null,
-        checkoutRequestId: stkResult.checkoutRequestId || null
-      }));
+      paymentLog("stk_provider_rejected", {
+        requestId: deposit.requestId,
+        traceId,
+        stage: "stk_response",
+        providerCode: stkResult.responseCode || null,
+        message: stkResult.responseDescription || stkResult.customerMessage || null
+      });
 
       await Deposit.updateOne(
         { _id: deposit._id, status: "pending" },
@@ -403,6 +441,8 @@ router.post("/", async (req, res) => {
       return res.status(502).json({
         success: false,
         message: "Daraja did not accept the payment request.",
+        requestId: traceId,
+        traceId,
         deposit: {
           requestId,
           status: "failed"
@@ -427,6 +467,8 @@ router.post("/", async (req, res) => {
       return res.status(202).json({
         success: true,
         message: "Payment request needs reconciliation.",
+        requestId: traceId,
+        traceId,
         deposit: {
           requestId,
           status: "pending"
@@ -457,9 +499,18 @@ router.post("/", async (req, res) => {
     );
 
     if (!updated) {
+      paymentLog("stk_accepted_reconciliation_required", {
+        requestId: deposit.requestId,
+        traceId,
+        stage: "database_persist_identifiers",
+        providerCode: stkResult.responseCode
+      });
+
       return res.status(202).json({
         success: true,
         message: "Payment was initiated, but deposit status needs reconciliation.",
+        requestId: traceId,
+        traceId,
         deposit: {
           requestId,
           status: "pending"
@@ -467,10 +518,19 @@ router.post("/", async (req, res) => {
       });
     }
 
+    paymentLog("stk_accepted", {
+      requestId: deposit.requestId,
+      traceId,
+      stage: "stk_response",
+      providerCode: stkResult.responseCode
+    });
+
     return res.status(202).json({
       success: true,
       message: "STK request accepted. Wallet credit awaits independent payment verification.",
-      deposit: publicDeposit(updated)
+      deposit: publicDeposit(updated),
+      requestId: traceId,
+      traceId
     });
   } catch (error) {
     if (
@@ -498,11 +558,18 @@ router.post("/", async (req, res) => {
       });
     }
 
-    console.error("Deposit creation error:", error.message);
+    paymentLog("deposit_request_failed", {
+      traceId,
+      stage: "deposit_request",
+      code: error.code || null,
+      message: error.message || "Unknown deposit request error."
+    });
 
     return res.status(500).json({
       success: false,
-      message: "Could not create the deposit request."
+      message: "Could not create the deposit request.",
+      requestId: traceId,
+      traceId
     });
   }
 });

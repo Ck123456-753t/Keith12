@@ -996,23 +996,19 @@ router.post("/login", async (req, res) => {
     const identifier = normalizeText(
       operatorLogin ? req.body?.email : req.body?.identifier
     ).toLowerCase();
-    const accountId = normalizeText(req.body?.accountId);
     const password = req.body.password;
     const remember = req.body.remember === true;
 
     if (
       !identifier ||
-      (operatorLogin && (
-        !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(identifier) ||
-        !/^[a-f\d]{24}$/i.test(accountId)
-      )) ||
+      (operatorLogin && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(identifier)) ||
       typeof password !== "string" ||
       password.length > 72
     ) {
       return res.status(400).json({
         success: false,
         message: operatorLogin
-          ? "Enter your administrator email, account ID, and password."
+          ? "Enter your administrator email and password."
           : "Enter your username or email and password."
       });
     }
@@ -1057,8 +1053,7 @@ router.post("/login", async (req, res) => {
     }
 
     if (operatorLogin && !matchesOperatorCredentials(user, {
-      email: identifier,
-      accountId
+      email: identifier
     })) {
       await recordAuthSecurityEvent(req, {
         eventType: "login_failed",

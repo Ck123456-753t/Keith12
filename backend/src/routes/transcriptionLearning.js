@@ -5,7 +5,6 @@ const mongoose = require("mongoose");
 const cloudinary = require("cloudinary").v2;
 
 const requireAuth = require("../middleware/requireAuth");
-const requireServiceAccess = require("../middleware/requireServiceAccess");
 const TranscriptionLesson = require("../models/TranscriptionLesson");
 
 const router = express.Router();
@@ -21,7 +20,6 @@ const ALLOWED_FORMATS = [
 ];
 
 router.use(requireAuth);
-router.use(requireServiceAccess("transcription"));
 
 function configureCloudinary() {
   cloudinary.config({

@@ -12,6 +12,7 @@ const DarajaB2CCallbackEvent = require("../models/DarajaB2CCallbackEvent");
 const MpesaReceiptClaim = require("../models/MpesaReceiptClaim");
 const Wallet = require("../models/Wallet");
 const WalletTransaction = require("../models/WalletTransaction");
+const { createAccountNotification } = require("../services/accountNotificationService");
 
 const router = express.Router();
 
@@ -399,6 +400,17 @@ async function handleCallback(req, res, callbackType) {
       if (update.modifiedCount !== 1) {
         throw new Error("Withdrawal state changed during callback processing.");
       }
+
+      await createAccountNotification({
+        recipientId: withdrawal.userId,
+        type: "withdrawal_paid",
+        title: "Withdrawal paid",
+        body: "Your withdrawal has been confirmed as paid. Sign in to view the transaction details.",
+        category: "payments",
+        url: "/dashboard/wallet.html",
+        dedupeKey: `withdrawal:${withdrawal.requestId}:paid`,
+        session
+      });
       }
 
       await DarajaB2CCallbackEvent.updateOne(

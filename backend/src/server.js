@@ -223,7 +223,7 @@ mountMemberNotes("/api/notes/points-transactions", notesPointsTransactionsRoutes
 app.use("/api/notes/withdrawals", requireAuth, notesWithdrawalsRoutes);
 mountMemberNotes("/api/notes/dashboard", notesDashboardRoutes);
 mountMemberNotes("/api/notes/tasks", notesTasksRoutes);
-mountMemberNotes("/api/notes/tutorials", notesTutorialsRoutes);
+app.use("/api/notes/tutorials", notesTutorialsRoutes);
 app.use("/api/data-entry", dataEntryRoutes);
 app.use("/api/data-entry/bid-purchases", dataEntryBidPurchasesRoutes);
 app.use("/api/academic-writing", academicWritingRoutes);

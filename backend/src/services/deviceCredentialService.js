@@ -1,6 +1,7 @@
 "use strict";
 
 const crypto = require("node:crypto");
+const { cookieOptions } = require("./authCookiePolicy");
 
 const DEVICE_COOKIE_NAME = "ptw_device";
 const DEVICE_COOKIE_MAX_AGE = 365 * 24 * 60 * 60 * 1000;
@@ -29,29 +30,17 @@ function hashDeviceCredential(credential) {
 }
 
 function deviceCookieOptions() {
-  const production = process.env.NODE_ENV === "production";
-
   return {
-    httpOnly: true,
-    secure: production,
-    sameSite: production ? "none" : "lax",
-    path: "/",
+    ...cookieOptions(null),
     maxAge: DEVICE_COOKIE_MAX_AGE
   };
 }
 
-function clearDeviceCookieOptions() {
-  const production = process.env.NODE_ENV === "production";
-
-  return {
-    httpOnly: true,
-    secure: production,
-    sameSite: production ? "none" : "lax",
-    path: "/"
-  };
+function clearDeviceCookieOptions(req) {
+  return cookieOptions(req);
 }
 
-function setDeviceCookie(res, credential) {
+function setDeviceCookie(res, credential, req) {
   if (
     typeof credential !== "string" ||
     !/^[A-Za-z0-9_-]{43}$/.test(credential)
@@ -62,14 +51,17 @@ function setDeviceCookie(res, credential) {
   res.cookie(
     DEVICE_COOKIE_NAME,
     credential,
-    deviceCookieOptions()
+    {
+      ...cookieOptions(req),
+      maxAge: DEVICE_COOKIE_MAX_AGE
+    }
   );
 }
 
-function clearDeviceCookie(res) {
+function clearDeviceCookie(res, req) {
   res.clearCookie(
     DEVICE_COOKIE_NAME,
-    clearDeviceCookieOptions()
+    clearDeviceCookieOptions(req)
   );
 }
 

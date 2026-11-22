@@ -28,13 +28,13 @@ const depositSchema = new mongoose.Schema(
     amountCents: {
       type: Number,
       required: true,
-      min: 10,
       validate: {
         validator(value) {
-          return Number.isSafeInteger(value) && value % 10 === 0;
+          if (!Number.isSafeInteger(value) || value < 10) return false;
+          return this.paymentMode === "manual" || value % 10 === 0;
         },
         message:
-          "Deposit cents must be a safe integer in multiples of 10."
+          "Deposit cents must be a safe integer of at least 10 cents; M-Pesa deposits must be in 10-cent increments."
       }
     },
 
@@ -48,10 +48,17 @@ const depositSchema = new mongoose.Schema(
 
     expectedAmountKes: {
       type: Number,
-      required: true,
+      required() {
+        return this.paymentMode !== "manual";
+      },
+      default: null,
       min: 13,
       validate: {
         validator(value) {
+          if (this.paymentMode === "manual") {
+            return value === null || value === undefined;
+          }
+
           return Number.isSafeInteger(value);
         },
         message: "Expected KSh amount must be a whole number."
@@ -60,17 +67,57 @@ const depositSchema = new mongoose.Schema(
 
     phoneNumber: {
       type: String,
-      required: true,
+      required() {
+        return this.paymentMode !== "manual";
+      },
+      default: null,
       trim: true,
       match: /^254[17]\d{8}$/
     },
 
     paymentMode: {
       type: String,
-      enum: ["daraja", "simulation"],
+      enum: ["daraja", "simulation", "manual"],
       default: "daraja",
       required: true,
       immutable: true
+    },
+    paymentReason: {
+      type: String,
+      trim: true,
+      minlength: 3,
+      maxlength: 300,
+      required() {
+        return this.paymentMode === "manual";
+      },
+      default: undefined
+    },
+    paymentReference: {
+      type: String,
+      trim: true,
+      maxlength: 160,
+      default: ""
+    },
+    supportingDetails: {
+      type: String,
+      trim: true,
+      maxlength: 1000,
+      default: ""
+    },
+    reviewedBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      default: null
+    },
+    reviewedAt: {
+      type: Date,
+      default: null
+    },
+    rejectionReason: {
+      type: String,
+      trim: true,
+      maxlength: 300,
+      default: ""
     },
     stkInitiatedAt: {
       type: Date,
@@ -86,7 +133,7 @@ const depositSchema = new mongoose.Schema(
 
     status: {
       type: String,
-      enum: ["pending", "completed", "failed", "cancelled"],
+      enum: ["pending", "completed", "approved", "rejected", "failed", "cancelled"],
       default: "pending",
       required: true
     },

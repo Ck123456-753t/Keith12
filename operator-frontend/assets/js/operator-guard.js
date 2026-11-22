@@ -18,10 +18,10 @@
     if (!response.ok || !allowedRoles.includes(role)) {
       // A member-domain session is not an operator session. Keep the user
       // on the operator origin so they can explicitly authenticate there.
-      window.location.replace("/login.html");
+      window.location.replace("/heha");
       return;
     }
     document.documentElement.classList.remove("operator-auth-pending");
     document.documentElement.dataset.operatorRole = role;
-  }).catch(() => window.location.replace("/login.html"));
+  }).catch(() => window.location.replace("/heha"));
 })();

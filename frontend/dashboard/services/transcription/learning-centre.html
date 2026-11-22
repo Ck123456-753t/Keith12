@@ -154,12 +154,12 @@
   <div class="section-head">
     <div>
       <h2>Learning library</h2>
-      <p>Explore the lessons currently available to members.</p>
+      <p>Explore the lessons available to all signed-in users.</p>
     </div>
     <span class="status" id="lessonCount">Loading…</span>
   </div>
 
-  <p id="pageMessage" role="status" aria-live="polite">Checking your membership and loading lessons…</p>
+  <p id="pageMessage" role="status" aria-live="polite">Loading lessons…</p>
 
   <section class="learning-layout" id="lessons">
     <div class="lesson-list" id="lessonList">
@@ -452,7 +452,7 @@
         viewer.innerHTML = `
           <div class="empty-state">
             <h2>Access unavailable</h2>
-            <p>An active Transcription membership and a valid signed-in session are required to use this Learning Centre.</p>
+            <p>A valid signed-in session is required to use this Learning Centre.</p>
             <a class="btn blue" href="/dashboard/services/transcription">Return to workspace</a>
           </div>`;
       }

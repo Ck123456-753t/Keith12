@@ -20,7 +20,6 @@
         body: JSON.stringify({
           portal: "operator",
           email: form.elements.email.value.trim(),
-          accountId: form.elements.accountId.value.trim(),
           password: form.elements.password.value
         })
       });

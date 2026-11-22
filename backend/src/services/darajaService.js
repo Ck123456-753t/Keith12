@@ -169,30 +169,47 @@ async function requestJson(url, options) {
 }
 
 async function getAccessToken() {
-  const config = getConfig();
-  const baseUrl = getBaseUrl();
+  let config;
+  let baseUrl;
+
+  try {
+    config = getConfig();
+    baseUrl = getBaseUrl();
+  } catch (error) {
+    error.stage = error.stage || "configuration";
+    throw error;
+  }
 
   const credentials = Buffer.from(
     `${config.consumerKey}:${config.consumerSecret}`,
     "utf8"
   ).toString("base64");
 
-  const response = await requestJson(
-    `${baseUrl}/oauth/v1/generate?grant_type=client_credentials`,
-    {
-      method: "GET",
-      headers: {
-        Authorization: `Basic ${credentials}`,
-        Accept: "application/json"
+  let response;
+
+  try {
+    response = await requestJson(
+      `${baseUrl}/oauth/v1/generate?grant_type=client_credentials`,
+      {
+        method: "GET",
+        headers: {
+          Authorization: `Basic ${credentials}`,
+          Accept: "application/json"
+        }
       }
-    }
-  );
+    );
+  } catch (error) {
+    error.stage = error.stage || "oauth";
+    throw error;
+  }
 
   if (
     typeof response.access_token !== "string" ||
     !response.access_token
   ) {
-    throw new Error("Daraja did not return an access token.");
+    const error = new Error("Daraja did not return an access token.");
+    error.stage = "oauth_response";
+    throw error;
   }
 
   return response.access_token;
@@ -228,7 +245,15 @@ async function initiateStkPush({
     throw new Error("Invalid Kenyan phone number.");
   }
 
-  const config = getConfig();
+  let config;
+
+  try {
+    config = getConfig();
+  } catch (error) {
+    error.stage = error.stage || "configuration";
+    throw error;
+  }
+
   const timestamp = getTimestamp();
   const password = makeStkPassword(
     config.storeNumber,
@@ -254,18 +279,25 @@ async function initiateStkPush({
     TransactionDesc: String(transactionDesc).slice(0, 13)
   };
 
-  const response = await requestJson(
-    `${getBaseUrl()}/mpesa/stkpush/v1/processrequest`,
-    {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-        "Content-Type": "application/json",
-        Accept: "application/json"
-      },
-      body: JSON.stringify(payload)
-    }
-  );
+  let response;
+
+  try {
+    response = await requestJson(
+      `${getBaseUrl()}/mpesa/stkpush/v1/processrequest`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          "Content-Type": "application/json",
+          Accept: "application/json"
+        },
+        body: JSON.stringify(payload)
+      }
+    );
+  } catch (error) {
+    error.stage = error.stage || "stk_push";
+    throw error;
+  }
 
   return {
     mode: "live",
