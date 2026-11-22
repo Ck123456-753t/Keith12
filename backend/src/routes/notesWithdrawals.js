@@ -9,6 +9,10 @@ const NotesWallet = require("../models/NotesWallet");
 const NotesTransaction = require("../models/NotesTransaction");
 const PlatformSetting = require("../models/PlatformSetting");
 const requireAuth = require("../middleware/requireAuth");
+const {
+  requireNotesAdmin,
+  requireNotesMemberOrPlatformAdmin
+} = require("../middleware/portalAccess");
 const { initiateB2CPayment } = require("../services/darajaB2CService");
 
 const router = express.Router();
@@ -18,7 +22,7 @@ const MIN_CENTS = Number(process.env.WALLET_WITHDRAWAL_MIN_USD_CENTS || 785);
 const MAX_CENTS = Number(process.env.WALLET_WITHDRAWAL_MAX_USD_CENTS || 50000);
 
 function isAdmin(req) {
-  return ["admin", "founder"].includes(req.user.role);
+  return ["admin", "founder", "notes_operator"].includes(req.user.role);
 }
 function usd(cents) {
   return Number((cents / 100).toFixed(2));
@@ -68,7 +72,7 @@ async function readRate() {
     ? rate : null;
 }
 
-router.get("/quote", async (req, res) => {
+router.get("/quote", requireNotesMemberOrPlatformAdmin, async (req, res) => {
   try {
     if (!validLimits()) return fail(res, 500, "Withdrawal limits are misconfigured.");
     const cents = amountCents(req.query.amount);
@@ -90,7 +94,7 @@ router.get("/quote", async (req, res) => {
   }
 });
 
-router.post("/", async (req, res) => {
+router.post("/", requireNotesMemberOrPlatformAdmin, async (req, res) => {
   const cents = amountCents(req.body?.amount);
   const phoneNumber = phone(req.body?.phoneNumber);
 
@@ -160,7 +164,7 @@ router.post("/", async (req, res) => {
   }
 });
 
-router.get("/mine", async (req, res) => {
+router.get("/mine", requireNotesMemberOrPlatformAdmin, async (req, res) => {
   try {
     const items = await NotesWithdrawal.find({ userId: req.user._id })
       .sort({ createdAt: -1 }).limit(50).lean();
@@ -171,7 +175,7 @@ router.get("/mine", async (req, res) => {
   }
 });
 
-router.get("/admin", async (req, res) => {
+router.get("/admin", requireNotesAdmin, async (req, res) => {
   if (!isAdmin(req)) return fail(res, 403, "Administrator access required.");
   try {
     const items = await NotesWithdrawal.find({})
@@ -183,7 +187,7 @@ router.get("/admin", async (req, res) => {
   }
 });
 
-router.post("/:requestId/approve", async (req, res) => {
+router.post("/:requestId/approve", requireNotesAdmin, async (req, res) => {
   if (!isAdmin(req)) return fail(res, 403, "Administrator access required.");
   try {
     const item = await NotesWithdrawal.findOneAndUpdate(
@@ -199,7 +203,7 @@ router.post("/:requestId/approve", async (req, res) => {
   }
 });
 
-router.post("/:requestId/reject", async (req, res) => {
+router.post("/:requestId/reject", requireNotesAdmin, async (req, res) => {
   if (!isAdmin(req)) return fail(res, 403, "Administrator access required.");
   const session = await mongoose.startSession();
   try {
@@ -248,7 +252,7 @@ router.post("/:requestId/reject", async (req, res) => {
   }
 });
 
-router.post("/:requestId/initiate-b2c", async (req, res) => {
+router.post("/:requestId/initiate-b2c", requireNotesAdmin, async (req, res) => {
   if (!isAdmin(req)) return fail(res, 403, "Administrator access required.");
   const originatorConversationId = `PTWNOTESB2C_${randomUUID()}`;
   let item;

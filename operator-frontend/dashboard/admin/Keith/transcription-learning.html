@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html lang="en" data-operator-roles="admin,founder">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#ffffff">
+<title>Transcription Learning Centre | PrimeTask Workspace</title>
+<link rel="stylesheet" href="/dashboard/admin/Keith/assets/admin-navigation.css">
+<style>
+:root{
+  --navy:#142747;--blue:#3569d4;--orange:#f28b35;
+  --ink:#202b3c;--muted:#758197;--line:#e2e8f1;
+  --bg:#f4f7fc;--white:#fff
+}
+*{box-sizing:border-box}
+body{
+  margin:0;background:var(--bg);color:var(--ink);
+  font:15px/1.55 system-ui,-apple-system,"Segoe UI",sans-serif
+}
+button,input,textarea,select{font:inherit}
+button{cursor:pointer}
+button:disabled{opacity:.55;cursor:wait}
+.shell{max-width:1350px;margin:auto;padding:25px}
+.topbar{
+  display:flex;justify-content:space-between;align-items:center;
+  gap:15px;flex-wrap:wrap;margin-bottom:32px
+}
+.brand{display:flex;align-items:center;gap:12px;color:var(--navy);font-weight:900}
+.logo{
+  width:46px;height:46px;display:grid;place-items:center;
+  border-radius:14px;background:var(--navy);color:white;
+  position:relative;font-size:15px
+}
+.logo:after{
+  content:"";position:absolute;width:9px;height:9px;
+  border-radius:50%;background:var(--orange);right:5px;top:5px
+}
+.muted{color:var(--muted);font-size:12px}
+.kicker{
+  color:var(--blue);font-size:11px;font-weight:900;
+  letter-spacing:1.8px;text-transform:uppercase
+}
+h1{
+  color:var(--navy);font-size:clamp(29px,5vw,44px);
+  line-height:1.1;letter-spacing:-1.3px;margin:9px 0
+}
+.intro{max-width:760px;color:var(--muted);margin:0}
+.stats{
+  display:grid;grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:13px;margin:25px 0
+}
+.stat{
+  background:white;border:1px solid var(--line);
+  border-radius:15px;padding:17px
+}
+.stat strong{display:block;font-size:25px;color:var(--navy)}
+.stat span{font-size:12px;color:var(--muted)}
+.layout{
+  display:grid;grid-template-columns:minmax(0,1.15fr) minmax(300px,.85fr);
+  gap:19px;align-items:start
+}
+.panel{
+  background:white;border:1px solid var(--line);
+  border-radius:18px;padding:21px;
+  box-shadow:0 10px 30px #14274708;min-width:0
+}
+.panel h2{color:var(--navy);font-size:18px;margin:0}
+.sub{color:var(--muted);font-size:12px;margin:5px 0 18px}
+.field{margin:0 0 14px}
+.field label{
+  display:block;font-weight:800;color:var(--navy);
+  font-size:12px;margin-bottom:6px
+}
+.field input,.field textarea,.field select{
+  width:100%;border:1px solid #d8e0ec;border-radius:10px;
+  padding:11px 12px;background:white;color:var(--ink);
+  outline:none
+}
+.field input:focus,.field textarea:focus,.field select:focus{
+  border-color:var(--blue);box-shadow:0 0 0 3px #3569d418
+}
+.field textarea{min-height:105px;resize:vertical}
+.field textarea.content{min-height:180px}
+.help{font-size:11px;color:var(--muted);margin-top:5px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.checkline{
+  display:flex;align-items:center;gap:9px;
+  padding:11px 12px;border:1px solid var(--line);
+  border-radius:10px;margin-bottom:14px
+}
+.checkline input{width:17px;height:17px;accent-color:var(--blue)}
+.checkline label{font-size:13px;font-weight:800;color:var(--navy)}
+.btn{
+  border:0;border-radius:10px;padding:11px 15px;
+  font-weight:800;font-size:12px
+}
+.primary{background:var(--navy);color:white}
+.secondary{background:#eaf0fc;color:var(--navy)}
+.orange{background:var(--orange);color:#38220e}
+.danger{background:#fff0f0;color:#a32732}
+.actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:15px}
+.actions button{flex:1;min-width:110px}
+.message{
+  display:none;padding:12px 14px;border-radius:11px;
+  margin:14px 0;font-size:12px;overflow-wrap:anywhere
+}
+.message.show{display:block}
+.message.error{background:#fff0f0;color:#a32732;border:1px solid #f1c7cb}
+.message.success{background:#e7f8ee;color:#146b46;border:1px solid #bce8cf}
+.message.info{background:#eaf1ff;color:#244d9c;border:1px solid #ccdaf8}
+.section-rule{height:1px;background:var(--line);margin:20px 0}
+.asset-box{
+  border:1px solid var(--line);border-radius:12px;
+  padding:14px;margin:12px 0;background:#fbfcff
+}
+.asset-box h3{font-size:13px;color:var(--navy);margin:0 0 10px}
+.asset-list{display:grid;gap:8px}
+.asset-item{
+  display:flex;justify-content:space-between;align-items:center;
+  gap:10px;padding:10px;border:1px solid var(--line);
+  background:white;border-radius:10px
+}
+.asset-item strong{font-size:12px;overflow-wrap:anywhere}
+.asset-item small{display:block;color:var(--muted);font-size:10px}
+.empty{
+  padding:25px;text-align:center;color:var(--muted);
+  border:1px dashed #ccd6e5;border-radius:12px;font-size:12px
+}
+.lesson-list{display:grid;gap:11px}
+.lesson{
+  border:1px solid var(--line);border-radius:13px;
+  padding:14px;background:white
+}
+.lesson-top{display:flex;justify-content:space-between;gap:10px;align-items:start}
+.lesson h3{font-size:14px;color:var(--navy);margin:0;overflow-wrap:anywhere}
+.lesson p{font-size:11px;color:var(--muted);margin:6px 0}
+.pill{
+  display:inline-block;border-radius:30px;padding:4px 9px;
+  font-size:10px;font-weight:900;white-space:nowrap
+}
+.published{background:#e7f8ee;color:#146b46}
+.draft{background:#fff3e6;color:#94520e}
+.lesson-actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:11px}
+.lesson-actions button{padding:8px 10px;font-size:10px}
+.small-note{
+  padding:12px;border-radius:11px;background:#fff7ed;
+  border:1px solid #f8d7b2;color:#85501e;font-size:11px
+}
+#videoFile,#materialFile{display:none}
+.footer{margin:20px 2px;color:var(--muted);font-size:11px}
+@media(max-width:850px){
+  .layout{grid-template-columns:1fr}
+}
+@media(max-width:560px){
+  .shell{padding:14px}
+  .panel{padding:15px}
+  .stats{gap:8px}
+  .stat{padding:12px}
+  .stat strong{font-size:21px}
+  .grid2{grid-template-columns:1fr}
+}
+</style>
+
+  <script src="/assets/js/operator-guard.js" defer></script>
+</head>
+<body>
+<main class="shell">
+<header class="topbar">
+  <div class="brand">
+    <div class="logo">PT</div>
+    <div>PRIMETASK WORKSPACE
+      <div class="muted">ADMINISTRATION / TRANSCRIPTION LEARNING</div>
+    </div>
+  </div>
+  <button class="btn secondary" id="refresh" type="button">Refresh lessons</button>
+</header>
+
+<div class="kicker">Transcription operations · Member education</div>
+<h1>Learning Centre</h1>
+<p class="intro">
+  Create and manage transcription lessons, upload authenticated training videos,
+  attach downloadable Learning Materials and control publication.
+</p>
+
+<section class="stats">
+  <div class="stat"><strong id="totalCount">—</strong><span>Total lessons</span></div>
+  <div class="stat"><strong id="publishedCount">—</strong><span>Published</span></div>
+  <div class="stat"><strong id="draftCount">—</strong><span>Drafts</span></div>
+</section>
+
+<div id="message" class="message" role="status" aria-live="polite"></div>
+
+<div class="layout">
+<section class="panel">
+  <h2 id="formTitle">Create a lesson</h2>
+  <p class="sub">Save the lesson first. Video and Learning Materials are attached afterward.</p>
+
+  <form id="lessonForm">
+    <div class="field">
+      <label for="title">Lesson title</label>
+      <input id="title" maxlength="180" required placeholder="e.g. Introduction to audio transcription">
+    </div>
+
+    <div class="field">
+      <label for="description">Short description</label>
+      <textarea id="description" maxlength="1000" required placeholder="Explain what members will learn."></textarea>
+    </div>
+
+    <div class="field">
+      <label for="category">Category</label>
+      <input id="category" maxlength="100" required placeholder="e.g. Beginner transcription">
+    </div>
+
+    <div class="field">
+      <label for="content">Lesson content / instructions</label>
+      <textarea id="content" class="content" maxlength="20000" placeholder="Write lesson notes, explanations and learning instructions."></textarea>
+      <div class="help">Maximum 20,000 characters.</div>
+    </div>
+
+    <div class="grid2">
+      <div class="field">
+        <label for="displayOrder">Display order</label>
+        <input id="displayOrder" type="number" min="0" max="100000" step="1" value="0">
+      </div>
+      <div class="field">
+        <label for="videoMode">Video option</label>
+        <select id="videoMode">
+          <option value="none">No video</option>
+          <option value="external">External HTTPS video link</option>
+          <option value="uploaded">Upload a video</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="field" id="externalBox" hidden>
+      <label for="externalUrl">External video URL</label>
+      <input id="externalUrl" type="url" placeholder="https://...">
+      <div class="help">HTTPS links only. Use a trusted video provider.</div>
+    </div>
+
+    <div class="checkline">
+      <input id="published" type="checkbox">
+      <label for="published">Publish this lesson for members</label>
+    </div>
+
+    <div class="actions">
+      <button class="btn primary" id="saveLesson" type="submit">Create lesson</button>
+      <button class="btn secondary" id="newLesson" type="button">Clear form</button>
+    </div>
+  </form>
+
+  <div class="section-rule"></div>
+
+  <section id="assetSection" hidden>
+    <h2>Lesson assets</h2>
+    <p class="sub" id="assetLessonName"></p>
+
+    <div class="asset-box">
+      <h3>Training video</h3>
+      <div id="videoStatus" class="muted">No uploaded video attached.</div>
+      <button class="btn secondary" id="chooseVideo" type="button">Choose video</button>
+      <input id="videoFile" type="file" accept=".mp4,.webm,.mov,.m4v,video/mp4,video/webm,video/quicktime">
+      <div class="help">MP4, WebM, MOV or M4V. Maximum 500 MB. Maximum duration 2 hours.</div>
+      <div class="actions">
+        <button class="btn orange" id="uploadVideo" type="button" disabled>Upload video securely</button>
+      </div>
+    </div>
+
+    <div class="asset-box">
+      <h3>Learning Materials</h3>
+      <div class="field">
+        <label for="materialTitle">Material title</label>
+        <input id="materialTitle" maxlength="180" placeholder="e.g. Transcription practice worksheet">
+      </div>
+      <input id="materialFile" type="file" accept=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.txt,.csv">
+      <button class="btn secondary" id="chooseMaterial" type="button">Choose material</button>
+      <div class="help" id="materialFileName">PDF, DOC, DOCX, PPT, PPTX, XLS, XLSX, TXT or CSV. Maximum 10 MB.</div>
+      <div class="actions">
+        <button class="btn orange" id="uploadMaterial" type="button" disabled>Upload Learning Material</button>
+      </div>
+      <div class="section-rule"></div>
+      <div id="materialList" class="asset-list"></div>
+    </div>
+  </section>
+
+  <div class="small-note">
+    Uploaded assets are sent directly to authenticated Cloudinary storage.
+    The backend verifies each asset before attaching it to a lesson.
+  </div>
+</section>
+
+<aside class="panel">
+  <h2>Lessons</h2>
+  <p class="sub">All lessons, including unpublished drafts.</p>
+  <div id="lessonList" class="lesson-list">
+    <div class="empty">Loading lessons…</div>
+  </div>
+</aside>
+</div>
+
+<p class="footer">PrimeTask Workspace · Transcription Administration · Learning Centre</p>
+</main>
+
+<script src="/assets/js/config.js"></script>
+<script src="assets/admin-navigation.js"></script>
+<script>
+"use strict";
+(() => {
+  const $ = id => document.getElementById(id);
+  const API_BASE = String(window.PTW_API_BASE || "").replace(/\/+$/, "");
+  const LESSONS = API_BASE + "/admin/transcription/learning";
+  const ASSETS = LESSONS + "/assets";
+
+  let lessons = [];
+  let activeLesson = null;
+  let videoFile = null;
+  let materialFile = null;
+  let busy = false;
+
+  if (!API_BASE) {
+    $("message").textContent = "PrimeTask API is not configured. Check /assets/js/config.js.";
+    $("message").className = "message show error";
+    return;
+  }
+
+  function esc(value) {
+    return String(value ?? "").replace(/[&<>"']/g, c => ({
+      "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+    })[c]);
+  }
+
+  function showMessage(text, type = "info") {
+    $("message").textContent = text;
+    $("message").className = "message show " + type;
+  }
+
+  function clearMessage() {
+    $("message").textContent = "";
+    $("message").className = "message";
+  }
+
+  async function api(url, options = {}) {
+    const response = await fetch(url, {
+      credentials: "include",
+      ...options,
+      headers: {
+        Accept: "application/json",
+        ...(options.body ? {"Content-Type":"application/json"} : {}),
+        ...(options.headers || {})
+      }
+    });
+
+    let data;
+    try {
+      data = await response.json();
+    } catch {
+      throw new Error("The server returned an unreadable response.");
+    }
+
+    if (!response.ok || data.success === false) {
+      throw new Error(data.message || data.error || "Request failed (HTTP " + response.status + ").");
+    }
+    return data;
+  }
+
+  function resetForm() {
+    activeLesson = null;
+    $("lessonForm").reset();
+    $("displayOrder").value = "0";
+    $("videoMode").value = "none";
+    $("externalBox").hidden = true;
+    $("externalUrl").value = "";
+    $("formTitle").textContent = "Create a lesson";
+    $("saveLesson").textContent = "Create lesson";
+    $("assetSection").hidden = true;
+    $("assetLessonName").textContent = "";
+    videoFile = null;
+    materialFile = null;
+    $("videoFile").value = "";
+    $("materialFile").value = "";
+    $("uploadVideo").disabled = true;
+    $("uploadMaterial").disabled = true;
+    $("materialTitle").value = "";
+    $("materialFileName").textContent = "PDF, DOC, DOCX, PPT, PPTX, XLS, XLSX, TXT or CSV. Maximum 10 MB.";
+    $("videoStatus").textContent = "No uploaded video attached.";
+    $("materialList").innerHTML = "";
+    clearMessage();
+  }
+
+  function updateCounts() {
+    const published = lessons.filter(item => item.published === true).length;
+    $("totalCount").textContent = lessons.length;
+    $("publishedCount").textContent = published;
+    $("draftCount").textContent = lessons.length - published;
+  }
+
+  function renderLessons() {
+    updateCounts();
+
+    if (!lessons.length) {
+      $("lessonList").innerHTML = '<div class="empty">No lessons have been created yet.</div>';
+      return;
+    }
+
+    $("lessonList").innerHTML = lessons.map(lesson => {
+      const id = String(lesson._id || "");
+      const video = lesson.videoType === "uploaded"
+        ? "Uploaded video"
+        : lesson.videoType === "external" ? "External video" : "No video";
+      const materials = Array.isArray(lesson.documents) ? lesson.documents.length : 0;
+
+      return `
+        <article class="lesson">
+          <div class="lesson-top">
+            <h3>${esc(lesson.title)}</h3>
+            <span class="pill ${lesson.published ? "published" : "draft"}">
+              ${lesson.published ? "PUBLISHED" : "DRAFT"}
+            </span>
+          </div>
+          <p>${esc(lesson.category)} · ${esc(video)} · ${materials} material(s)</p>
+          <p>${esc(String(lesson.description || "").slice(0,150))}</p>
+          <div class="lesson-actions">
+            <button class="btn secondary" data-edit="${esc(id)}" type="button">Edit</button>
+            <button class="btn ${lesson.published ? "orange" : "primary"}"
+              data-publish="${esc(id)}" type="button">
+              ${lesson.published ? "Unpublish" : "Publish"}
+            </button>
+            <button class="btn danger" data-delete="${esc(id)}" type="button">Delete</button>
+          </div>
+        </article>`;
+    }).join("");
+  }
+
+  async function loadLessons() {
+    $("refresh").disabled = true;
+    $("lessonList").innerHTML = '<div class="empty">Loading lessons…</div>';
+
+    try {
+      const data = await api(LESSONS);
+      if (!Array.isArray(data.lessons)) {
+        throw new Error("The server did not return a lessons array.");
+      }
+      lessons = data.lessons;
+      renderLessons();
+    } catch (error) {
+      $("lessonList").innerHTML = '<div class="empty">' + esc(error.message) + '</div>';
+      showMessage(error.message, "error");
+    } finally {
+      $("refresh").disabled = false;
+    }
+  }
+
+  function editLesson(lesson) {
+    activeLesson = lesson;
+    $("formTitle").textContent = "Edit lesson";
+    $("saveLesson").textContent = "Save changes";
+    $("title").value = lesson.title || "";
+    $("description").value = lesson.description || "";
+    $("category").value = lesson.category || "";
+    $("content").value = lesson.content || "";
+    $("displayOrder").value = String(lesson.displayOrder ?? 0);
+    $("published").checked = lesson.published === true;
+
+    if (lesson.videoType === "external") {
+      $("videoMode").value = "external";
+      $("externalUrl").value = lesson.externalVideoUrl || "";
+    } else if (lesson.videoType === "uploaded") {
+      $("videoMode").value = "uploaded";
+      $("externalUrl").value = "";
+    } else {
+      $("videoMode").value = "none";
+      $("externalUrl").value = "";
+    }
+
+    $("externalBox").hidden = $("videoMode").value !== "external";
+    $("assetSection").hidden = false;
+    $("assetLessonName").textContent = lesson.title;
+    $("videoStatus").textContent = lesson.videoType === "uploaded"
+      ? "Uploaded video attached · " + (lesson.video?.format || "format not reported") +
+        " · " + Math.round(Number(lesson.video?.durationSeconds || 0)) + " seconds"
+      : lesson.videoType === "external"
+        ? "External video link attached."
+        : "No uploaded video attached.";
+
+    const documents = Array.isArray(lesson.documents) ? lesson.documents : [];
+    $("materialList").innerHTML = documents.length
+      ? documents.map(doc => `
+        <div class="asset-item">
+          <div><strong>${esc(doc.title)}</strong>
+          <small>${esc(String(doc.format || "").toUpperCase())} · ${esc(doc.bytes || 0)} bytes</small></div>
+        </div>`).join("")
+      : '<div class="empty">No Learning Materials attached.</div>';
+
+    clearMessage();
+    window.scrollTo({top:0,behavior:"smooth"});
+  }
+
+  async function saveLesson(event) {
+    event.preventDefault();
+    if (busy) return;
+
+    const mode = $("videoMode").value;
+    const body = {
+      title: $("title").value.trim(),
+      description: $("description").value.trim(),
+      category: $("category").value.trim(),
+      content: $("content").value,
+      displayOrder: Number($("displayOrder").value),
+      published: $("published").checked
+    };
+
+    if (mode === "external") {
+      body.videoType = "external";
+      body.externalVideoUrl = $("externalUrl").value.trim();
+    } else if (mode === "none") {
+      body.videoType = "none";
+      body.externalVideoUrl = null;
+    } else if (!activeLesson || activeLesson.videoType !== "uploaded") {
+      showMessage("Upload and verify the video after creating the lesson.", "info");
+      return;
+    }
+
+    busy = true;
+    $("saveLesson").disabled = true;
+
+    try {
+      const editing = Boolean(activeLesson);
+      const url = editing ? LESSONS + "/" + encodeURIComponent(activeLesson._id) : LESSONS;
+      const data = await api(url, {
+        method: editing ? "PATCH" : "POST",
+        body: JSON.stringify(body)
+      });
+
+      const saved = data.lesson;
+      showMessage(data.message || "Lesson saved.", "success");
+      await loadLessons();
+
+      if (saved?._id) {
+        const fresh = lessons.find(item => String(item._id) === String(saved._id)) || saved;
+        editLesson(fresh);
+      }
+    } catch (error) {
+      showMessage(error.message, "error");
+    } finally {
+      busy = false;
+      $("saveLesson").disabled = false;
+    }
+  }
+
+  async function uploadToCloudinary(file, signed, resourceType) {
+    const form = new FormData();
+    form.append("file", file);
+    form.append("api_key", signed.apiKey);
+
+    for (const [key, value] of Object.entries(signed.params || {})) {
+      form.append(key, String(value));
+    }
+
+    form.append("signature", signed.signature);
+
+    const response = await fetch(
+      "https://api.cloudinary.com/v1_1/" +
+      encodeURIComponent(signed.cloudName) + "/" + resourceType + "/upload",
+      {method:"POST", body:form}
+    );
+
+    let result;
+    try {
+      result = await response.json();
+    } catch {
+      throw new Error("Cloudinary returned an unreadable upload response.");
+    }
+
+    if (!response.ok || result.error) {
+      throw new Error(result.error?.message || "Cloudinary upload failed.");
+    }
+
+    return result;
+  }
+
+  async function uploadVideo() {
+    if (!activeLesson?._id || !videoFile || busy) return;
+
+    busy = true;
+    $("uploadVideo").disabled = true;
+    $("uploadVideo").textContent = "Uploading…";
+
+    try {
+      const signed = await api(ASSETS + "/video/signature", {
+        method:"POST",
+        body:JSON.stringify({
+          lessonId:activeLesson._id,
+          originalName:videoFile.name,
+          size:videoFile.size
+        })
+      });
+
+      const uploaded = await uploadToCloudinary(videoFile, signed, "video");
+
+      const verified = await api(ASSETS + "/video/verify", {
+        method:"POST",
+        body:JSON.stringify({
+          lessonId:activeLesson._id,
+          publicId:uploaded.public_id
+        })
+      });
+
+      showMessage(verified.message || "Video verified and attached.", "success");
+      videoFile = null;
+      $("videoFile").value = "";
+      await loadLessons();
+
+      const fresh = lessons.find(item => String(item._id) === String(activeLesson._id));
+      if (fresh) editLesson(fresh);
+    } catch (error) {
+      showMessage(error.message, "error");
+    } finally {
+      busy = false;
+      $("uploadVideo").textContent = "Upload video securely";
+      $("uploadVideo").disabled = !videoFile;
+    }
+  }
+
+  async function uploadMaterial() {
+    if (!activeLesson?._id || !materialFile || busy) return;
+
+    const title = $("materialTitle").value.trim();
+    if (!title) {
+      showMessage("Enter a title for this Learning Material.", "error");
+      return;
+    }
+
+    busy = true;
+    $("uploadMaterial").disabled = true;
+    $("uploadMaterial").textContent = "Uploading…";
+
+    try {
+      const signed = await api(ASSETS + "/signature", {
+        method:"POST",
+        body:JSON.stringify({
+          lessonId:activeLesson._id,
+          title,
+          originalName:materialFile.name,
+          size:materialFile.size
+        })
+      });
+
+      const uploaded = await uploadToCloudinary(materialFile, signed, "raw");
+
+      const verified = await api(ASSETS + "/verify", {
+        method:"POST",
+        body:JSON.stringify({
+          lessonId:activeLesson._id,
+          title,
+          originalName:materialFile.name,
+          publicId:uploaded.public_id
+        })
+      });
+
+      showMessage(verified.message || "Learning Material verified and attached.", "success");
+      materialFile = null;
+      $("materialFile").value = "";
+      $("materialTitle").value = "";
+      $("materialFileName").textContent = "Choose another Learning Material.";
+      await loadLessons();
+
+      const fresh = lessons.find(item => String(item._id) === String(activeLesson._id));
+      if (fresh) editLesson(fresh);
+    } catch (error) {
+      showMessage(error.message, "error");
+    } finally {
+      busy = false;
+      $("uploadMaterial").textContent = "Upload Learning Material";
+      $("uploadMaterial").disabled = !materialFile;
+    }
+  }
+
+  $("lessonForm").addEventListener("submit", saveLesson);
+  $("newLesson").addEventListener("click", resetForm);
+  $("refresh").addEventListener("click", loadLessons);
+
+  $("videoMode").addEventListener("change", () => {
+    $("externalBox").hidden = $("videoMode").value !== "external";
+  });
+
+  $("lessonList").addEventListener("click", async event => {
+    const edit = event.target.closest("[data-edit]");
+    const publish = event.target.closest("[data-publish]");
+    const remove = event.target.closest("[data-delete]");
+
+    if (edit) {
+      const lesson = lessons.find(item => String(item._id) === edit.dataset.edit);
+      if (lesson) editLesson(lesson);
+      return;
+    }
+
+    if (publish) {
+      const lesson = lessons.find(item => String(item._id) === publish.dataset.publish);
+      if (!lesson) return;
+
+      try {
+        const data = await api(LESSONS + "/" + encodeURIComponent(lesson._id), {
+          method:"PATCH",
+          body:JSON.stringify({published:!lesson.published})
+        });
+        showMessage(data.message || "Publication status updated.", "success");
+        await loadLessons();
+      } catch (error) {
+        showMessage(error.message, "error");
+      }
+      return;
+    }
+
+    if (remove) {
+      const lesson = lessons.find(item => String(item._id) === remove.dataset.delete);
+      if (!lesson) return;
+
+      if (!window.confirm(
+        'Delete "' + lesson.title + '"? This removes its lesson record. Review its attached assets before deleting.'
+      )) return;
+
+      try {
+        const data = await api(LESSONS + "/" + encodeURIComponent(lesson._id), {
+          method:"DELETE"
+        });
+        if (activeLesson && String(activeLesson._id) === String(lesson._id)) {
+          resetForm();
+        }
+        showMessage(data.message || "Lesson deleted.", "success");
+        await loadLessons();
+      } catch (error) {
+        showMessage(error.message, "error");
+      }
+    }
+  });
+
+  $("chooseVideo").addEventListener("click", () => $("videoFile").click());
+  $("videoFile").addEventListener("change", () => {
+    videoFile = $("videoFile").files[0] || null;
+    $("uploadVideo").disabled = !videoFile;
+    if (videoFile) {
+      $("videoStatus").textContent = videoFile.name + " · " +
+        (videoFile.size / 1024 / 1024).toFixed(2) + " MB selected";
+    }
+  });
+  $("uploadVideo").addEventListener("click", uploadVideo);
+
+  $("chooseMaterial").addEventListener("click", () => $("materialFile").click());
+  $("materialFile").addEventListener("change", () => {
+    materialFile = $("materialFile").files[0] || null;
+    $("uploadMaterial").disabled = !materialFile;
+    $("materialFileName").textContent = materialFile
+      ? materialFile.name + " · " + (materialFile.size / 1024 / 1024).toFixed(2) + " MB"
+      : "No file selected.";
+  });
+  $("uploadMaterial").addEventListener("click", uploadMaterial);
+
+  resetForm();
+  loadLessons();
+})();
+</script>
+</body>
+</html>

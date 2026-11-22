@@ -1,5 +1,10 @@
 **/*.before-*
-**/*.bak
+**/*.bak*
+**/*backup*
+**/*.patch-backup
+**/.favicon-backups/**
+**/.backups/**
+**/backups/**
 **/.gitignore
 
 # Never upload local secrets or deployment metadata

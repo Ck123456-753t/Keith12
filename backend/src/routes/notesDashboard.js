@@ -25,7 +25,7 @@ router.get("/", async (req, res) => {
     );
 
     const role = String(req.user.role || "").toLowerCase();
-    const isPrivileged = ["admin", "founder"].includes(role);
+    const isPrivileged = ["admin", "founder", "notes_operator"].includes(role);
     const now = new Date();
 
     const membership = isPrivileged

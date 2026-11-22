@@ -20,7 +20,9 @@
   } else if (isLocal) {
     apiBase = "http://127.0.0.1:5001/api";
   } else {
-    apiBase = "https://primetask-workspace.onrender.com/api";
+    // Both Vercel portals proxy /api to the shared backend on this origin;
+    // upstream API: https://primetask-workspace.onrender.com/api
+    apiBase = "/api";
   }
 
   apiBase = apiBase.replace(/\/+$/, "");
@@ -36,7 +38,7 @@
   let parsed;
 
   try {
-    parsed = new URL(apiBase);
+    parsed = new URL(apiBase, window.location.origin);
   } catch {
     console.error("PrimeTask API URL is invalid.");
     return;
@@ -70,15 +72,18 @@
     return;
   }
 
-  window.PTW_API_BASE = apiBase;
-  window.PTW_AUTH_API_REGISTER = `${apiBase}/auth/register`;
-  window.PTW_AUTH_API_LOGIN = `${apiBase}/auth/login`;
-  window.PTW_AUTH_API_VERIFY_EMAIL = `${apiBase}/auth/verify-email`;
-  window.PTW_AUTH_API_RESEND_VERIFICATION = `${apiBase}/auth/resend-verification`;
-  window.PTW_AUTH_API_ME = `${apiBase}/auth/me`;
-  window.PTW_AUTH_API_LOGOUT = `${apiBase}/auth/logout`;
+  window.PTW_API_BASE = apiBase.startsWith("/")
+    ? apiBase
+    : parsed.origin + parsed.pathname.replace(/\/+$/, "");
+  const resolvedApiBase = window.PTW_API_BASE;
+  window.PTW_AUTH_API_REGISTER = `${resolvedApiBase}/auth/register`;
+  window.PTW_AUTH_API_LOGIN = `${resolvedApiBase}/auth/login`;
+  window.PTW_AUTH_API_VERIFY_EMAIL = `${resolvedApiBase}/auth/verify-email`;
+  window.PTW_AUTH_API_RESEND_VERIFICATION = `${resolvedApiBase}/auth/resend-verification`;
+  window.PTW_AUTH_API_ME = `${resolvedApiBase}/auth/me`;
+  window.PTW_AUTH_API_LOGOUT = `${resolvedApiBase}/auth/logout`;
 
-  window.PTW_REFERRAL_API_ME = `${apiBase}/referrals/me`;
+  window.PTW_REFERRAL_API_ME = `${resolvedApiBase}/referrals/me`;
 
   function pushBase64UrlToBytes(value) {
     const padding = "=".repeat((4 - value.length % 4) % 4);
@@ -99,7 +104,7 @@
     if ("Notification" in window && Notification.permission === "granted") {
       const existing = await registration.pushManager.getSubscription();
       if (existing) {
-        fetch(`${apiBase}/notifications/push/subscriptions`, {
+        fetch(`${resolvedApiBase}/notifications/push/subscriptions`, {
           method: "POST",
           credentials: "include",
           headers: {
@@ -129,7 +134,7 @@
     }
 
     const registration = await registerPtwServiceWorker();
-    const keyResponse = await fetch(`${apiBase}/notifications/push/public-key`, {
+    const keyResponse = await fetch(`${resolvedApiBase}/notifications/push/public-key`, {
       credentials: "omit",
       headers: { Accept: "application/json" }
     });
@@ -147,7 +152,7 @@
       });
     }
 
-    const saveResponse = await fetch(`${apiBase}/notifications/push/subscriptions`, {
+    const saveResponse = await fetch(`${resolvedApiBase}/notifications/push/subscriptions`, {
       method: "POST",
       credentials: "include",
       headers: {

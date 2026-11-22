@@ -21,7 +21,7 @@ function ready() {
 }
 
 function adminOnly(req, res, next) {
-  if (!["admin", "founder"].includes(req.user?.role)) {
+  if (!["admin", "founder", "notes_operator"].includes(req.user?.role)) {
     return res.status(403).json({
       success: false,
       message: "Administrator access required."

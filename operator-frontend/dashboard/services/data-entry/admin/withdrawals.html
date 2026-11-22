@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en" data-operator-roles="admin,founder">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Data Entry | Withdrawals</title>
+<script src="../../../../assets/js/config.js"></script>
+<style>
+:root{--bg:#101a25;--panel:#192a39;--line:#344b60;--text:#edf7ff;--muted:#a9bdcc;--blue:#38bdf8;--green:#4ade80;--red:#fb7185;--orange:#fb923c}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;background:linear-gradient(130deg,#101a25ed,#142c3bed),url('https://images.unsplash.com/photo-1554224155-6726b3ff858f?auto=format&fit=crop&w=1800&q=80') center/cover fixed;color:var(--text);font-family:Arial,sans-serif}
+header{position:sticky;top:0;z-index:5;background:#101a25ed;border-bottom:1px solid var(--line);padding:16px;backdrop-filter:blur(14px)}
+.top,nav,main{max-width:1150px;margin:auto}
+.top{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+h1{font-size:21px;margin:0}.sub{font-size:12px;color:var(--muted);margin-top:5px}
+nav{display:flex;gap:7px;flex-wrap:wrap;margin-top:14px}
+nav a{color:var(--text);text-decoration:none;border:1px solid var(--line);border-radius:8px;padding:8px 10px;font-size:12px}
+nav a.active{background:var(--blue);color:#082333;border-color:var(--blue);font-weight:bold}
+main{padding:24px 15px 50px}
+button,select,input{font:inherit;border-radius:9px;padding:10px;border:1px solid var(--line)}
+button{cursor:pointer;font-weight:bold}
+.refresh{background:var(--blue);color:#082333;border:0}
+.toolbar{display:flex;gap:9px;flex-wrap:wrap;margin-bottom:16px}
+select,input{background:#132433;color:var(--text)}
+input{flex:1;min-width:180px}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px}
+.stat,.card{background:#192a39ed;border:1px solid var(--line);border-radius:13px;padding:15px}
+.stat small,.muted{color:var(--muted)}
+.stat strong{display:block;font-size:23px;margin-top:7px}
+#list{display:grid;gap:12px}
+.card h2{font-size:17px;margin:0 0 10px}
+.details{font-size:13px;line-height:1.9;color:#d8e8f3;overflow-wrap:anywhere}
+.amount{font-size:22px;font-weight:bold;color:var(--green);margin:12px 0 4px}
+.payout{font-size:17px;color:var(--blue);font-weight:bold}
+.tag{display:inline-block;padding:5px 8px;border-radius:20px;background:#344b60;font-size:11px;margin:8px 5px 5px 0}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:13px}
+.approve{background:var(--green);color:#082416}.reject{background:var(--red);color:#310c15}.paid{background:var(--orange);color:#321707}
+button:disabled{opacity:.5;cursor:not-allowed}
+.empty{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:22px;text-align:center;color:var(--muted)}
+#error{color:#fda4af;margin-bottom:12px}
+.note{margin-top:10px;font-size:12px;color:var(--muted);overflow-wrap:anywhere}
+@media(max-width:600px){.stats{grid-template-columns:1fr 1fr}.stat:last-child{grid-column:span 2}}
+</style>
+<link rel="icon" type="image/svg+xml" href="/assets/primetask-logo.svg">
+
+  <script src="/assets/js/operator-guard.js" defer></script>
+</head>
+<body>
+<header>
+ <div class="top">
+  <div><h1>Withdrawal Management</h1><div class="sub">Review requests and record manual M-Pesa payouts</div></div>
+  <button class="refresh" id="refresh">Refresh</button>
+ </div>
+ <nav>
+  <a href="index">Overview</a>
+  <a href="jobs">Jobs</a>
+  <a href="in-progress">In Progress</a>
+  <a href="submissions">Submissions</a>
+  <a class="active" href="withdrawals">Withdrawals</a>
+  <a href="bid-purchases">Bid Purchases</a>
+  <a href="earnings">Earnings</a>
+  <a href="transactions">Transactions</a>
+  <a href="bid-packages">Bid Packages</a>
+  <a href="reports">Reports</a>
+ </nav>
+</header>
+
+<main>
+ <div id="error"></div>
+ <section class="stats">
+  <div class="stat"><small>Pending review</small><strong id="pending">0</strong></div>
+  <div class="stat"><small>Approved for payment</small><strong id="approved">0</strong></div>
+  <div class="stat"><small>Paid</small><strong id="paid">0</strong></div>
+ </section>
+
+ <div class="toolbar">
+  <input id="search" placeholder="Search worker, email, phone or request ID">
+  <select id="status">
+   <option value="">All statuses</option>
+   <option value="pending_review">Pending review</option>
+   <option value="approved">Approved</option>
+   <option value="processing">Processing</option>
+   <option value="reconciliation_required">Reconciliation required</option>
+   <option value="paid">Paid</option>
+   <option value="rejected">Rejected</option>
+  </select>
+ </div>
+ <div id="list"><div class="empty">Loading withdrawals...</div></div>
+</main>
+
+<script>
+const API = `${window.PTW_API_BASE}/admin/data-entry`;
+const list = document.getElementById("list");
+const errorBox = document.getElementById("error");
+let withdrawals = [];
+
+async function request(path, options = {}) {
+  const response = await fetch(`${API}${path}`, {
+    credentials: "include",
+    ...options,
+    headers: {
+      "Content-Type": "application/json",
+      ...(options.headers || {})
+    }
+  });
+  const data = await response.json().catch(() => ({}));
+  if (!response.ok || data.success === false) {
+    throw new Error(data.message || `Request failed (${response.status})`);
+  }
+  return data;
+}
+
+function el(tag, cls, value) {
+  const node = document.createElement(tag);
+  if (cls) node.className = cls;
+  if (value !== undefined) node.textContent = value;
+  return node;
+}
+
+function usd(cents) {
+  return Number.isFinite(Number(cents))
+    ? `$${(Number(cents) / 100).toFixed(2)} USD`
+    : "Unavailable";
+}
+
+function kes(amount) {
+  return Number.isFinite(Number(amount))
+    ? `KSh ${Number(amount).toLocaleString("en-KE", {maximumFractionDigits:2})}`
+    : "Unavailable";
+}
+
+function date(value) {
+  if (!value) return "Unavailable";
+  const parsed = new Date(value);
+  return Number.isNaN(parsed.getTime()) ? "Unavailable" : parsed.toLocaleString();
+}
+
+function render() {
+  const q = document.getElementById("search").value.trim().toLowerCase();
+  const filtered = withdrawals.filter(w => {
+    const user = w.userId || {};
+    return [
+      w.requestId, user.name, user.email, w.phoneNumber,
+      w.accountName, w.mpesaReceipt, w.status
+    ].join(" ").toLowerCase().includes(q);
+  });
+
+  list.replaceChildren();
+
+  if (!filtered.length) {
+    list.append(el("div", "empty", "No withdrawals match this filter."));
+    return;
+  }
+
+  filtered.forEach(w => {
+    const user = w.userId || {};
+    const card = el("article", "card");
+    card.append(el("h2", "", user.name || "Unknown worker"));
+
+    const details = el("div", "details");
+    details.textContent =
+      `Email: ${user.email || "Unavailable"}\n` +
+      `Request ID: ${w.requestId || "Unavailable"}\n` +
+      `Phone: ${w.phoneNumber || "Unavailable"}\n` +
+      `Account name: ${w.accountName || "Unavailable"}\n` +
+      `Requested: ${date(w.createdAt)}\n` +
+      `Exchange-rate snapshot: ${w.exchangeRateKesPerUsd ?? "Unavailable"} KES per USD`;
+    card.append(details);
+
+    card.append(el("div", "amount", usd(w.amountCents)));
+    card.append(el("div", "payout", kes(w.payoutAmountKes)));
+    card.append(el("span", "tag", `Status: ${w.status || "Unknown"}`));
+
+    if (w.mpesaReceipt) {
+      card.append(el("div", "note", `M-Pesa receipt: ${w.mpesaReceipt}`));
+    }
+    if (w.adminNote) {
+      card.append(el("div", "note", `Admin note: ${w.adminNote}`));
+    }
+    if (w.reviewedBy) {
+      card.append(el("div", "note",
+        `Reviewed by: ${w.reviewedBy.name || w.reviewedBy.email || "Admin"} | ${date(w.reviewedAt)}`));
+    }
+
+    const actions = el("div", "actions");
+
+    if (w.status === "pending_review") {
+      addAction(actions, "Approve", "approve", () => perform(w, "approve"));
+      addAction(actions, "Reject", "reject", () => perform(w, "reject"));
+    }
+
+    if (w.status === "approved") {
+      addAction(actions, "Record M-Pesa payment", "paid", () => perform(w, "mark-paid"));
+    }
+
+    if (actions.childNodes.length) card.append(actions);
+
+    if (w.status === "approved") {
+      card.append(el("div", "note",
+        "Funds remain reserved until payment is recorded. Enter the actual M-Pesa receipt after sending payment."));
+    }
+
+    list.append(card);
+  });
+}
+
+function addAction(parent, label, cls, callback) {
+  const button = el("button", cls, label);
+  button.addEventListener("click", () => callback(button));
+  parent.append(button);
+}
+
+async function perform(w, action, button) {
+  let body = {};
+
+  if (action === "approve") {
+    const note = prompt("Optional admin note (maximum 300 characters):");
+    if (note === null) return;
+    if (note.trim().length > 300) {
+      alert("Admin note cannot exceed 300 characters.");
+      return;
+    }
+    if (!confirm("Approve this withdrawal? The funds will remain reserved.")) return;
+    body.adminNote = note.trim();
+  }
+
+  if (action === "reject") {
+    const note = prompt("Enter the rejection reason (required, maximum 300 characters):");
+    if (note === null) return;
+    if (!note.trim() || note.trim().length > 300) {
+      alert("A rejection reason of up to 300 characters is required.");
+      return;
+    }
+    if (!confirm("Reject this request and return its reserved funds to the worker's available balance?")) return;
+    body.adminNote = note.trim();
+  }
+
+  if (action === "mark-paid") {
+    const receipt = prompt("Enter the actual M-Pesa transaction receipt:");
+    if (receipt === null) return;
+    if (!receipt.trim() || receipt.trim().length > 100) {
+      alert("A valid M-Pesa receipt is required.");
+      return;
+    }
+    const note = prompt("Optional admin note (maximum 300 characters):");
+    if (note === null) return;
+    if (note.trim().length > 300) {
+      alert("Admin note cannot exceed 300 characters.");
+      return;
+    }
+    if (!confirm(`Confirm payment of ${kes(w.payoutAmountKes)} and record receipt ${receipt.trim().toUpperCase()}?`)) return;
+    body.mpesaReceipt = receipt.trim();
+    body.adminNote = note.trim();
+  }
+
+  if (button) button.disabled = true;
+  errorBox.textContent = "";
+
+  try {
+    const result = await request(
+      `/withdrawals/${encodeURIComponent(w.requestId)}/${action}`,
+      { method: "POST", body: JSON.stringify(body) }
+    );
+    alert(result.message || "Withdrawal updated.");
+    await loadWithdrawals();
+  } catch (error) {
+    errorBox.textContent = error.message;
+    if (button) button.disabled = false;
+  }
+}
+
+async function loadWithdrawals() {
+  errorBox.textContent = "";
+  list.replaceChildren(el("div", "empty", "Loading withdrawals..."));
+
+  try {
+    const status = document.getElementById("status").value;
+    const query = status ? `?status=${encodeURIComponent(status)}` : "";
+    const data = await request(`/withdrawals${query}`);
+    withdrawals = Array.isArray(data.withdrawals) ? data.withdrawals : [];
+
+    document.getElementById("pending").textContent =
+      withdrawals.filter(w => w.status === "pending_review").length;
+    document.getElementById("approved").textContent =
+      withdrawals.filter(w => w.status === "approved").length;
+    document.getElementById("paid").textContent =
+      withdrawals.filter(w => w.status === "paid").length;
+
+    render();
+  } catch (error) {
+    withdrawals = [];
+    list.replaceChildren(el("div", "empty", "Could not load withdrawals."));
+    errorBox.textContent = error.message;
+  }
+}
+
+async function checkAdmin() {
+  try {
+    const response = await fetch(window.PTW_AUTH_API_ME, { credentials: "include" });
+    const data = await response.json();
+    const user = data.user || data;
+
+    if (!response.ok || !["admin", "founder"].includes(user.role)) {
+      document.body.replaceChildren(el("h2", "", "Access denied. Admin access required."));
+      return false;
+    }
+    return true;
+  } catch {
+    document.body.replaceChildren(el("h2", "", "Authentication required. Please sign in."));
+    return false;
+  }
+}
+
+document.getElementById("refresh").addEventListener("click", loadWithdrawals);
+document.getElementById("status").addEventListener("change", loadWithdrawals);
+document.getElementById("search").addEventListener("input", render);
+
+(async () => {
+  if (await checkAdmin()) await loadWithdrawals();
+})();
+</script>
+</body>
+</html>

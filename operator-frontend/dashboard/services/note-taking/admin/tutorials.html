@@ -1,0 +1,244 @@
+<!doctype html>
+<html lang="en" data-operator-roles="admin,founder,notes_operator">
+<head>
+  <base href="/dashboard/services/note-taking/admin/">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#09111e">
+  <title>Tutorials | PrimeTask Notes Admin</title>
+  <link rel="stylesheet" href="assets/admin.css">
+  <style>
+    .tutorial-form{display:grid;gap:12px;max-width:700px}
+    .tutorial-form input,.tutorial-form textarea,.tutorial-form select{width:100%;padding:12px;border:1px solid #ccd6e3;border-radius:8px;font:inherit}
+    .tutorial-form textarea{min-height:90px}
+    .tutorial-list{display:grid;gap:12px}
+    .tutorial-row{display:flex;gap:15px;align-items:center;justify-content:space-between;flex-wrap:wrap;padding:15px;background:#fff;border:1px solid #e0e6ee;border-radius:10px}
+    .tutorial-row h3{margin:0 0 5px}
+    .tutorial-actions{display:flex;gap:8px;flex-wrap:wrap}
+    .tutorial-actions button{cursor:pointer}
+    #tutorialMessage{margin:12px 0}
+  </style>
+
+  <script src="/assets/js/operator-guard.js" defer></script>
+</head>
+<body>
+<div class="shell">
+  <aside class="sidebar">
+    <div class="brand"><span class="brand-mark">PT</span><h2>PrimeTask Notes</h2><p>Administration workspace</p></div>
+    <div class="nav-label">Workspace</div>
+    <nav class="nav">
+      <a href="index">◫ Overview</a>
+      <a href="tasks">♫ Audio &amp; tasks</a>
+      <a href="submissions">▤ Submissions</a>
+      <a href="withdrawals">＄ Withdrawals</a>
+      <a href="points-packages">◉ Points Packages</a>
+      <a class="active" href="tutorials">▣ Tutorials</a>
+    </nav>
+  </aside>
+  <main>
+    <header class="topbar">
+      <div><div class="eyebrow">PrimeTask Workspace / Notes</div><div class="muted">Learning Centre management</div></div>
+      <a class="button secondary" href="index">Back to overview</a>
+    </header>
+
+    <section style="margin-top:25px">
+      <div class="eyebrow">Learning Centre</div>
+      <h1>Manage Tutorials</h1>
+      <p class="subtitle">Upload training videos, save drafts and publish tutorials for Notes members.</p>
+    </section>
+
+    <div id="tutorialMessage" class="message" role="status">Ready.</div>
+
+    <section class="panel">
+      <h2>Upload a tutorial video</h2>
+      <form id="tutorialForm" class="tutorial-form">
+        <input name="title" placeholder="Tutorial title" maxlength="120" required>
+        <input name="category" placeholder="Category (e.g. Note-taking)" maxlength="60">
+        <textarea name="description" placeholder="What will members learn?" maxlength="2000"></textarea>
+        <input name="video" type="file" accept="video/mp4,video/quicktime,video/webm,video/x-m4v" required>
+        <button class="button" id="uploadButton" type="submit">Upload and save draft</button>
+      </form>
+      <p class="muted">MP4, MOV, WEBM or M4V. Maximum file size: 500 MB.</p>
+    </section>
+
+    <section class="panel">
+      <div class="panel-head"><div><h2>All tutorials</h2><p class="muted">Drafts are visible only in this administration page.</p></div><button class="button secondary" id="refreshButton" type="button">Refresh</button></div>
+      <div class="tutorial-list" id="tutorialList">Loading...</div>
+    </section>
+  </main>
+</div>
+
+<script>
+(() => {
+  const configPaths = ["/assets/js/config.js", "/frontend/assets/js/config.js"];
+  function loadConfig(i) {
+    if (i >= configPaths.length) return start();
+    const script = document.createElement("script");
+    script.src = configPaths[i];
+    script.onload = start;
+    script.onerror = () => { script.remove(); loadConfig(i + 1); };
+    document.head.appendChild(script);
+  }
+
+  async function start() {
+    const api = window.PTW_API_BASE || "/api";
+    const form = document.getElementById("tutorialForm");
+    const list = document.getElementById("tutorialList");
+    const message = document.getElementById("tutorialMessage");
+    const button = document.getElementById("uploadButton");
+
+    async function request(path, options = {}) {
+      const response = await fetch(api + path, {
+        credentials: "include",
+        ...options,
+        headers: { ...(options.headers || {}) }
+      });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.message || "Request failed.");
+      return data;
+    }
+
+    function esc(value) {
+      return String(value || "").replace(/[&<>"']/g, c =>
+        ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"})[c]
+      );
+    }
+
+    async function refresh() {
+      list.textContent = "Loading...";
+      try {
+        const data = await request("/admin/notes/tutorials");
+        if (!data.tutorials.length) {
+          list.textContent = "No tutorials uploaded yet.";
+          return;
+        }
+
+        list.innerHTML = data.tutorials.map(t => `
+          <article class="tutorial-row">
+            <div>
+              <h3>${esc(t.title)}</h3>
+              <div class="muted">${esc(t.category)} · ${esc(t.status)} · ${Math.round((t.bytes || 0)/1048576)} MB</div>
+              <p class="muted">${esc(t.description)}</p>
+            </div>
+            <div class="tutorial-actions">
+              <button class="button secondary" data-action="edit" data-id="${esc(t._id)}">Edit</button>
+              ${t.status === "published"
+                ? `<button class="button secondary" data-action="unpublish" data-id="${esc(t._id)}">Unpublish</button>`
+                : `<button class="button" data-action="publish" data-id="${esc(t._id)}">Publish</button>`}
+              <button class="button secondary" data-action="delete" data-id="${esc(t._id)}">Delete</button>
+            </div>
+          </article>
+        `).join("");
+
+        list.querySelectorAll("button").forEach(btn => {
+          btn.addEventListener("click", () => manage(btn.dataset.action, btn.dataset.id));
+        });
+      } catch (error) {
+        list.textContent = error.message;
+      }
+    }
+
+    async function manage(action, id) {
+      try {
+        if (action === "delete" && !confirm("Permanently delete this tutorial and its Cloudinary video?")) return;
+
+        if (action === "edit") {
+          const title = prompt("New tutorial title:");
+          if (title === null) return;
+          const description = prompt("New description:");
+          if (description === null) return;
+          const category = prompt("Category:");
+          if (category === null) return;
+
+          await request("/admin/notes/tutorials/" + id, {
+            method: "PATCH",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ title, description, category })
+          });
+        } else if (action === "delete") {
+          await request("/admin/notes/tutorials/" + id, { method: "DELETE" });
+        } else {
+          await request("/admin/notes/tutorials/" + id + "/" + action, { method: "PATCH" });
+        }
+
+        message.textContent = "Tutorial updated.";
+        await refresh();
+      } catch (error) {
+        message.textContent = error.message;
+      }
+    }
+
+    form.addEventListener("submit", async event => {
+      event.preventDefault();
+      const title = form.elements.title.value.trim();
+      const category = form.elements.category.value.trim() || "General";
+      const description = form.elements.description.value.trim();
+      const file = form.elements.video.files[0];
+
+      if (!file) return;
+      if (file.size > 500 * 1024 * 1024) {
+        message.textContent = "The video exceeds the 500 MB limit.";
+        return;
+      }
+
+      button.disabled = true;
+      message.textContent = "Preparing secure upload...";
+
+      try {
+        const signed = await request("/admin/notes/tutorials/signature", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: "{}"
+        });
+
+        const upload = new FormData();
+        upload.append("file", file);
+        upload.append("api_key", signed.apiKey);
+        upload.append("timestamp", signed.params.timestamp);
+        upload.append("signature", signed.signature);
+        upload.append("public_id", signed.params.public_id);
+        upload.append("overwrite", "false");
+        upload.append("allowed_formats", signed.params.allowed_formats);
+
+        message.textContent = "Uploading video to Cloudinary. Keep this page open...";
+        const cloudResponse = await fetch(
+          `https://api.cloudinary.com/v1_1/${signed.cloudName}/video/upload`,
+          { method: "POST", body: upload }
+        );
+        const cloudData = await cloudResponse.json();
+
+        if (!cloudResponse.ok) {
+          throw new Error(cloudData.error?.message || "Cloudinary upload failed.");
+        }
+
+        message.textContent = "Verifying video and saving tutorial...";
+        await request("/admin/notes/tutorials", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            title,
+            description,
+            category,
+            publicId: cloudData.public_id
+          })
+        });
+
+        form.reset();
+        message.textContent = "Video uploaded. Tutorial saved as a draft.";
+        await refresh();
+      } catch (error) {
+        message.textContent = error.message;
+      } finally {
+        button.disabled = false;
+      }
+    });
+
+    document.getElementById("refreshButton").addEventListener("click", refresh);
+    await refresh();
+  }
+
+  loadConfig(0);
+})();
+</script>
+</body>
+</html>

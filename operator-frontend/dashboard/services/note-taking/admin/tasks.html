@@ -1,0 +1,219 @@
+<!doctype html>
+<html lang="en" data-operator-roles="admin,founder,notes_operator">
+<head>
+  <base href="/dashboard/services/note-taking/admin/">
+  
+  
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#09111e">
+<title>Audio & Tasks | PrimeTask Notes Admin</title>
+<link rel="stylesheet" href="assets/admin.css">
+
+<style>
+
+/* PrimeTask Notes admin dropdown: additive page styling */
+.pt-notes-menu-wrap {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+  z-index: 100;
+}
+.pt-notes-menu-trigger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  min-height: 42px;
+  padding: 10px 14px;
+  border: 1px solid #263851;
+  border-radius: 10px;
+  background: #16243a;
+  color: #edf4ff;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 800;
+  cursor: pointer;
+}
+.pt-notes-menu-trigger:hover,
+.pt-notes-menu-trigger:focus-visible {
+  background: #203451;
+  outline: 2px solid #5c9dff;
+  outline-offset: 2px;
+}
+.pt-notes-menu-dropdown {
+  display: none;
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  width: 252px;
+  max-width: calc(100vw - 28px);
+  padding: 9px;
+  background: #111d2e;
+  color: #edf4ff;
+  border: 1px solid #263851;
+  border-radius: 14px;
+  box-shadow: 0 18px 45px rgba(0,0,0,.35);
+  z-index: 1000;
+}
+.pt-notes-menu-dropdown.open { display: block; }
+.pt-notes-menu-dropdown .dropdown-label {
+  padding: 9px 11px 6px;
+  color: #9aacc5;
+  font-size: 10px;
+  font-weight: 850;
+  letter-spacing: 1.1px;
+  text-transform: uppercase;
+}
+.pt-notes-menu-dropdown a {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding: 10px 11px;
+  border-radius: 9px;
+  color: #9aacc5;
+  font-size: 13px;
+  font-weight: 650;
+  text-decoration: none;
+}
+.pt-notes-menu-dropdown a:hover,
+.pt-notes-menu-dropdown a.active {
+  background: #172841;
+  color: #5c9dff;
+}
+.pt-notes-menu-dropdown .nav-icon {
+  width: 21px;
+  flex: 0 0 21px;
+  text-align: center;
+  font-size: 16px;
+}
+.pt-notes-menu-dropdown a:focus-visible {
+  outline: 2px solid #5c9dff;
+  outline-offset: 1px;
+}
+
+</style>
+<link rel="icon" type="image/svg+xml" href="/assets/primetask-logo.svg">
+
+  <script src="/assets/js/operator-guard.js" defer></script>
+</head>
+<body data-page="tasks">
+<div class="shell">
+<aside class="sidebar">
+  <div class="brand">
+    <span class="brand-mark">PT</span>
+    <h2>PrimeTask Notes</h2>
+    <p>Administration workspace</p>
+  </div>
+  <div class="nav-label">Workspace</div>
+  <nav class="nav">
+    <a class="" href="index">◫ Overview</a>
+    <a class="active" href="tasks">♫ Audio &amp; tasks</a>
+    <a class="" href="submissions">▤ Submissions</a>
+    <a class="" href="withdrawals">＄ Withdrawals</a>
+<a href="points-packages"><span class="nav-icon" aria-hidden="true">◉</span>Points Packages</a>
+  </nav>
+  <div class="sidebar-note"><strong>Separate by design</strong><br>Notes Points, Notes earnings and Notes withdrawals remain separate from the other PrimeTask wallets.</div>
+</aside>
+<main>
+  <header class="topbar">
+    <div><div class="eyebrow">PrimeTask Workspace / Notes</div><div class="muted">Dedicated administration</div></div>
+    <button class="secondary" id="refreshBtn" type="button">Refresh data</button>
+<div class="pt-notes-menu-wrap"><button class="pt-notes-menu-trigger" type="button" aria-expanded="false" aria-controls="ptNotesAdminMenu"><span aria-hidden="true">☰</span><span>Menu</span><span aria-hidden="true">▼</span></button><nav class="pt-notes-menu-dropdown" id="ptNotesAdminMenu" aria-label="Administration navigation">
+<div class="dropdown-label">Administration</div>
+<a href="index"><span class="nav-icon" aria-hidden="true">◫</span>Overview</a>
+<a href="tasks" class="active" aria-current="page"><span class="nav-icon" aria-hidden="true">♫</span>Audio & tasks</a>
+<a href="submissions"><span class="nav-icon" aria-hidden="true">▤</span>Submissions</a>
+<a href="withdrawals"><span class="nav-icon" aria-hidden="true">$</span>Withdrawals</a>
+<a href="points-packages"><span class="nav-icon" aria-hidden="true">◉</span>Points Packages</a>
+</nav></div>
+  </header>
+  <section style="margin-top:25px">
+    <div class="eyebrow">Control room</div>
+    <h1>Audio & Tasks</h1>
+    <p class="subtitle">Prepare audio tasks, verify duration, and manage task publication.</p>
+  </section>
+  <div id="message" class="message" role="status" aria-live="polite"></div>
+  <section class="panel"><div class="panel-head"><div><h2>Create an audio task</h2><p class="muted">Upload a private audio file. The server verifies its format and duration before saving the draft.</p></div></div>
+
+
+<form id="audioTaskForm">
+<div class="form-grid">
+<div class="field full">
+<label for="audioFile">Audio files (select up to 10)</label>
+<input id="audioFile" type="file" multiple accept=".mp3,.wav,.m4a,.ogg,.flac,.webm,audio/mpeg,audio/wav,audio/x-wav,audio/mp4,audio/ogg,audio/flac,audio/webm">
+<p class="muted">Each audio creates its own unpublished draft. Maximum 100 MB per file.</p>
+</div>
+<div class="field full">
+<strong>Selected audio tasks</strong>
+<button id="clearBatchBtn" type="button" disabled>Clear list</button>
+<div id="batchFileList" aria-live="polite">
+<p class="muted">No audio files selected yet.</p>
+</div>
+</div>
+<div class="field">
+<label for="taskCategory">Category (shared)</label>
+<input id="taskCategory" maxlength="100" value="Lecture notes">
+</div>
+<div class="field full">
+<label for="taskDescription">Description (shared)</label>
+<textarea id="taskDescription" maxlength="10000"></textarea>
+</div>
+<div class="field full">
+<label for="taskBrief">Instructions / brief (shared)</label>
+<textarea id="taskBrief" maxlength="10000"></textarea>
+</div>
+<div class="field full">
+<label for="taskExpected">Expected notes (shared)</label>
+<textarea id="taskExpected" maxlength="5000"></textarea>
+</div>
+</div>
+<p class="muted">Files upload one at a time. The server verifies each duration and calculates its reward at $1 per 5 minutes, rounded up. Notes Points cost follows each verified duration. Every task remains a draft until published.</p>
+<div class="actions">
+<button id="saveAudioTaskBtn" type="submit" disabled>Upload selected audios &amp; save drafts</button>
+</div>
+</form>
+</section>
+<section class="panel"><div class="panel-head"><div><h2>Existing Notes tasks</h2><p class="muted">Publish eligible drafts and inspect task status.</p></div></div>
+<div class="table-wrap"><table><thead><tr><th>Task</th><th>Duration</th><th>Reward</th><th>Status</th><th>Action</th></tr></thead><tbody id="taskRows"><tr><td colspan="5" class="empty">Loading...</td></tr></tbody></table></div></section>
+  <footer>PrimeTask Notes · Admin access required · Financial records shown in USD unless explicitly marked KES</footer>
+</main>
+</div>
+<script src="assets/config-loader.js"></script>
+
+
+<script>
+(() => {
+  document.querySelectorAll('.pt-notes-menu-wrap').forEach(wrap => {
+    const trigger = wrap.querySelector('.pt-notes-menu-trigger');
+    const menu = wrap.querySelector('.pt-notes-menu-dropdown');
+    if (!trigger || !menu) return;
+
+    function closeMenu() {
+      menu.classList.remove('open');
+      trigger.setAttribute('aria-expanded', 'false');
+    }
+
+    trigger.addEventListener('click', event => {
+      event.stopPropagation();
+      const open = menu.classList.toggle('open');
+      trigger.setAttribute('aria-expanded', String(open));
+    });
+
+    document.addEventListener('click', event => {
+      if (!wrap.contains(event.target)) closeMenu();
+    });
+
+    document.addEventListener('keydown', event => {
+      if (event.key === 'Escape') {
+        closeMenu();
+        trigger.focus();
+      }
+    });
+  });
+})();
+</script>
+
+</body>
+</html>

@@ -13,6 +13,8 @@ const PlatformSetting = require("../models/PlatformSetting");
 const securityEventChainService = require("../services/securityEventChainService");
 const deviceAccessService = require("../services/deviceAccessService");
 const requireAuth = require("../middleware/requireAuth");
+const { cookieOptions } = require("../services/authCookiePolicy");
+const { matchesOperatorCredentials } = require("../middleware/portalAccess");
 
 const router = express.Router();
 
@@ -35,16 +37,10 @@ function createToken(user) {
   );
 }
 
-function setSessionCookie(res, token, remember = false) {
-  const production = process.env.NODE_ENV === "production";
-
-  res.cookie(COOKIE_NAME, token, {
-    httpOnly: true,
-    secure: production,
-    sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
-    path: "/",
+function setSessionCookie(req, res, token, remember = false) {
+  res.cookie(COOKIE_NAME, token, cookieOptions(req, {
     maxAge: remember ? 7 * 24 * 60 * 60 * 1000 : undefined
-  });
+  }));
 }
 
 function publicUser(user) {
@@ -995,27 +991,36 @@ router.post("/register", async (req, res) => {
  */
 router.post("/login", async (req, res) => {
   try {
-    const identifier = normalizeText(req.body.identifier).toLowerCase();
+    const portal = normalizeText(req.body?.portal).toLowerCase();
+    const operatorLogin = portal === "operator";
+    const identifier = normalizeText(
+      operatorLogin ? req.body?.email : req.body?.identifier
+    ).toLowerCase();
+    const accountId = normalizeText(req.body?.accountId);
     const password = req.body.password;
     const remember = req.body.remember === true;
 
     if (
       !identifier ||
+      (operatorLogin && (
+        !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(identifier) ||
+        !/^[a-f\d]{24}$/i.test(accountId)
+      )) ||
       typeof password !== "string" ||
       password.length > 72
     ) {
       return res.status(400).json({
         success: false,
-        message: "Enter your username or email and password."
+        message: operatorLogin
+          ? "Enter your administrator email, account ID, and password."
+          : "Enter your username or email and password."
       });
     }
 
-    const user = await User.findOne({
-      $or: [
-        { email: identifier },
-        { username: identifier }
-      ]
-    }).select("+passwordHash");
+    const user = await User.findOne(operatorLogin
+      ? { email: identifier }
+      : { $or: [{ email: identifier }, { username: identifier }] }
+    ).select("+passwordHash");
 
     if (!user) {
       await recordAuthSecurityEvent(req, {
@@ -1049,6 +1054,20 @@ router.post("/login", async (req, res) => {
         success: false,
         message: "Invalid login details."
       });
+    }
+
+    if (operatorLogin && !matchesOperatorCredentials(user, {
+      email: identifier,
+      accountId
+    })) {
+      await recordAuthSecurityEvent(req, {
+        eventType: "login_failed",
+        severity: "warning",
+        outcome: "denied",
+        userId: user._id,
+        message: "Operator login rejected because the account is not authorized."
+      });
+      return res.status(401).json({ success: false, message: "Invalid operator login details." });
     }
 
     if (user.status !== "active") {
@@ -1139,13 +1158,19 @@ router.post("/login", async (req, res) => {
 
     const token = createToken(user);
 
-    setSessionCookie(res, token, remember);
+    setSessionCookie(req, res, token, remember);
+
+    const redirectUrl = operatorLogin
+      ? (user.role === "notes_operator"
+        ? "/dashboard/services/note-taking/admin/"
+        : "/dashboard/admin/Keith/keith")
+      : "/dashboard/index.html";
 
     return res.json({
       success: true,
       message: "Login successful.",
       user: publicUser(user),
-      redirectUrl: "/dashboard/index.html"
+      redirectUrl
     });
   } catch (error) {
     console.error("Login error:", error.message);
@@ -1182,12 +1207,7 @@ router.post("/logout", async (req, res) => {
     }
   }
 
-  res.clearCookie(COOKIE_NAME, {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
-    path: "/"
-  });
+  res.clearCookie(COOKIE_NAME, cookieOptions(req));
 
   return res.json({
     success: true,

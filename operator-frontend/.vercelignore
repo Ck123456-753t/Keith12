@@ -1,0 +1,15 @@
+**/*.before-*
+**/*.bak*
+**/*backup*
+**/*.patch-backup
+**/.favicon-backups/**
+**/.backups/**
+**/backups/**
+.env*
+**/.env*
+.vercel
+**/.vercel/**
+.git
+**/.git/**
+node_modules
+**/node_modules/**

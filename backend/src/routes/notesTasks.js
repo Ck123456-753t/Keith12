@@ -169,7 +169,7 @@ router.get("/:id/audio", async (req, res) => {
     }
 
     const role = String(req.user?.role || "").toLowerCase();
-    const isAdmin = role === "admin" || role === "founder";
+    const isAdmin = role === "admin" || role === "founder" || role === "notes_operator";
     const isPublicTask = task.status === "available";
     const isOwnAssignment =
       ["assigned", "submitted", "completed"].includes(task.status) &&

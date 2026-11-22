@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en" data-operator-roles="admin,founder">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Data Entry Transactions | PrimeTask Admin</title>
+<style>
+:root{--bg:#101526;--panel:#1b2540;--line:#354363;--text:#f1f5ff;--muted:#aab6d0;--blue:#70a8ff;--cyan:#6de3e0;--red:#ff818d;--green:#65e0ad}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;background:linear-gradient(125deg,rgba(12,19,38,.97),rgba(19,30,53,.92)),url('https://images.unsplash.com/photo-1554224155-6726b3ff858f?auto=format&fit=crop&w=1600&q=80') center/cover fixed;color:var(--text);font-family:Arial,sans-serif}
+header{background:#101526ed;border-bottom:1px solid var(--line);padding:18px;position:sticky;top:0;z-index:5}
+.head,nav{max-width:1250px;margin:auto}.head{display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap}
+.brand{font-size:19px;font-weight:800}.brand span{color:var(--blue)}
+nav{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+nav a{padding:9px 11px;border:1px solid var(--line);border-radius:8px;background:var(--panel);color:var(--muted);text-decoration:none;font-size:12px}
+nav a.active,nav a:hover{background:var(--blue);color:#101526}
+main{max-width:1250px;margin:28px auto;padding:0 16px 45px}
+h1{font-size:27px;margin:0 0 7px}.sub{font-size:13px;color:var(--muted);margin-bottom:22px}
+.panel{background:linear-gradient(145deg,#1b2540f5,#121d35f5);border:1px solid var(--line);border-radius:15px;padding:18px;margin-bottom:17px}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin-bottom:17px}
+.stat{background:var(--panel);border:1px solid var(--line);border-radius:13px;padding:16px}
+.stat small{color:var(--muted)}.stat strong{display:block;font-size:23px;color:var(--cyan);margin-top:10px}
+.section-head{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:15px}
+h2{font-size:17px;margin:0}
+.controls{display:flex;gap:8px;flex-wrap:wrap}
+input,select{max-width:100%;min-width:150px;padding:10px;background:#101a30;color:var(--text);border:1px solid var(--line);border-radius:8px}
+button{padding:10px 14px;border:0;border-radius:8px;background:var(--blue);color:#101526;font-weight:700;cursor:pointer}
+button:hover{filter:brightness(1.1)}
+.table-wrap{overflow-x:auto}
+table{width:100%;min-width:850px;border-collapse:collapse;font-size:13px}
+th,td{text-align:left;padding:13px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:var(--muted)}
+td strong{font-weight:700}.muted{color:var(--muted)}
+.positive{color:var(--green);font-weight:700}.negative{color:var(--red);font-weight:700}
+.tag{display:inline-block;padding:5px 8px;border-radius:7px;background:#293b60;color:#c4d9ff;font-size:11px}
+.message{text-align:center;padding:20px;color:var(--muted)}
+.error{color:var(--red)}.foot{font-size:11px;color:var(--muted);margin-top:13px}
+@media(max-width:600px){header{padding:14px}main{margin-top:20px}h1{font-size:23px}.panel{padding:13px}}
+</style>
+<link rel="icon" type="image/svg+xml" href="/assets/primetask-logo.svg">
+
+  <script src="/assets/js/operator-guard.js" defer></script>
+</head>
+<body>
+<header>
+ <div class="head">
+  <div class="brand">PrimeTask <span>Workspace</span> · Admin</div>
+  <div class="muted" style="font-size:12px">Data Entry Ledger</div>
+ </div>
+ <nav>
+  <a href="index">Overview</a>
+  <a href="jobs">Jobs</a>
+  <a href="in-progress">In Progress</a>
+  <a href="submissions">Submissions</a>
+  <a href="withdrawals">Withdrawals</a>
+  <a href="bid-purchases">Bid Purchases</a>
+  <a href="earnings">Earnings</a>
+  <a class="active" href="transactions">Transactions</a>
+  <a href="bid-packages">Bid Packages</a>
+  <a href="reports">Reports</a>
+ </nav>
+</header>
+
+<main>
+ <h1>Wallet Transactions</h1>
+ <div class="sub">Immutable worker wallet ledger. Transaction amounts are USD, stored in whole cents.</div>
+
+ <div class="stats">
+  <div class="stat"><small>Transactions loaded</small><strong id="count">0</strong></div>
+  <div class="stat"><small>Positive entries</small><strong id="credits">$0.00</strong></div>
+  <div class="stat"><small>Negative entries</small><strong id="debits">$0.00</strong></div>
+ </div>
+
+ <section class="panel">
+  <div class="section-head">
+   <h2>Transaction history</h2>
+   <div class="controls">
+    <input id="search" placeholder="Worker, email or reference..." aria-label="Search transactions">
+    <select id="type">
+     <option value="">All transaction types</option>
+     <option value="task_earning">Task earnings</option>
+     <option value="admin_adjustment">Admin adjustments</option>
+     <option value="withdrawal">Withdrawals</option>
+     <option value="withdrawal_reversal">Withdrawal reversals</option>
+    </select>
+    <button id="refresh">Refresh</button>
+   </div>
+  </div>
+  <div class="table-wrap">
+   <table>
+    <thead><tr>
+     <th>Date</th><th>Worker</th><th>Transaction type</th>
+     <th>Amount (USD)</th><th>Reference</th><th>Description</th>
+    </tr></thead>
+    <tbody id="rows"><tr><td colspan="6" class="message">Loading transactions...</td></tr></tbody>
+   </table>
+  </div>
+  <div class="foot">The server returns the latest 500 transactions. Filters below operate on the loaded records.</div>
+ </section>
+</main>
+
+<script src="../../../../assets/js/config.js"></script>
+<script>
+"use strict";
+const API=String(window.PTW_API_BASE||"").replace(/\/+$/,"");
+const $=id=>document.getElementById(id);
+let allTransactions=[];
+
+function escapeHTML(value){
+ return String(value??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+}
+function money(cents){
+ const n=Number(cents);
+ return "$"+(Number.isFinite(n)?Math.abs(n)/100:0).toFixed(2);
+}
+function dateText(value){
+ if(!value)return "—";
+ const d=new Date(value);
+ return Number.isNaN(d.getTime())?"—":d.toLocaleString();
+}
+async function getJSON(url){
+ const response=await fetch(url,{credentials:"include",headers:{Accept:"application/json"}});
+ let data;
+ try{data=await response.json();}catch{throw new Error("Invalid server response.");}
+ if(!response.ok||data.success===false){
+  if(response.status===401||response.status===403)throw new Error("Access denied. Admin or founder login required.");
+  throw new Error(data.message||"Could not load transactions.");
+ }
+ return data;
+}
+async function checkAdmin(){
+ if(!window.PTW_AUTH_API_ME)throw new Error("Authentication endpoint is not configured.");
+ const response=await fetch(window.PTW_AUTH_API_ME,{credentials:"include",headers:{Accept:"application/json"}});
+ let data;
+ try{data=await response.json();}catch{throw new Error("Could not verify your session.");}
+ const user=data.user||data;
+ if(!response.ok||!["admin","founder"].includes(user.role)){
+  document.body.innerHTML='<main><h1>Access denied</h1><p>Administrator access is required.</p></main>';
+  return false;
+ }
+ return true;
+}
+function render(){
+ const query=$("search").value.trim().toLowerCase();
+ const type=$("type").value;
+ const filtered=allTransactions.filter(tx=>{
+  const user=tx.userId||{};
+  const text=`${user.name||""} ${user.email||""} ${tx.reference||""} ${tx.description||""}`.toLowerCase();
+  return (!query||text.includes(query))&&(!type||tx.type===type);
+ });
+
+ const credits=filtered.reduce((sum,tx)=>sum+(Number(tx.amountCents)>0?Number(tx.amountCents):0),0);
+ const debits=filtered.reduce((sum,tx)=>sum+(Number(tx.amountCents)<0?Math.abs(Number(tx.amountCents)):0),0);
+ $("count").textContent=filtered.length;
+ $("credits").textContent=money(credits);
+ $("debits").textContent=money(debits);
+
+ if(!filtered.length){
+  $("rows").innerHTML='<tr><td colspan="6" class="message">No matching transactions found.</td></tr>';
+  return;
+ }
+ $("rows").innerHTML=filtered.map(tx=>{
+  const user=tx.userId||{};
+  const amount=Number(tx.amountCents);
+  const positive=Number.isFinite(amount)&&amount>=0;
+  return `<tr>
+   <td>${escapeHTML(dateText(tx.createdAt))}</td>
+   <td><strong>${escapeHTML(user.name||"Unknown worker")}</strong><br><span class="muted">${escapeHTML(user.email||"")}</span></td>
+   <td><span class="tag">${escapeHTML(String(tx.type||"unknown").replaceAll("_"," "))}</span></td>
+   <td class="${positive?"positive":"negative"}">${positive?"+":"−"}${money(amount)}</td>
+   <td>${escapeHTML(tx.reference||"—")}</td>
+   <td>${escapeHTML(tx.description||"—")}</td>
+  </tr>`;
+ }).join("");
+}
+async function loadTransactions(){
+ $("rows").innerHTML='<tr><td colspan="6" class="message">Loading transactions...</td></tr>';
+ try{
+  const data=await getJSON(`${API}/admin/data-entry/transactions`);
+  allTransactions=Array.isArray(data.transactions)?data.transactions:[];
+  render();
+ }catch(error){
+  $("rows").innerHTML=`<tr><td colspan="6" class="message error">${escapeHTML(error.message)}</td></tr>`;
+ }
+}
+$("search").addEventListener("input",render);
+$("type").addEventListener("change",render);
+$("refresh").addEventListener("click",loadTransactions);
+
+(async()=>{
+ try{
+  if(await checkAdmin())await loadTransactions();
+ }catch(error){
+  $("rows").innerHTML=`<tr><td colspan="6" class="message error">${escapeHTML(error.message)}</td></tr>`;
+ }
+})();
+</script>
+</body>
+</html>

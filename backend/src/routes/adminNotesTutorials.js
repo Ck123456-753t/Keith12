@@ -15,7 +15,7 @@ const FORMATS = ["mp4", "mov", "webm", "m4v"];
 
 router.use(requireAuth);
 router.use((req, res, next) => {
-  if (!["admin", "founder"].includes(
+  if (!["admin", "founder", "notes_operator"].includes(
     String(req.user?.role || "").toLowerCase()
   )) {
     return res.status(403).json({

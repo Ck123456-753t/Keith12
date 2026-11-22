@@ -5,6 +5,22 @@
       "destination": "https://primetask-workspace.onrender.com/api/:path*"
     },
     {
+      "source": "/dashboard/admin/:path*",
+      "destination": "/404.html"
+    },
+    {
+      "source": "/dashboard/admin",
+      "destination": "/404.html"
+    },
+    {
+      "source": "/dashboard/services/:service/admin/:path*",
+      "destination": "/404.html"
+    },
+    {
+      "source": "/dashboard/services/:service/admin",
+      "destination": "/404.html"
+    },
+    {
       "source": "/auth/register/:username",
       "destination": "/auth/register"
     },

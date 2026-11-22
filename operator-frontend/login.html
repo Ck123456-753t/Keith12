@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#061225">
+  <meta name="description" content="Secure PrimeTask Workspace operator sign in.">
+  <title>Operator Sign In | PrimeTask Workspace</title>
+  <style>
+    :root{color-scheme:dark;--bg:#07111f;--panel:#0c1b30;--border:#263d5a;--text:#eff6ff;--muted:#9bb0ca;--blue:#4b9cff;--red:#ff8b93}
+    *{box-sizing:border-box}body{margin:0;min-height:100vh;display:grid;place-items:center;padding:24px;background:radial-gradient(ellipse at 20% 0,#163862 0,transparent 45%),var(--bg);color:var(--text);font:15px/1.55 Inter,system-ui,sans-serif}
+    main{width:min(100%,460px);padding:clamp(24px,6vw,42px);border:1px solid var(--border);border-radius:20px;background:#0c1b30ee;box-shadow:0 24px 80px #0007}
+    .brand{font-size:13px;font-weight:800;letter-spacing:1.5px;color:#8dc4ff;text-transform:uppercase}.eyebrow{margin:28px 0 4px;color:#70ddec;font-size:11px;font-weight:800;letter-spacing:1.7px;text-transform:uppercase}h1{margin:0;font-size:32px;letter-spacing:-1px}p{color:var(--muted)}label{display:block;margin:18px 0 7px;font-size:13px;font-weight:700}input{width:100%;height:48px;padding:0 13px;border:1px solid var(--border);border-radius:10px;background:#071426;color:var(--text);font:inherit}input:focus{outline:2px solid #4b9cff66;border-color:var(--blue)}button{width:100%;height:50px;margin-top:24px;border:0;border-radius:10px;background:linear-gradient(100deg,#2379ee,#55b5ef);color:white;font:inherit;font-weight:800;cursor:pointer}button:disabled{opacity:.6;cursor:wait}.message{min-height:24px;margin-top:14px;color:var(--red);font-size:13px}.back{display:inline-block;margin-top:18px;color:#a7caff;font-size:13px;text-decoration:none}
+  </style>
+  <script src="/assets/js/config.js"></script>
+  <script src="/assets/js/operator-login.js" defer></script>
+
+</head>
+<body>
+  <main>
+    <div class="brand">PrimeTask Workspace</div>
+    <div class="eyebrow">Restricted operator portal</div>
+    <h1>Operator sign in</h1>
+    <p>Use the email address and account ID assigned to your existing administrator account.</p>
+    <form id="operatorLogin" novalidate>
+      <label for="email">Email address</label>
+      <input id="email" name="email" type="email" autocomplete="username" maxlength="254" required>
+      <label for="accountId">Account ID</label>
+      <input id="accountId" name="accountId" type="text" autocomplete="off" spellcheck="false" autocapitalize="off" maxlength="24" pattern="[a-fA-F0-9]{24}" required>
+      <label for="password">Password</label>
+      <input id="password" name="password" type="password" autocomplete="current-password" maxlength="72" required>
+      <div class="message" id="message" role="status" aria-live="polite"></div>
+      <button id="submit" type="submit">Verify and sign in</button>
+    </form>
+    <a class="back" href="https://primetaskworkspace.com">← Member portal</a>
+  </main>
+</body>
+</html>

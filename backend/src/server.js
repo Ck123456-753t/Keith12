@@ -7,6 +7,12 @@ const cors = require("cors");
 const helmet = require("helmet");
 const rateLimit = require("express-rate-limit");
 const { recordSecurityEvent } = require("./services/securityEventChainService");
+const requireAuth = require("./middleware/requireAuth");
+const {
+  requirePlatformAdmin,
+  requireNotesAdmin,
+  requireNotesMemberOrPlatformAdmin
+} = require("./middleware/portalAccess");
 
 const authRoutes = require("./routes/auth");
 const profileRoutes = require("./routes/profile");
@@ -124,6 +130,14 @@ const allowedFrontendOrigins = (
   .map(origin => origin.trim())
   .filter(Boolean);
 
+for (const portalOrigin of [
+  "https://primetaskworkspace.com",
+  "https://www.primetaskworkspace.com",
+  "https://operator.primetaskworkspace.com"
+]) {
+  if (!allowedFrontendOrigins.includes(portalOrigin)) allowedFrontendOrigins.push(portalOrigin);
+}
+
 app.use(
   cors({
     origin: allowedFrontendOrigins,
@@ -143,6 +157,18 @@ app.get("/api/health", (req, res) => {
     timestamp: new Date().toISOString()
   });
 });
+
+function mountPlatformAdmin(path, routes) {
+  app.use(path, requireAuth, requirePlatformAdmin, routes);
+}
+
+function mountNotesAdmin(path, routes) {
+  app.use(path, requireAuth, requireNotesAdmin, routes);
+}
+
+function mountMemberNotes(path, routes) {
+  app.use(path, requireAuth, requireNotesMemberOrPlatformAdmin, routes);
+}
 
 const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
@@ -188,34 +214,34 @@ app.use("/api/chat", chatRoutes);
 app.use("/api/notifications/push", pushSubscriptionsRoutes);
 app.use("/api/notifications", notificationsRoutes);
 app.use("/api/announcements", announcementRoutes.user);
-app.use("/api/admin/announcements", announcementRoutes.admin);
+mountPlatformAdmin("/api/admin/announcements", announcementRoutes.admin);
 app.use("/api/marketing-wallet", marketingWalletRoutes);
 app.use("/api/transcription/wallet", transcriptionWalletRoutes);
 app.use("/api/transcription/minute-purchases", transcriptionMinutePurchasesRoutes);
-app.use("/api/notes/wallet", notesWalletRoutes);
-app.use("/api/notes/points-transactions", notesPointsTransactionsRoutes);
-app.use("/api/notes/withdrawals", notesWithdrawalsRoutes);
-app.use("/api/notes/dashboard", notesDashboardRoutes);
-app.use("/api/notes/tasks", notesTasksRoutes);
-app.use("/api/notes/tutorials", notesTutorialsRoutes);
+mountMemberNotes("/api/notes/wallet", notesWalletRoutes);
+mountMemberNotes("/api/notes/points-transactions", notesPointsTransactionsRoutes);
+app.use("/api/notes/withdrawals", requireAuth, notesWithdrawalsRoutes);
+mountMemberNotes("/api/notes/dashboard", notesDashboardRoutes);
+mountMemberNotes("/api/notes/tasks", notesTasksRoutes);
+mountMemberNotes("/api/notes/tutorials", notesTutorialsRoutes);
 app.use("/api/data-entry", dataEntryRoutes);
 app.use("/api/data-entry/bid-purchases", dataEntryBidPurchasesRoutes);
 app.use("/api/academic-writing", academicWritingRoutes);
-app.use("/api/admin/academic-writing", adminAcademicWritingRoutes);
-app.use("/api/notes/points-purchases", notesPointsPurchasesRoutes);
-app.use("/api/admin/notes/assets", adminNotesAssetsRoutes);
-app.use("/api/admin/notes/tasks", adminNotesTasksRoutes);
-app.use("/api/admin/notes/tutorials", adminNotesTutorialsRoutes);
-app.use("/api/admin/notes/submissions", adminNotesSubmissionsRoutes);
-app.use("/api/admin/notes/points-packages", adminNotesPointsPackagesRoutes);
-app.use("/api/admin/data-entry", adminDataEntryRoutes);
-app.use("/api/admin/data-entry/bid-packages", adminDataEntryBidPackagesRoutes);
-app.use("/api/admin/transcription/minute-purchases/reconciliation", adminTranscriptionMinuteReconciliationRoutes);
-app.use("/api/admin/transcription/assets", transcriptionAssetsRoutes);
-app.use("/api/admin/transcription/learning", adminTranscriptionLearningRoutes);
-app.use("/api/admin/transcription/learning/assets", adminTranscriptionLearningAssetsRoutes);
-app.use("/api/admin/transcription", adminTranscriptionRoutes);
-app.use("/api/admin/transcription/config", adminTranscriptionConfigRoutes);
+mountPlatformAdmin("/api/admin/academic-writing", adminAcademicWritingRoutes);
+mountMemberNotes("/api/notes/points-purchases", notesPointsPurchasesRoutes);
+mountNotesAdmin("/api/admin/notes/assets", adminNotesAssetsRoutes);
+mountNotesAdmin("/api/admin/notes/tasks", adminNotesTasksRoutes);
+mountNotesAdmin("/api/admin/notes/tutorials", adminNotesTutorialsRoutes);
+mountNotesAdmin("/api/admin/notes/submissions", adminNotesSubmissionsRoutes);
+mountNotesAdmin("/api/admin/notes/points-packages", adminNotesPointsPackagesRoutes);
+mountPlatformAdmin("/api/admin/data-entry", adminDataEntryRoutes);
+mountPlatformAdmin("/api/admin/data-entry/bid-packages", adminDataEntryBidPackagesRoutes);
+mountPlatformAdmin("/api/admin/transcription/minute-purchases/reconciliation", adminTranscriptionMinuteReconciliationRoutes);
+mountPlatformAdmin("/api/admin/transcription/assets", transcriptionAssetsRoutes);
+mountPlatformAdmin("/api/admin/transcription/learning", adminTranscriptionLearningRoutes);
+mountPlatformAdmin("/api/admin/transcription/learning/assets", adminTranscriptionLearningAssetsRoutes);
+mountPlatformAdmin("/api/admin/transcription", adminTranscriptionRoutes);
+mountPlatformAdmin("/api/admin/transcription/config", adminTranscriptionConfigRoutes);
 app.use("/api/transcription/learning", transcriptionLearningRoutes);
 app.use("/api/transcription", transcriptionRoutes);
 app.use("/api/daraja/callback", darajaCallbackRoutes);
@@ -227,20 +253,20 @@ app.use("/api/wallet", walletRoutes);
 app.use("/api/wallet/withdrawals", withdrawalRoutes);
 app.use("/api/referrals", referralRoutes);
 app.use("/api/membership", membershipRoutes);
-app.use("/api/admin/membership-plans", adminMembershipPlanRoutes);
-app.use("/api/admin/membership-reconciliation", adminMembershipReconciliationRoutes);
-app.use("/api/admin/membership-fulfilment", adminMembershipFulfilmentRoutes);
-app.use("/api/admin/overview", adminOverviewRoutes);
-app.use("/api/admin/users", adminUsersRoutes);
-app.use("/api/admin/settings", adminSettingsRoutes);
-app.use("/api/admin/revenue", adminRevenueRoutes);
-app.use("/api/admin/reports", require("./routes/adminNetworkReports"));
+mountPlatformAdmin("/api/admin/membership-plans", adminMembershipPlanRoutes);
+mountPlatformAdmin("/api/admin/membership-reconciliation", adminMembershipReconciliationRoutes);
+mountPlatformAdmin("/api/admin/membership-fulfilment", adminMembershipFulfilmentRoutes);
+mountPlatformAdmin("/api/admin/overview", adminOverviewRoutes);
+mountPlatformAdmin("/api/admin/users", adminUsersRoutes);
+mountPlatformAdmin("/api/admin/settings", adminSettingsRoutes);
+mountPlatformAdmin("/api/admin/revenue", adminRevenueRoutes);
+mountPlatformAdmin("/api/admin/reports", require("./routes/adminNetworkReports"));
 app.use("/api/testimonials", testimonialsRoutes);
-app.use("/api/admin/testimonials", adminTestimonialsRoutes);
-app.use("/api/admin/security", adminSecurityRoutes);
-app.use("/api/admin/api-requests", adminApiRequestsRoutes);
+mountPlatformAdmin("/api/admin/testimonials", adminTestimonialsRoutes);
+mountPlatformAdmin("/api/admin/security", adminSecurityRoutes);
+mountPlatformAdmin("/api/admin/api-requests", adminApiRequestsRoutes);
 app.use("/api/admin/bulk-email/unsubscribe", adminBulkEmailRoutes.unsubscribe);
-app.use("/api/admin/bulk-email", adminBulkEmailRoutes.router);
+mountPlatformAdmin("/api/admin/bulk-email", adminBulkEmailRoutes.router);
 
 app.use((req, res) => {
   res.status(404).json({

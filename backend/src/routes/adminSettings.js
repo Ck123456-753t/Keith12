@@ -2,6 +2,7 @@
 
 const express = require("express");
 const requireAuth = require("../middleware/requireAuth");
+const { requireFounder } = require("../middleware/portalAccess");
 const PlatformSetting = require("../models/PlatformSetting");
 const AdminAuditLog = require("../models/AdminAuditLog");
 
@@ -44,7 +45,7 @@ router.get("/", async (req, res) => {
   }
 });
 
-router.put("/", async (req, res) => {
+router.put("/", requireFounder, async (req, res) => {
   try {
     const body = req.body || {};
     const allowed = [

@@ -3,6 +3,10 @@ const User = require("../models/User");
 const deviceAccessService = require("../services/deviceAccessService");
 
 module.exports = async function requireAuth(req, res, next) {
+  // A trusted upstream portal guard may already have authenticated this
+  // request. Never replace that database-backed identity with client input.
+  if (req.authenticated === true && req.user?._id && req.user?.role) return next();
+
   const audioDebug = req.baseUrl === "/api/admin/transcription/assets" &&
     req.path === "/audio/signature";
   const audioStartedAt = Date.now();
@@ -69,6 +73,7 @@ module.exports = async function requireAuth(req, res, next) {
     }
 
     req.user = user;
+    req.authenticated = true;
     next();
   } catch (error) {
     if (

@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en" data-operator-roles="admin,founder">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Data Entry Earnings | PrimeTask Admin</title>
+<style>
+:root{--bg:#071b19;--panel:#102925;--panel2:#163832;--line:#28534a;--text:#effcf7;--muted:#9bb9ae;--green:#40d6a0;--lime:#b7f36b;--red:#ff7777}
+*{box-sizing:border-box}
+body{margin:0;color:var(--text);font-family:Arial,sans-serif;background:linear-gradient(130deg,rgba(4,25,22,.96),rgba(7,31,27,.91)),url('https://images.unsplash.com/photo-1444653614773-995cb1ef9efa?auto=format&fit=crop&w=1600&q=80') center/cover fixed;min-height:100vh}
+header{padding:20px;background:#071b19eF;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:5}
+.head{max-width:1250px;margin:auto;display:flex;justify-content:space-between;align-items:center;gap:15px;flex-wrap:wrap}
+.brand{font-weight:800;font-size:19px}.brand span{color:var(--green)}
+nav{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+nav a{color:var(--muted);text-decoration:none;background:var(--panel);padding:9px 12px;border-radius:9px;font-size:12px;border:1px solid var(--line)}
+nav a.active,nav a:hover{color:#06251c;background:var(--green)}
+main{max-width:1250px;margin:28px auto;padding:0 16px 50px}
+h1{font-size:27px;margin:0 0 7px}.sub{color:var(--muted);font-size:13px;margin-bottom:22px}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(205px,1fr));gap:13px;margin-bottom:25px}
+.card,.section{background:linear-gradient(145deg,#102925f5,#0a211df5);border:1px solid var(--line);border-radius:15px;padding:18px}
+.card small{color:var(--muted);font-size:12px}.amount{font-size:26px;font-weight:800;margin-top:12px;color:var(--green);overflow-wrap:anywhere}
+.card:nth-child(2) .amount{color:var(--lime)}.card:nth-child(3) .amount{color:#7bdcff}.card:nth-child(4) .amount{color:#ffb77a}
+.section{margin-top:17px;overflow:hidden}
+.section-head{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:15px}
+h2{font-size:17px;margin:0}
+.controls{display:flex;gap:8px;flex-wrap:wrap}
+input,select{background:#071b19;color:var(--text);border:1px solid var(--line);border-radius:9px;padding:10px;font-size:13px;min-width:150px;max-width:100%}
+button{background:var(--green);border:0;border-radius:9px;padding:10px 14px;font-weight:700;cursor:pointer;color:#06251c}
+button.secondary{background:var(--panel2);color:var(--text);border:1px solid var(--line)}
+.table-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;min-width:760px;font-size:13px}
+th,td{text-align:left;padding:13px 11px;border-bottom:1px solid var(--line);vertical-align:top}
+th{color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.5px}
+td strong{font-weight:700}
+.positive{color:var(--green);font-weight:700}.negative{color:var(--red);font-weight:700}
+.type{display:inline-block;padding:5px 8px;border-radius:7px;background:var(--panel2);color:#b9e8d7;font-size:11px}
+.muted{color:var(--muted)}.message{padding:18px;text-align:center;color:var(--muted);font-size:13px}
+.error{color:var(--red)}.footer{color:var(--muted);font-size:11px;margin-top:15px}
+@media(max-width:600px){header{padding:15px}.head{align-items:flex-start}h1{font-size:23px}.card{padding:15px}.amount{font-size:23px}main{margin-top:20px}}
+</style>
+<link rel="icon" type="image/svg+xml" href="/assets/primetask-logo.svg">
+
+  <script src="/assets/js/operator-guard.js" defer></script>
+</head>
+<body>
+<header>
+ <div class="head">
+  <div class="brand">PrimeTask <span>Workspace</span> · Admin</div>
+  <div class="muted" style="font-size:12px">Data Entry Finance</div>
+ </div>
+ <nav>
+  <a href="index">Overview</a>
+  <a href="jobs">Jobs</a>
+  <a href="in-progress">In Progress</a>
+  <a href="submissions">Submissions</a>
+  <a href="withdrawals">Withdrawals</a>
+  <a href="bid-purchases">Bid Purchases</a>
+  <a class="active" href="earnings">Earnings</a>
+  <a href="transactions">Transactions</a>
+  <a href="bid-packages">Bid Packages</a>
+  <a href="reports">Reports</a>
+ </nav>
+</header>
+
+<main>
+ <h1>Earnings & Wallets</h1>
+ <div class="sub">Worker balances and earnings ledger. All wallet values are displayed in USD.</div>
+
+ <div class="cards">
+  <div class="card"><small>Total available balance</small><div class="amount" id="available">$0.00</div></div>
+  <div class="card"><small>Total reserved balance</small><div class="amount" id="reserved">$0.00</div></div>
+  <div class="card"><small>Total worker earnings</small><div class="amount" id="earnings">$0.00</div></div>
+  <div class="card"><small>Total withdrawals</small><div class="amount" id="withdrawals">$0.00</div></div>
+ </div>
+
+ <section class="section">
+  <div class="section-head">
+   <h2>Worker wallets</h2>
+   <div class="controls">
+    <input id="walletSearch" placeholder="Search worker..." aria-label="Search worker wallets">
+    <button class="secondary" id="refresh">Refresh</button>
+   </div>
+  </div>
+  <div class="table-wrap">
+   <table>
+    <thead><tr><th>Worker</th><th>Available</th><th>Reserved</th><th>Total earned</th><th>Withdrawn</th><th>Last updated</th></tr></thead>
+    <tbody id="walletRows"><tr><td colspan="6" class="message">Loading wallets...</td></tr></tbody>
+   </table>
+  </div>
+ </section>
+
+ <section class="section">
+  <div class="section-head">
+   <h2>Recent wallet transactions</h2>
+   <div class="controls">
+    <input id="transactionSearch" placeholder="Search worker or reference..." aria-label="Search transactions">
+    <select id="typeFilter" aria-label="Filter transaction type">
+     <option value="">All transaction types</option>
+     <option value="task_earning">Task earnings</option>
+     <option value="admin_adjustment">Admin adjustments</option>
+     <option value="withdrawal">Withdrawals</option>
+     <option value="withdrawal_reversal">Withdrawal reversals</option>
+    </select>
+   </div>
+  </div>
+  <div class="table-wrap">
+   <table>
+    <thead><tr><th>Date</th><th>Worker</th><th>Type</th><th>Amount</th><th>Reference</th><th>Description</th></tr></thead>
+    <tbody id="transactionRows"><tr><td colspan="6" class="message">Loading transactions...</td></tr></tbody>
+   </table>
+  </div>
+  <div class="footer">Showing the latest 500 transactions returned by the server.</div>
+ </section>
+</main>
+
+<script src="../../../../assets/js/config.js"></script>
+<script>
+"use strict";
+
+const API = String(window.PTW_API_BASE || "").replace(/\/+$/, "");
+const $ = id => document.getElementById(id);
+let wallets = [];
+let transactions = [];
+
+function money(cents) {
+ const value = Number(cents);
+ return Number.isFinite(value) ? "$" + (value / 100).toFixed(2) : "$0.00";
+}
+function escapeHTML(value) {
+ return String(value ?? "").replace(/[&<>"']/g, char => ({
+  "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+ })[char]);
+}
+function workerName(user) {
+ return user && typeof user === "object"
+  ? (user.name || user.email || "Unknown worker")
+  : "Unknown worker";
+}
+function dateText(value) {
+ if (!value) return "—";
+ const date = new Date(value);
+ return Number.isNaN(date.getTime()) ? "—" : date.toLocaleString();
+}
+function showError(message) {
+ $("walletRows").innerHTML = `<tr><td colspan="6" class="message error">${escapeHTML(message)}</td></tr>`;
+ $("transactionRows").innerHTML = `<tr><td colspan="6" class="message error">${escapeHTML(message)}</td></tr>`;
+}
+async function request(url) {
+ const response = await fetch(url, {credentials:"include",headers:{Accept:"application/json"}});
+ let data;
+ try { data = await response.json(); } catch { throw new Error("Server returned an invalid response."); }
+ if (!response.ok || data.success === false) {
+  if (response.status === 401 || response.status === 403) {
+   throw new Error("Access denied. Sign in with an admin or founder account.");
+  }
+  throw new Error(data.message || "Could not load earnings data.");
+ }
+ return data;
+}
+async function checkAdmin() {
+ const authUrl = window.PTW_AUTH_API_ME;
+ if (!authUrl) throw new Error("Authentication endpoint is not configured.");
+ const response = await fetch(authUrl, {credentials:"include",headers:{Accept:"application/json"}});
+ const data = await response.json();
+ const user = data.user || data;
+ if (!response.ok || !["admin","founder"].includes(user.role)) {
+  document.body.innerHTML = '<main><h1>Access denied</h1><p class="muted">This page is restricted to administrators.</p></main>';
+  return false;
+ }
+ return true;
+}
+function renderWallets() {
+ const query = $("walletSearch").value.trim().toLowerCase();
+ const filtered = wallets.filter(wallet => {
+  const user = wallet.userId || {};
+  return `${user.name || ""} ${user.email || ""}`.toLowerCase().includes(query);
+ });
+ if (!filtered.length) {
+  $("walletRows").innerHTML = '<tr><td colspan="6" class="message">No matching worker wallets.</td></tr>';
+  return;
+ }
+ $("walletRows").innerHTML = filtered.map(wallet => {
+  const user = wallet.userId || {};
+  return `<tr>
+   <td><strong>${escapeHTML(user.name || "Unknown worker")}</strong><br><span class="muted">${escapeHTML(user.email || "")}</span></td>
+   <td class="positive">${money(wallet.availableBalanceCents)}</td>
+   <td>${money(wallet.reservedBalanceCents)}</td>
+   <td>${money(wallet.totalEarningsCents)}</td>
+   <td>${money(wallet.totalWithdrawalsCents)}</td>
+   <td>${escapeHTML(dateText(wallet.updatedAt))}</td>
+  </tr>`;
+ }).join("");
+}
+function renderTransactions() {
+ const query = $("transactionSearch").value.trim().toLowerCase();
+ const type = $("typeFilter").value;
+ const filtered = transactions.filter(tx => {
+  const user = tx.userId || {};
+  const haystack = `${user.name || ""} ${user.email || ""} ${tx.reference || ""} ${tx.description || ""}`.toLowerCase();
+  return (!query || haystack.includes(query)) && (!type || tx.type === type);
+ });
+ if (!filtered.length) {
+  $("transactionRows").innerHTML = '<tr><td colspan="6" class="message">No matching transactions.</td></tr>';
+  return;
+ }
+ $("transactionRows").innerHTML = filtered.map(tx => {
+  const user = tx.userId || {};
+  const amount = Number(tx.amountCents);
+  const positive = Number.isFinite(amount) && amount >= 0;
+  return `<tr>
+   <td>${escapeHTML(dateText(tx.createdAt))}</td>
+   <td><strong>${escapeHTML(user.name || "Unknown worker")}</strong><br><span class="muted">${escapeHTML(user.email || "")}</span></td>
+   <td><span class="type">${escapeHTML(String(tx.type || "unknown").replaceAll("_"," "))}</span></td>
+   <td class="${positive ? "positive" : "negative"}">${positive ? "+" : "−"}${money(Math.abs(Number.isFinite(amount) ? amount : 0))}</td>
+   <td>${escapeHTML(tx.reference || "—")}</td>
+   <td>${escapeHTML(tx.description || "—")}</td>
+  </tr>`;
+ }).join("");
+}
+async function loadEarnings() {
+ $("walletRows").innerHTML = '<tr><td colspan="6" class="message">Loading wallets...</td></tr>';
+ $("transactionRows").innerHTML = '<tr><td colspan="6" class="message">Loading transactions...</td></tr>';
+ try {
+  const data = await request(`${API}/admin/data-entry/earnings`);
+  wallets = Array.isArray(data.wallets) ? data.wallets : [];
+  transactions = Array.isArray(data.transactions) ? data.transactions : [];
+
+  const totals = wallets.reduce((sum, wallet) => ({
+   available:sum.available + (Number(wallet.availableBalanceCents) || 0),
+   reserved:sum.reserved + (Number(wallet.reservedBalanceCents) || 0),
+   earnings:sum.earnings + (Number(wallet.totalEarningsCents) || 0),
+   withdrawals:sum.withdrawals + (Number(wallet.totalWithdrawalsCents) || 0)
+  }), {available:0,reserved:0,earnings:0,withdrawals:0});
+
+  $("available").textContent = money(totals.available);
+  $("reserved").textContent = money(totals.reserved);
+  $("earnings").textContent = money(totals.earnings);
+  $("withdrawals").textContent = money(totals.withdrawals);
+
+  renderWallets();
+  renderTransactions();
+ } catch (error) {
+  showError(error.message || "Could not load earnings.");
+ }
+}
+
+$("walletSearch").addEventListener("input", renderWallets);
+$("transactionSearch").addEventListener("input", renderTransactions);
+$("typeFilter").addEventListener("change", renderTransactions);
+$("refresh").addEventListener("click", loadEarnings);
+
+(async function init() {
+ try {
+  if (await checkAdmin()) await loadEarnings();
+ } catch (error) {
+  showError(error.message || "Authentication failed.");
+ }
+})();
+</script>
+</body>
+</html>
